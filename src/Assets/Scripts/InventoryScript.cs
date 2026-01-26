@@ -8,13 +8,14 @@ public class InventoryScript : MonoBehaviour
 {
     public int ItemMax = 5;
     public int Padding = 1;
-    public GameObject templateItem;
-    // public GameObject[] items;
+    public GameObject TemplateItem;
+
+    private Transform inventoryUIObject;
 
     // Start is called before the first frame update
     void Start()
     {
-
+        inventoryUIObject = transform.GetChild(0);
     }
 
     // Update is called once per frame
@@ -24,7 +25,7 @@ public class InventoryScript : MonoBehaviour
     }
 
     Transform GetExistingItem(GameObject prefab) {
-        foreach (Transform child in transform.GetChild(0)) {
+        foreach (Transform child in inventoryUIObject) {
             InventoryItem childInventoryItem = child.GetComponent<InventoryItem>();
             GameObject childPrefab = childInventoryItem.PickupObjectPrefab;
 
@@ -37,6 +38,10 @@ public class InventoryScript : MonoBehaviour
     }
 
     public void AddItem(string itemName) {
+        if (inventoryUIObject.childCount >= ItemMax) {
+            Debug.Log($"Inventory reached max size of {ItemMax}!");
+        }
+
         GameObject prefab = Resources.Load<GameObject>($"Prefabs/Objects/{itemName}");
         Transform existingItem = GetExistingItem(prefab);
 
@@ -44,8 +49,8 @@ public class InventoryScript : MonoBehaviour
             InventoryItem existingInventoryItem = existingItem.GetComponent<InventoryItem>();
             existingInventoryItem.UpdateItemCount(existingInventoryItem.GetItemCount() + 1);
         } else {
-            Transform newItem = Instantiate(templateItem.transform, templateItem.transform.position, Quaternion.identity);
-            UnityEditor.GameObjectUtility.SetParentAndAlign(newItem.gameObject, transform.GetChild(0).gameObject);
+            Transform newItem = Instantiate(TemplateItem.transform, TemplateItem.transform.position, Quaternion.identity);
+            UnityEditor.GameObjectUtility.SetParentAndAlign(newItem.gameObject, inventoryUIObject.gameObject);
 
             InventoryItem newInventoryItem = newItem.GetComponent<InventoryItem>();
 
