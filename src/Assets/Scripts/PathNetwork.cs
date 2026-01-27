@@ -203,3 +203,213 @@ public class Path
     public int end;
     public PathTimespan timespan = PathTimespan.Both;
 }
+
+
+[CustomEditor(typeof(PathNetwork))]
+public class PathNetworkEditor : Editor
+{
+    private const float NodeRadius = 0.2f;
+    private const float ButtonSize = 0.18f;
+    private const float EditRange = 2.0f;
+
+    private int draggingIndex = -1;
+
+    public void OnSceneGUI()
+    {
+        PathNetwork net = target as PathNetwork;
+        if (net.GetNodeCount() == 0)
+        {
+            net.CreateNode(Vector2.zero);
+        }
+
+        Vector2 mousePosition = MouseWorldPosition();
+        DrawPaths(mousePosition);
+        DrawNodes(mousePosition);
+    }
+
+    private void DrawPaths(Vector2 mousePosition)
+    {
+        PathNetwork net = target as PathNetwork;
+
+        for(int i = 0; i < net.GetPathCount(); i++)
+        {
+            Path path = net.getPath(i);
+
+            Vector2 startPosition = net.GetNode(path.start);
+            Vector2 endPosition = net.GetNode(path.end);
+            Vector2 midpoint = (startPosition + endPosition) / 2;
+
+            string timeLabel = "uninitialized";
+            switch (path.timespan)
+            {
+                case PathTimespan.Both:
+                    timeLabel = "b";
+                    Handles.color = Color.white;
+                    Handles.DrawLine(startPosition, endPosition);
+                    break;
+                case PathTimespan.Past:
+                    timeLabel = "p";
+                    Handles.color = Color.yellow;
+                    Handles.DrawDottedLine(startPosition, endPosition, 4.0f);
+                    break;
+                case PathTimespan.Future:
+                    timeLabel = "f";
+                    Handles.color = Color.cyan;
+                    Handles.DrawDottedLine(startPosition, endPosition, 4.0f);
+                    break;
+            }
+
+            // hide UI far away from the mouse
+            if (Vector2.Distance(mousePosition, midpoint) > EditRange) continue;
+            // hide some of the buttons while dragging
+            if (IsDragging()) continue;
+
+            Handles.color = Color.green;
+            if (DrawButton(midpoint + new Vector2(-0.4f, -0.4f), "+", false))
+            {
+                BeginDrag(net.BreakPath(i));
+            }
+
+            Handles.color = Color.magenta;
+            if (DrawButton(midpoint + new Vector2(0, -0.4f), timeLabel, false))
+            {
+                if (path.timespan == PathTimespan.Both)
+                    path.timespan = PathTimespan.Past;
+                else if (path.timespan == PathTimespan.Past)
+                    path.timespan = PathTimespan.Future;
+                else if (path.timespan == PathTimespan.Future)
+                    path.timespan = PathTimespan.Both;
+            }
+
+            Handles.color = Color.red;
+            if (DrawButton(midpoint + new Vector2(0.4f, -0.4f), "-", false))
+            {
+                net.DeletePath(i);
+                i--;
+            }
+        }
+    }
+
+    private void DrawNodes(Vector2 mousePosition)
+    {
+        PathNetwork net = target as PathNetwork;
+
+        // if a node is being dragged it must be drawn first
+        // this allows other nodes to be drawn over then, and thus the other node can be clicked to merge
+        if (IsDragging())
+            DrawDragHandle(draggingIndex, mousePosition);
+
+        Handles.color = Color.white;
+        for (int i = 0; i < net.GetNodeCount(); i++)
+        {
+            Vector2 position = net.GetNode(i);
+
+            Handles.color = Color.white;
+            Handles.DrawSolidDisc(position, Vector3.forward, NodeRadius);
+
+            // hide UI far away from the mouse
+            if (Vector2.Distance(mousePosition, position) > EditRange) continue;
+
+            // if a node is being dragged it must be drawn first
+            // this allows other nodes to be drawn over then, and thus the other node can be clicked to merge
+            if (!IsDragging(i))
+                DrawDragHandle(i, mousePosition);
+
+            // hide some of the buttons while dragging
+            if (IsDragging()) continue;
+
+            Handles.color = Color.green;
+            if (DrawButton(position + new Vector2(-0.2f, -0.4f), "+", true))
+            {
+                BeginDrag(net.ForkNode(i, mousePosition));
+            }
+
+            Handles.color = Color.red;
+            if (DrawButton(position + new Vector2(0.2f, -0.4f), "-", true))
+            {
+                net.DeleteNode(i);
+                i--;
+            }
+        }
+    }
+
+    private bool DrawButton(Vector2 position, string label, bool nodeButton)
+    {
+        GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
+        style.alignment = TextAnchor.MiddleCenter;
+        style.fontSize = 16;
+
+        Handles.Label(position, label, style);
+        if (nodeButton)
+        {
+            return Handles.Button(position, Quaternion.identity, ButtonSize, ButtonSize, Handles.RectangleHandleCap);
+        }
+        else
+        {
+            return Handles.Button(position, Quaternion.identity, ButtonSize, ButtonSize, Handles.CircleHandleCap);
+        }
+    }
+
+    private void DrawDragHandle(int index, Vector2 mousePosition)
+    {
+        PathNetwork net = target as PathNetwork;
+        Vector2 position = net.GetNode(index);
+
+        Handles.color = Handles.xAxisColor;
+        Handles.DrawLine(position, position + Vector2.up * (NodeRadius * 3));
+        Handles.color = Handles.yAxisColor;
+        Handles.DrawLine(position, position + Vector2.right * (NodeRadius * 3));
+
+        Handles.color = Handles.zAxisColor;
+        if (Handles.Button(position, Quaternion.identity, NodeRadius, NodeRadius, Handles.RectangleHandleCap))
+        {
+            if (IsDragging(index))
+            {
+                EndDrag();
+            }
+            else if (!IsDragging())
+            {
+               BeginDrag(index);
+            }
+            else
+            {
+                net.MergeNode(index, draggingIndex);
+                EndDrag();
+            }
+        }
+
+        if (IsDragging(index))
+            net.MoveNode(index, mousePosition);
+    }
+
+    private Vector2 MouseWorldPosition()
+    {
+        Vector3 worldPosition = Event.current.mousePosition;
+
+        Ray ray = HandleUtility.GUIPointToWorldRay(worldPosition);
+        Plane plane = new Plane(Vector3.forward, Vector3.zero);
+
+        plane.Raycast(ray, out float dist);
+        return ray.GetPoint(dist);
+    }
+
+    private bool IsDragging()
+    {
+        return draggingIndex != -1;
+    }
+
+    private bool IsDragging(int index)
+    {
+        return draggingIndex == index;
+    }
+
+    private void EndDrag()
+    {
+        draggingIndex = -1;
+    }
+
+    private void BeginDrag(int node)
+    {
+        draggingIndex = node;
+    }
+}
