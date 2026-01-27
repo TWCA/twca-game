@@ -18,14 +18,40 @@ public class PathNetwork : MonoBehaviour
         Instance = this;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    public (Vector2 Position, int Path) NearestPointOnPaths(Vector2 point)
     {
-    }
+        int nearestPath = -1;
+        Vector2 nearestPointOverall = Vector2.zero;
+        float leastDistance = Single.PositiveInfinity;
+        
+        for (int i = 0; i < paths.Count; i++)
+        {
+            Vector2 nearestPoint = NearestPointOnPath(i, point);
+            float distance = Vector2.Distance(point, nearestPoint);
 
-    // Update is called once per frame
-    void Update()
+            if (distance < leastDistance)
+            {
+                nearestPath = i;
+                nearestPointOverall = nearestPoint;
+                leastDistance = distance;
+            }
+        }
+
+        return (nearestPointOverall, nearestPath);
+    }
+    
+    public Vector2 NearestPointOnPath(int path, Vector2 point)
     {
+        Vector2 startPosition = nodes[paths[path].start];
+        Vector2 endPosition = nodes[paths[path].end];
+        Vector2 pathDirection = (endPosition - startPosition);
+        float pathLength = pathDirection.magnitude;
+        
+        pathDirection.Normalize();
+        float distanceAlong = Vector3.Dot(point - startPosition, pathDirection);
+
+        distanceAlong = Mathf.Clamp(distanceAlong, 0, pathLength);
+        return startPosition + pathDirection * distanceAlong;
     }
 
     public void MoveNode(int node, Vector2 position)
@@ -184,22 +210,20 @@ public class PathNetwork : MonoBehaviour
         return paths[path].end;
     }
     
-    public PathTimespan GetPathTimespan(int path)
+    public bool GetPathPastTraversable(int path)
     {
-        return paths[path].timespan;
+        return paths[path].pastTraversable;
     }
     
-    public void SetPathTimespan(int path, PathTimespan timespan)
+    public bool GetPathFutureTraversable(int path)
     {
-        paths[path].timespan = timespan;
+        return paths[path].futureTraversable;
     }
-}
-
-public enum PathTimespan
-{
-    Both,
-    Past,
-    Future
+    
+    public string GetPathName(int path)
+    {
+        return paths[path].name;
+    }
 }
 
 [System.Serializable]
@@ -211,9 +235,11 @@ public class Path
         this.end = end;
     }
 
-    public int start;
-    public int end;
-    public PathTimespan timespan = PathTimespan.Both;
+    [HideInInspector] public int start;
+    [HideInInspector] public int end;
+    public string name;
+    public bool pastTraversable = true;
+    public bool futureTraversable = true;
 }
 
 
@@ -250,61 +276,81 @@ public class PathNetworkEditor : Editor
             Vector2 endPosition = net.GetNode(net.GetPathEnd(i));
             Vector2 midpoint = (startPosition + endPosition) / 2;
 
-            string timeLabel = "uninitialized";
-            PathTimespan timespan = net.GetPathTimespan(i);
-            
-            switch (timespan)
+            if (net.GetPathFutureTraversable(i))
             {
-                case PathTimespan.Both:
-                    timeLabel = "b";
+                if (net.GetPathPastTraversable(i))
+                {
+                    // always traversable
                     Handles.color = Color.white;
                     Handles.DrawLine(startPosition, endPosition);
-                    break;
-                case PathTimespan.Past:
-                    timeLabel = "p";
-                    Handles.color = Color.yellow;
-                    Handles.DrawDottedLine(startPosition, endPosition, 4.0f);
-                    break;
-                case PathTimespan.Future:
-                    timeLabel = "f";
+                }
+                else
+                {
+                    // traversable in the future
                     Handles.color = Color.cyan;
-                    Handles.DrawDottedLine(startPosition, endPosition, 4.0f);
-                    break;
+                    Handles.DrawDottedLine(startPosition, endPosition, 3.0f);   
+                }
+            } else {
+                if (net.GetPathPastTraversable(i))
+                {
+                    // traversable in the past
+                    Handles.color = Color.yellow;
+                    Handles.DrawDottedLine(startPosition, endPosition, 3.0f);
+                }
+                else
+                {
+                    // never traversable
+                    Handles.color = Color.black;
+                    Handles.DrawDottedLine(startPosition, endPosition, 3.0f);
+                }
             }
+            
+            DrawText(midpoint + new Vector2(0, 0.2f), net.GetPathName(i));
 
             // hide UI far away from the mouse
             if (Vector2.Distance(mousePosition, midpoint) > EditRange) continue;
             // hide some of the buttons while dragging
             if (IsDragging()) continue;
-
-            // keeps color from path line
-            if (DrawButton(midpoint + new Vector2(0, -0.4f), timeLabel, false))
-            {
-                if (timespan == PathTimespan.Both)
-                    net.SetPathTimespan(i, PathTimespan.Past);
-                else if (timespan == PathTimespan.Past)
-                    net.SetPathTimespan(i, PathTimespan.Future);
-                else if (timespan == PathTimespan.Future)
-                    net.SetPathTimespan(i, PathTimespan.Both);
-                
-                EditorUtility.SetDirty(net);
-            }
             
             Handles.color = Color.green;
-            if (DrawButton(midpoint + new Vector2(-0.4f, -0.4f), "+", false))
+            if (DrawButton(midpoint + new Vector2(-0.4f, -0.2f), "+", false))
             {
                 BeginDrag(net.BreakPath(i));
                 EditorUtility.SetDirty(net);
             }
+            
+            Handles.color = Color.magenta;
+            if (DrawButton(midpoint + new Vector2(0, -0.2f), "✎", false))
+            {
+                FocusPath(i);
+            }
 
             Handles.color = Color.red;
-            if (DrawButton(midpoint + new Vector2(0.4f, -0.4f), "-", false))
+            if (DrawButton(midpoint + new Vector2(0.4f, -0.2f), "-", false))
             {
                 net.DeletePath(i);
                 EditorUtility.SetDirty(net);
                 i--;
             }
         }
+    }
+    
+    void FocusPath(int path)
+    {
+        SerializedProperty pathsProperty = serializedObject.FindProperty("paths");
+        pathsProperty.isExpanded = true;
+        
+        // close all others paths, except the selected one
+        for (int i = 0; i < pathsProperty.arraySize; i++)
+        {
+            SerializedProperty pathProperty = pathsProperty.GetArrayElementAtIndex(i);
+            // make sure the focused path is expanded, and all others are not
+            pathProperty.isExpanded = i == path;
+        }
+
+        // no idea why we have to call this twice
+        UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+        EditorApplication.delayCall += UnityEditorInternal.InternalEditorUtility.RepaintAllViews;
     }
 
     private void DrawNodes(Vector2 mousePosition)
@@ -352,13 +398,9 @@ public class PathNetworkEditor : Editor
         }
     }
 
-    private bool DrawButton(Vector2 position, string label, bool nodeButton)
+    private bool DrawButton(Vector2 position, string text, bool nodeButton)
     {
-        GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
-        style.alignment = TextAnchor.MiddleCenter;
-        style.fontSize = 16;
-
-        Handles.Label(position, label, style);
+        DrawText(position, text);
         if (nodeButton)
         {
             return Handles.Button(position, Quaternion.identity, ButtonSize, ButtonSize, Handles.RectangleHandleCap);
@@ -367,6 +409,15 @@ public class PathNetworkEditor : Editor
         {
             return Handles.Button(position, Quaternion.identity, ButtonSize, ButtonSize, Handles.CircleHandleCap);
         }
+    }
+
+    private void DrawText(Vector2 position, string text)
+    {
+        GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
+        style.alignment = TextAnchor.MiddleCenter;
+        style.fontSize = 16;
+
+        Handles.Label(position, text, style);
     }
 
     private void DrawDragHandle(int index, Vector2 mousePosition)
