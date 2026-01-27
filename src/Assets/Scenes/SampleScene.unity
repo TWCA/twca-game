@@ -304,18 +304,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodes:
-  - {x: 0.79327416, y: 1.9121513}
-  - {x: 3.5771785, y: 0.23786879}
-  - {x: 3.2812223, y: 2.579969}
+  - {x: -0.91371, y: 2.2298424}
+  - {x: 3.4805553, y: 0.24622072}
+  - {x: 4.354476, y: 3.1359704}
+  - {x: 0.7299638, y: -0.93106896}
+  - {x: -2.641675, y: -0.65712327}
   paths:
   - start: 0
     end: 2
     timespan: 0
-  - start: 1
-    end: 0
-    timespan: 0
   - start: 2
     end: 1
+    timespan: 0
+  - start: 3
+    end: 4
+    timespan: 0
+  - start: 0
+    end: 1
+    timespan: 0
+  - start: 3
+    end: 1
+    timespan: 0
+  - start: 4
+    end: 0
     timespan: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

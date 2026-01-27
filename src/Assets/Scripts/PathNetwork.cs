@@ -54,9 +54,6 @@ public class PathNetwork : MonoBehaviour
         if (mergedNode > discardedNode)
             (mergedNode, discardedNode) = (discardedNode, mergedNode);
 
-        // move merged node to midpoint
-        nodes[mergedNode] = (nodes[mergedNode] + nodes[discardedNode]) / 2;
-
         // remove extra node
         nodes.RemoveAt(discardedNode);
 
@@ -177,9 +174,24 @@ public class PathNetwork : MonoBehaviour
         return nodes[node];
     }
 
-    public Path getPath(int path)
+    public int GetPathStart(int path)
     {
-        return paths[path];
+        return paths[path].start;
+    }
+    
+    public int GetPathEnd(int path)
+    {
+        return paths[path].end;
+    }
+    
+    public PathTimespan GetPathTimespan(int path)
+    {
+        return paths[path].timespan;
+    }
+    
+    public void SetPathTimespan(int path, PathTimespan timespan)
+    {
+        paths[path].timespan = timespan;
     }
 }
 
@@ -220,6 +232,7 @@ public class PathNetworkEditor : Editor
         if (net.GetNodeCount() == 0)
         {
             net.CreateNode(Vector2.zero);
+            EditorUtility.SetDirty(net);
         }
 
         Vector2 mousePosition = MouseWorldPosition();
@@ -233,14 +246,14 @@ public class PathNetworkEditor : Editor
 
         for(int i = 0; i < net.GetPathCount(); i++)
         {
-            Path path = net.getPath(i);
-
-            Vector2 startPosition = net.GetNode(path.start);
-            Vector2 endPosition = net.GetNode(path.end);
+            Vector2 startPosition = net.GetNode(net.GetPathStart(i));
+            Vector2 endPosition = net.GetNode(net.GetPathEnd(i));
             Vector2 midpoint = (startPosition + endPosition) / 2;
 
             string timeLabel = "uninitialized";
-            switch (path.timespan)
+            PathTimespan timespan = net.GetPathTimespan(i);
+            
+            switch (timespan)
             {
                 case PathTimespan.Both:
                     timeLabel = "b";
@@ -264,27 +277,31 @@ public class PathNetworkEditor : Editor
             // hide some of the buttons while dragging
             if (IsDragging()) continue;
 
+            // keeps color from path line
+            if (DrawButton(midpoint + new Vector2(0, -0.4f), timeLabel, false))
+            {
+                if (timespan == PathTimespan.Both)
+                    net.SetPathTimespan(i, PathTimespan.Past);
+                else if (timespan == PathTimespan.Past)
+                    net.SetPathTimespan(i, PathTimespan.Future);
+                else if (timespan == PathTimespan.Future)
+                    net.SetPathTimespan(i, PathTimespan.Both);
+                
+                EditorUtility.SetDirty(net);
+            }
+            
             Handles.color = Color.green;
             if (DrawButton(midpoint + new Vector2(-0.4f, -0.4f), "+", false))
             {
                 BeginDrag(net.BreakPath(i));
-            }
-
-            Handles.color = Color.magenta;
-            if (DrawButton(midpoint + new Vector2(0, -0.4f), timeLabel, false))
-            {
-                if (path.timespan == PathTimespan.Both)
-                    path.timespan = PathTimespan.Past;
-                else if (path.timespan == PathTimespan.Past)
-                    path.timespan = PathTimespan.Future;
-                else if (path.timespan == PathTimespan.Future)
-                    path.timespan = PathTimespan.Both;
+                EditorUtility.SetDirty(net);
             }
 
             Handles.color = Color.red;
             if (DrawButton(midpoint + new Vector2(0.4f, -0.4f), "-", false))
             {
                 net.DeletePath(i);
+                EditorUtility.SetDirty(net);
                 i--;
             }
         }
@@ -322,12 +339,14 @@ public class PathNetworkEditor : Editor
             if (DrawButton(position + new Vector2(-0.2f, -0.4f), "+", true))
             {
                 BeginDrag(net.ForkNode(i, mousePosition));
+                EditorUtility.SetDirty(net);
             }
 
             Handles.color = Color.red;
             if (DrawButton(position + new Vector2(0.2f, -0.4f), "-", true))
             {
                 net.DeleteNode(i);
+                EditorUtility.SetDirty(net);
                 i--;
             }
         }
@@ -374,12 +393,16 @@ public class PathNetworkEditor : Editor
             else
             {
                 net.MergeNode(index, draggingIndex);
+                EditorUtility.SetDirty(net);
                 EndDrag();
             }
         }
 
         if (IsDragging(index))
+        {
             net.MoveNode(index, mousePosition);
+            EditorUtility.SetDirty(net);
+        }
     }
 
     private Vector2 MouseWorldPosition()
