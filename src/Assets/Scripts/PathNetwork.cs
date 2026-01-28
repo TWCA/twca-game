@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.Serialization;
 
 public class PathNetwork : MonoBehaviour
 {
@@ -18,40 +16,62 @@ public class PathNetwork : MonoBehaviour
         Instance = this;
     }
 
-    public (Vector2 Position, int Path) NearestPointOnPaths(Vector2 point)
+    public (float Distance, int Node) NearestNode(Vector2 position)
+    {
+        int nearestNode = -1;
+        float nearestDistance = Single.PositiveInfinity;
+
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            float distance = Vector2.Distance(position, nodes[i]);
+
+            if (distance < nearestDistance)
+            {
+                nearestNode = i;
+                nearestDistance = distance;
+            }
+        }
+
+        return (nearestDistance, nearestNode);
+    }
+
+    public (Vector2 Position, int Path) NearestPointOnPath(Vector2 position, bool isFuture)
     {
         int nearestPath = -1;
         Vector2 nearestPointOverall = Vector2.zero;
-        float leastDistance = Single.PositiveInfinity;
-        
+        float nearestDistance = Single.PositiveInfinity;
+
         for (int i = 0; i < paths.Count; i++)
         {
-            Vector2 nearestPoint = NearestPointOnPath(i, point);
-            float distance = Vector2.Distance(point, nearestPoint);
+            // skip paths from another time
+            if (!paths[i].Traversable(isFuture)) continue;
+            
+            Vector2 nearestPoint = NearestPointOnPath(i, position);
+            float distance = Vector2.Distance(position, nearestPoint);
 
-            if (distance < leastDistance)
+            if (distance < nearestDistance)
             {
                 nearestPath = i;
                 nearestPointOverall = nearestPoint;
-                leastDistance = distance;
+                nearestDistance = distance;
             }
         }
 
         return (nearestPointOverall, nearestPath);
     }
-    
+
     public Vector2 NearestPointOnPath(int path, Vector2 point)
     {
-        Vector2 startPosition = nodes[paths[path].start];
-        Vector2 endPosition = nodes[paths[path].end];
-        Vector2 pathDirection = (endPosition - startPosition);
+        Vector2 nodeAPosition = GetPathNodeAPosition(path);
+        Vector2 nodeBPosition = GetPathNodeBPosition(path);
+        Vector2 pathDirection = (nodeBPosition - nodeAPosition);
         float pathLength = pathDirection.magnitude;
-        
+
         pathDirection.Normalize();
-        float distanceAlong = Vector3.Dot(point - startPosition, pathDirection);
+        float distanceAlong = Vector3.Dot(point - nodeAPosition, pathDirection);
 
         distanceAlong = Mathf.Clamp(distanceAlong, 0, pathLength);
-        return startPosition + pathDirection * distanceAlong;
+        return nodeAPosition + pathDirection * distanceAlong;
     }
 
     public void MoveNode(int node, Vector2 position)
@@ -71,7 +91,7 @@ public class PathNetwork : MonoBehaviour
         nodes.Add(position);
         paths.Add(new Path(node, nodes.Count - 1));
 
-        return nodes.Count -1 ;
+        return nodes.Count - 1;
     }
 
     public void MergeNode(int mergedNode, int discardedNode)
@@ -87,15 +107,15 @@ public class PathNetwork : MonoBehaviour
         {
             Path path = paths[i];
 
-            if (path.start == discardedNode)
-                path.start = mergedNode; // update path to connect to merged node
-            else if (path.start > discardedNode)
-                path.start--; // update path to respect re-ording of nodes
+            if (path.nodeA == discardedNode)
+                path.nodeA = mergedNode; // update path to connect to merged node
+            else if (path.nodeA > discardedNode)
+                path.nodeA--; // update path to respect re-ording of nodes
 
-            if (path.end == discardedNode)
-                path.end = mergedNode; // update path to connect to merged node
-            else if (path.end > discardedNode)
-                path.end--; // update path to respect re-ording of nodes
+            if (path.nodeB == discardedNode)
+                path.nodeB = mergedNode; // update path to connect to merged node
+            else if (path.nodeB > discardedNode)
+                path.nodeB--; // update path to respect re-ording of nodes
         }
 
         // track all the nodes connected to the merged node
@@ -106,15 +126,15 @@ public class PathNetwork : MonoBehaviour
         {
             Path path = paths[i];
 
-            if (path.start == path.end)
+            if (path.nodeA == path.nodeB)
             {
                 // remove paths in between merged nodes
                 paths.RemoveAt(i);
                 i--;
             }
-            else if (path.start == mergedNode)
+            else if (path.nodeA == mergedNode)
             {
-                if (connectedNodes.Contains(path.end))
+                if (connectedNodes.Contains(path.nodeB))
                 {
                     // identical path, remove the copy
                     paths.RemoveAt(i);
@@ -122,12 +142,12 @@ public class PathNetwork : MonoBehaviour
                 }
                 else
                 {
-                    connectedNodes.Add(path.end);
+                    connectedNodes.Add(path.nodeB);
                 }
             }
-            else if (path.end == mergedNode)
+            else if (path.nodeB == mergedNode)
             {
-                if (connectedNodes.Contains(path.start))
+                if (connectedNodes.Contains(path.nodeA))
                 {
                     // identical path, remove the copy
                     paths.RemoveAt(i);
@@ -135,7 +155,7 @@ public class PathNetwork : MonoBehaviour
                 }
                 else
                 {
-                    connectedNodes.Add(path.start);
+                    connectedNodes.Add(path.nodeA);
                 }
             }
         }
@@ -148,18 +168,18 @@ public class PathNetwork : MonoBehaviour
         for (int i = 0; i < paths.Count; i++)
         {
             Path path = paths[i];
-            if (path.start == node || path.end == node)
+            if (path.nodeA == node || path.nodeB == node)
             {
                 paths.RemoveAt(i);
                 i--;
             }
             else
             {
-                if (path.start > node)
-                    path.start--;
+                if (path.nodeA > node)
+                    path.nodeA--;
 
-                if (path.end > node)
-                    path.end--;
+                if (path.nodeB > node)
+                    path.nodeB--;
             }
         }
     }
@@ -167,15 +187,15 @@ public class PathNetwork : MonoBehaviour
     /** Returns the index of the of newly created midpoint node */
     public int BreakPath(int path)
     {
-        int start = paths[path].start;
-        int end = paths[path].end;
+        int nodeA = paths[path].nodeA;
+        int nodeB = paths[path].nodeB;
 
-        Vector2 midpointPosition = (nodes[start] + nodes[end]) / 2;
+        Vector2 midpointPosition = (nodes[nodeA] + nodes[nodeB]) / 2;
 
         nodes.Add(midpointPosition);
 
-        paths[path].end = nodes.Count - 1;
-        paths.Add(new Path(nodes.Count - 1, end));
+        paths[path].nodeB = nodes.Count - 1;
+        paths.Add(new Path(nodes.Count - 1, nodeB));
 
         return nodes.Count - 1;
     }
@@ -199,27 +219,90 @@ public class PathNetwork : MonoBehaviour
     {
         return nodes[node];
     }
+    
+    public (Vector2 Start, Vector2 End) PathPointsGoingDirection(int path, Vector2 direction)
+    {
+        Vector2 aPosition = GetPathNodeAPosition(path);
+        Vector2 bPosition = GetPathNodeBPosition(path);
 
-    public int GetPathStart(int path)
-    {
-        return paths[path].start;
+        if (Vector3.Dot(bPosition - aPosition, direction) > 0)
+            return (aPosition, bPosition);
+        else
+            return (bPosition, aPosition);
     }
     
-    public int GetPathEnd(int path)
+    public (Vector2 Start, Vector2 End) PathPointsComingFrom(int path, Vector2 position)
     {
-        return paths[path].end;
+        Vector2 aPosition = GetPathNodeAPosition(path);
+        Vector2 bPosition = GetPathNodeBPosition(path);
+
+        if (Vector2.Distance(aPosition, position) < Vector2.Distance(bPosition, position))
+            return (aPosition, bPosition);
+        else
+            return (bPosition, aPosition);
+    }
+
+    public Vector2 GetPathNodeAPosition(int path)
+    {
+        return nodes[GetPathNodeA(path)];
+    }
+
+    public Vector2 GetPathNodeBPosition(int path)
+    {
+        return nodes[GetPathNodeB(path)];
     }
     
+    public int GetPathNodeA(int path)
+    {
+        return paths[path].nodeA;
+    }
+
+    public int GetPathNodeB(int path)
+    {
+        return paths[path].nodeB;
+    }
+
+    public List<int> GetPathNodeAConnections(int path, bool isFuture)
+    {
+        return GetPathConnections(path, paths[path].nodeA, isFuture);
+    }
+    
+    public List<int> GetPathNodeBConnections(int path, bool isFuture)
+    {
+        return GetPathConnections(path, paths[path].nodeB, isFuture);
+    }
+
+    private List<int> GetPathConnections(int path, int node, bool isFuture)
+    {
+        List<int> connectedPaths = new List<int>();
+        
+        for (int i = 0; i < paths.Count; i++)
+        {
+            if (i == path) continue;
+            
+            // skip paths from another time
+            if (!paths[i].Traversable(isFuture)) continue;
+            
+            if (paths[i].nodeA == node ||
+                paths[i].nodeB == node)
+            {
+                connectedPaths.Add(i);   
+            }
+        }
+
+        return connectedPaths;
+    }
+
     public bool GetPathPastTraversable(int path)
     {
         return paths[path].pastTraversable;
     }
-    
+
     public bool GetPathFutureTraversable(int path)
     {
         return paths[path].futureTraversable;
     }
-    
+
     public string GetPathName(int path)
     {
         return paths[path].name;
@@ -229,17 +312,27 @@ public class PathNetwork : MonoBehaviour
 [System.Serializable]
 public class Path
 {
-    public Path(int start, int end)
+    public Path(int nodeA, int nodeB)
     {
-        this.start = start;
-        this.end = end;
+        this.nodeA = nodeA;
+        this.nodeB = nodeB;
     }
 
-    [HideInInspector] public int start;
-    [HideInInspector] public int end;
+    [HideInInspector] public int nodeA;
+    [HideInInspector] public int nodeB;
     public string name;
     public bool pastTraversable = true;
     public bool futureTraversable = true;
+
+    public bool Traversable(bool isFuture)
+    {
+        if (isFuture)
+        {
+            return futureTraversable;
+        } else {
+            return pastTraversable;
+        }
+    }
 }
 
 
@@ -270,11 +363,11 @@ public class PathNetworkEditor : Editor
     {
         PathNetwork net = target as PathNetwork;
 
-        for(int i = 0; i < net.GetPathCount(); i++)
+        for (int i = 0; i < net.GetPathCount(); i++)
         {
-            Vector2 startPosition = net.GetNode(net.GetPathStart(i));
-            Vector2 endPosition = net.GetNode(net.GetPathEnd(i));
-            Vector2 midpoint = (startPosition + endPosition) / 2;
+            Vector2 nodeAPosition = net.GetPathNodeAPosition(i);
+            Vector2 nodeBPosition = net.GetPathNodeBPosition(i);
+            Vector2 midpoint = (nodeAPosition + nodeBPosition) / 2;
 
             if (net.GetPathFutureTraversable(i))
             {
@@ -282,43 +375,45 @@ public class PathNetworkEditor : Editor
                 {
                     // always traversable
                     Handles.color = Color.white;
-                    Handles.DrawLine(startPosition, endPosition);
+                    Handles.DrawLine(nodeAPosition, nodeBPosition);
                 }
                 else
                 {
                     // traversable in the future
                     Handles.color = Color.cyan;
-                    Handles.DrawDottedLine(startPosition, endPosition, 3.0f);   
+                    Handles.DrawDottedLine(nodeAPosition, nodeBPosition, 3.0f);
                 }
-            } else {
+            }
+            else
+            {
                 if (net.GetPathPastTraversable(i))
                 {
                     // traversable in the past
                     Handles.color = Color.yellow;
-                    Handles.DrawDottedLine(startPosition, endPosition, 3.0f);
+                    Handles.DrawDottedLine(nodeAPosition, nodeBPosition, 3.0f);
                 }
                 else
                 {
                     // never traversable
                     Handles.color = Color.black;
-                    Handles.DrawDottedLine(startPosition, endPosition, 3.0f);
+                    Handles.DrawDottedLine(nodeAPosition, nodeBPosition, 3.0f);
                 }
             }
-            
+
             DrawText(midpoint + new Vector2(0, 0.2f), net.GetPathName(i));
 
             // hide UI far away from the mouse
             if (Vector2.Distance(mousePosition, midpoint) > EditRange) continue;
             // hide some of the buttons while dragging
             if (IsDragging()) continue;
-            
+
             Handles.color = Color.green;
             if (DrawButton(midpoint + new Vector2(-0.4f, -0.2f), "+", false))
             {
                 BeginDrag(net.BreakPath(i));
                 EditorUtility.SetDirty(net);
             }
-            
+
             Handles.color = Color.magenta;
             if (DrawButton(midpoint + new Vector2(0, -0.2f), "✎", false))
             {
@@ -334,12 +429,12 @@ public class PathNetworkEditor : Editor
             }
         }
     }
-    
+
     void FocusPath(int path)
     {
         SerializedProperty pathsProperty = serializedObject.FindProperty("paths");
         pathsProperty.isExpanded = true;
-        
+
         // close all others paths, except the selected one
         for (int i = 0; i < pathsProperty.arraySize; i++)
         {
@@ -435,17 +530,17 @@ public class PathNetworkEditor : Editor
         {
             if (IsDragging(index))
             {
-                EndDrag();
+                FinishDrag();
             }
             else if (!IsDragging())
             {
-               BeginDrag(index);
+                BeginDrag(index);
             }
             else
             {
                 net.MergeNode(index, draggingIndex);
                 EditorUtility.SetDirty(net);
-                EndDrag();
+                FinishDrag();
             }
         }
 
@@ -477,7 +572,7 @@ public class PathNetworkEditor : Editor
         return draggingIndex == index;
     }
 
-    private void EndDrag()
+    private void FinishDrag()
     {
         draggingIndex = -1;
     }
