@@ -1,23 +1,25 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PathFollower : MonoBehaviour
 {
-    // replace later
-    private const bool isFuture = false;
+    // TODO: replace when we have a time-travel setup!
+    private const bool IsFuture = false;
 
+    /** Units per second. */
     public float speed = 1f;
 
+    /** The distance to another path you must be to switch. */
     public float intersectionSize = 0.4f;
 
-    /* the max angle in degrees between target walk direction and the path */
+    /** The max angle in degrees between target walk direction and the path/ */
     [Range(0.0f, 90.0f)] public float maxPathError = 60f;
+
     [Range(0.0f, 1.0f)] public float pathLerpRate = 0.9f;
 
-    private List<int> plannedPath = null;
-    private Vector2 plannedPosition = Vector2.zero;
+    private List<int> plannedPath;
+    private Vector2 plannedEndPosition = Vector2.zero;
 
     public void FixedUpdate()
     {
@@ -25,20 +27,20 @@ public class PathFollower : MonoBehaviour
 
         PathNetwork net = PathNetwork.Instance;
 
+        // check if the last section of the path is intact
+        if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], IsFuture))
+            StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
+        
+        // check if the last section of the path is intact
+        if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], IsFuture))
+            StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
+
         // check path is still valid
-        for (int i = 0; i < plannedPath.Count - 1; i++)
-        {
-            if (!net.AreNodesConnected(plannedPath[i], plannedPath[i + 1], isFuture))
-            {
-                if (i == plannedPath.Count - 2)
-                    StopPathfinding(); // last section of path broken, goal unreachable
-                else
-                    if (!PathfindTo(plannedPosition)) // try to path
-                    StopPathfinding(); // if failed stop pathfinding
-                
-                break;
-            }
-        }
+        if (!AStarPathfinder.CheckPathStillValid(plannedPath, IsFuture))
+            // if invalid try to recalculate path
+            if (!PathfindTo(plannedEndPosition))
+                // if failed stop pathfinding
+                StopPathfinding();
     }
 
     public void Update()
@@ -51,7 +53,7 @@ public class PathFollower : MonoBehaviour
         if (plannedPath.Count > 2)
             targetPosition = net.GetNodePosition(plannedPath[1]);
         else
-            targetPosition = plannedPosition;
+            targetPosition = plannedEndPosition;
 
         transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
 
@@ -65,76 +67,37 @@ public class PathFollower : MonoBehaviour
         }
     }
 
+    /**
+     * Begins pathfinding to a particular point, updating its progress automatically.
+     * Returns if pathfinding was successful.
+     */
     public bool PathfindTo(Vector2 target)
     {
-        PathNetwork net = PathNetwork.Instance;
-
-        (Vector2 nearestStartPoint, int startPath) =
-            PathNetwork.Instance.NearestPointOnPaths(transform.position, isFuture);
-
-        float startADistance = Vector2.Distance(net.GetPathPositionA(startPath), nearestStartPoint);
-        float startBDistance = Vector2.Distance(net.GetPathPositionB(startPath), nearestStartPoint);
-
-        int start, altStart;
-        if (startADistance < startBDistance)
-        {
-            start = net.GetPathNodeA(startPath);
-            altStart = net.GetPathNodeB(startPath);
-        }
-        else
-        {
-            start = net.GetPathNodeB(startPath);
-            altStart = net.GetPathNodeA(startPath);
-        }
-
-        (Vector2 nearestGoalPoint, int goalPath) = PathNetwork.Instance.NearestPointOnPaths(target, isFuture);
-
-        float goalADistance = Vector2.Distance(net.GetPathPositionA(goalPath), nearestGoalPoint);
-        float goalBDistance = Vector2.Distance(net.GetPathPositionB(goalPath), nearestGoalPoint);
-
-        int goal, altGoal;
-        if (goalADistance < goalBDistance)
-        {
-            goal = net.GetPathNodeA(goalPath);
-            altGoal = net.GetPathNodeB(goalPath);
-        }
-        else
-        {
-            goal = net.GetPathNodeB(goalPath);
-            altGoal = net.GetPathNodeA(goalPath);
-        }
-
-        List<int> path = AStarPathfinder.CalculatePath(start, goal, isFuture);
-        if (path == null) return false;
-
-        // make sure start position is in between start and altStart
-        if (!path.Contains(altStart))
-        {
-            path.Insert(0, altStart);
-        }
-
-        // make sure end position is in between goal and altGoal
-        if (!path.Contains(altGoal))
-        {
-            path.Add(altGoal);
-        }
-
-        plannedPath = path;
-        plannedPosition = nearestGoalPoint;
-        return true;
+        (plannedPath, _, plannedEndPosition) = AStarPathfinder.CalculatePathBetweenPositions(transform.position, target, IsFuture);
+        return plannedPath != null;
     }
 
+    /**
+     * Stop trying to pathfind to a given position.
+     */
     public void StopPathfinding()
     {
         plannedPath = null;
-        plannedPosition = Vector2.zero;
+        plannedEndPosition = Vector2.zero;
     }
 
+    /**
+     * Check if we are trying to pathfind to a given position.
+     */
     public bool IsPathfinding()
     {
         return plannedPath != null;
     }
 
+    /**
+     * Moves this entity along a direction (or as close as possible) in the path network.
+     * This will cancel any attempt to pathfind.
+     */
     public void WalkTowards(Vector2 direction, float delta)
     {
         PathNetwork net = PathNetwork.Instance;
@@ -144,21 +107,24 @@ public class PathFollower : MonoBehaviour
         Vector2 nearestPoint;
         if (!direction.Equals(Vector2.zero))
         {
-            (int path, Vector2 pathEnd) = ChoosePathToWalkOn(direction, isFuture);
+            (int path, Vector2 pathEnd) = ChoosePathToWalkOn(direction, IsFuture);
             transform.position = Vector2.MoveTowards(transform.position, pathEnd, speed * delta);
 
-            nearestPoint = net.NearestUnclampedPointOnPath(path, transform.position);
+            nearestPoint = net.NearestPointOnPath(path, transform.position, false);
         }
         else
         {
-            (nearestPoint, _) = net.NearestPointOnPaths(transform.position, isFuture);
+            (nearestPoint, _) = net.NearestPointOnPaths(transform.position, IsFuture);
         }
 
         float lerpAmount = 1 - Mathf.Pow(1 - pathLerpRate, delta);
         transform.position = Vector2.Lerp(transform.position, nearestPoint, lerpAmount);
     }
 
-    private (int Path, Vector2 pathEnd) ChoosePathToWalkOn(Vector2 targetDirection, bool isFuture)
+    /**
+     * Chooses the path to walk on with the most similar direction.
+     */
+    private (int Path, Vector2 pathEnd) ChoosePathToWalkOn(Vector2 direction, bool isFuture)
     {
         List<int> paths = GetTraversablePaths(isFuture);
 
@@ -169,14 +135,14 @@ public class PathFollower : MonoBehaviour
         if (paths.Count == 1)
         {
             bestPath = paths[0];
-            (bestError, bestPathEnd) = PathErrorDirectional(paths[0], targetDirection);
+            (bestError, bestPathEnd) = PathErrorDirectional(paths[0], direction);
         }
         else
         {
             foreach (int path in paths)
             {
                 (float error, Vector2 pathEnd) =
-                    PathErrorPositional(path, targetDirection);
+                    PathErrorPositional(path, direction);
 
                 if (error < bestError)
                 {
@@ -194,7 +160,9 @@ public class PathFollower : MonoBehaviour
             return (bestPath, transform.position);
     }
 
-    /** Find how closely this path matches the targetDirection, assuming we can go either way */
+    /**
+     * Find how closely this path matches the targetDirection, assuming we can go either way.
+     */
     private (float AngleError, Vector2 pathEnd) PathErrorDirectional(int path, Vector2 targetDirection)
     {
         PathNetwork net = PathNetwork.Instance;
@@ -204,7 +172,9 @@ public class PathFollower : MonoBehaviour
         return (angleError, end);
     }
 
-    /** Find how closely this path matches the targetDirection, assuming we must walk from a position */
+    /**
+     * Find how closely this path matches the targetDirection, assuming we must walk one way from our current position.
+     */
     private (float AngleError, Vector2 pathEnd) PathErrorPositional(int path, Vector2 targetDirection)
     {
         PathNetwork net = PathNetwork.Instance;
@@ -215,6 +185,9 @@ public class PathFollower : MonoBehaviour
         return (angleError, end);
     }
 
+    /**
+     * Get all paths that can be walked on from a current position and time.
+     */
     private List<int> GetTraversablePaths(bool isFuture)
     {
         PathNetwork net = PathNetwork.Instance;

@@ -10,20 +10,27 @@ public class PathNetworkEditor : Editor
 
     private int draggingIndex = -1;
 
+    /**
+     * Draws handles in the editor GUI to manipulate the path network.
+     */
     public void OnSceneGUI()
     {
         PathNetwork net = target as PathNetwork;
+        
         if (net.GetNodeCount() == 0)
         {
             net.CreateNode(Vector2.zero);
             EditorUtility.SetDirty(net);
         }
 
-        Vector2 mousePosition = MouseWorldPosition();
+        Vector2 mousePosition = GetMouseWorldPosition();
         DrawPaths(mousePosition);
         DrawNodes(mousePosition);
     }
 
+    /**
+     * Draws the paths, and all their handles.
+     */
     private void DrawPaths(Vector2 mousePosition)
     {
         PathNetwork net = target as PathNetwork;
@@ -34,9 +41,9 @@ public class PathNetworkEditor : Editor
             Vector2 positionB = net.GetPathPositionB(i);
             Vector2 midpoint = (positionA + positionB) / 2;
 
-            if (net.GetPathFutureTraversable(i))
+            if (net.IsPathTraversableAtTime(i, true))
             {
-                if (net.GetPathPastTraversable(i))
+                if (net.IsPathTraversableAtTime(i, false))
                 {
                     // always traversable
                     Handles.color = Color.white;
@@ -51,7 +58,7 @@ public class PathNetworkEditor : Editor
             }
             else
             {
-                if (net.GetPathPastTraversable(i))
+                if (net.IsPathTraversableAtTime(i, false))
                 {
                     // traversable in the past
                     Handles.color = Color.yellow;
@@ -69,7 +76,7 @@ public class PathNetworkEditor : Editor
 
             // hide UI far away from the mouse
             if (Vector2.Distance(mousePosition, midpoint) > EditRange) continue;
-            // hide some of the buttons while dragging
+            // hide the buttons while dragging
             if (IsDragging()) continue;
 
             Handles.color = Color.green;
@@ -95,7 +102,10 @@ public class PathNetworkEditor : Editor
         }
     }
 
-    void FocusPath(int path)
+    /**
+     * Expands a path in the inspector to edit properties in detail. Closes all other paths.
+     */
+    private void FocusPath(int path)
     {
         SerializedProperty pathsProperty = serializedObject.FindProperty("paths");
         pathsProperty.isExpanded = true;
@@ -138,7 +148,7 @@ public class PathNetworkEditor : Editor
             if (!IsDragging(i))
                 DrawDragHandle(i, mousePosition);
 
-            // hide some of the buttons while dragging
+            // hide the buttons while dragging
             if (IsDragging()) continue;
 
             Handles.color = Color.green;
@@ -158,6 +168,9 @@ public class PathNetworkEditor : Editor
         }
     }
 
+    /**
+     * Draws a button that can be clicked in the editor. Returns true if just clicked.
+     */
     private bool DrawButton(Vector2 position, string text, bool nodeButton)
     {
         DrawText(position, text);
@@ -171,15 +184,23 @@ public class PathNetworkEditor : Editor
         }
     }
 
+    /**
+     * Draws centered text that can be seen in the editor.
+     */
     private void DrawText(Vector2 position, string text)
     {
-        GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
-        style.alignment = TextAnchor.MiddleCenter;
-        style.fontSize = 16;
+        GUIStyle style = new GUIStyle(EditorStyles.boldLabel)
+        {
+            alignment = TextAnchor.MiddleCenter,
+            fontSize = 16
+        };
 
         Handles.Label(position, text, style);
     }
 
+    /**
+     * Draws a handle for dragging path nodes, and handles their interaction.
+     */
     private void DrawDragHandle(int index, Vector2 mousePosition)
     {
         PathNetwork net = target as PathNetwork;
@@ -216,7 +237,10 @@ public class PathNetworkEditor : Editor
         }
     }
 
-    private Vector2 MouseWorldPosition()
+    /**
+     * Finds the position of the cursor in world space.
+     */
+    private static Vector2 GetMouseWorldPosition()
     {
         Vector3 worldPosition = Event.current.mousePosition;
 
@@ -227,21 +251,33 @@ public class PathNetworkEditor : Editor
         return ray.GetPoint(dist);
     }
 
+    /**
+     * Checks if a node is being dragged.
+     */
     private bool IsDragging()
     {
         return draggingIndex != -1;
     }
 
+    /**
+     * Checks if a particular node is being dragged by its index.
+     */
     private bool IsDragging(int index)
     {
         return draggingIndex == index;
     }
 
+    /**
+     * Stops dragging any nodes.
+     */
     private void FinishDrag()
     {
         draggingIndex = -1;
     }
 
+    /**
+     * Starts dragging a node of a given index.
+     */
     private void BeginDrag(int node)
     {
         draggingIndex = node;
