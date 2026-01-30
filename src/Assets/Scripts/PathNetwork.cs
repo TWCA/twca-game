@@ -1,15 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEditor;
 
 public class PathNetwork : MonoBehaviour
 {
-    [SerializeField] private List<Vector2> nodes;
+    [SerializeField] private List<PathNode> nodes;
     [SerializeField] private List<Path> paths;
 
     public static PathNetwork Instance { get; private set; }
+
+    PathNetwork()
+    {
+        nodes = new List<PathNode>();
+        paths = new List<Path>();
+    }
 
     private void Awake()
     {
@@ -23,7 +29,7 @@ public class PathNetwork : MonoBehaviour
 
         for (int i = 0; i < nodes.Count; i++)
         {
-            float distance = Vector2.Distance(position, nodes[i]);
+            float distance = Vector2.Distance(position, nodes[i].position);
 
             if (distance < nearestDistance)
             {
@@ -35,7 +41,7 @@ public class PathNetwork : MonoBehaviour
         return (nearestDistance, nearestNode);
     }
 
-    public (Vector2 Position, int Path) NearestPointOnPath(Vector2 position, bool isFuture)
+    public (Vector2 Position, int Path) NearestPointOnPaths(Vector2 position, bool isFuture)
     {
         int nearestPath = -1;
         Vector2 nearestPointOverall = Vector2.zero;
@@ -45,7 +51,7 @@ public class PathNetwork : MonoBehaviour
         {
             // skip paths from another time
             if (!paths[i].Traversable(isFuture)) continue;
-            
+
             Vector2 nearestPoint = NearestPointOnPath(i, position);
             float distance = Vector2.Distance(position, nearestPoint);
 
@@ -60,36 +66,52 @@ public class PathNetwork : MonoBehaviour
         return (nearestPointOverall, nearestPath);
     }
 
+    public Vector2 NearestUnclampedPointOnPath(int path, Vector2 point)
+    {
+        return NearestPointOnPath(path, point, false);
+    }
+
     public Vector2 NearestPointOnPath(int path, Vector2 point)
     {
-        Vector2 nodeAPosition = GetPathNodeAPosition(path);
-        Vector2 nodeBPosition = GetPathNodeBPosition(path);
-        Vector2 pathDirection = (nodeBPosition - nodeAPosition);
-        float pathLength = pathDirection.magnitude;
+        return NearestPointOnPath(path, point, true);
+    }
 
-        pathDirection.Normalize();
-        float distanceAlong = Vector3.Dot(point - nodeAPosition, pathDirection);
+    public Vector2 NearestPointOnPath(int path, Vector2 point, bool clamp)
+    {
+        Vector2 positionA = GetPathPositionA(path);
+        Vector2 positionB = GetPathPositionB(path);
+        Vector2 pathDirection = (positionB - positionA).normalized;
+        float pathLength = (positionB - positionA).magnitude;
 
-        distanceAlong = Mathf.Clamp(distanceAlong, 0, pathLength);
-        return nodeAPosition + pathDirection * distanceAlong;
+        float distanceAlong = Vector3.Dot(point - positionA, pathDirection);
+
+        if (clamp)
+            distanceAlong = Mathf.Clamp(distanceAlong, 0, pathLength);
+
+        return positionA + pathDirection * distanceAlong;
     }
 
     public void MoveNode(int node, Vector2 position)
     {
-        nodes[node] = position;
+        nodes[node].position = position;
     }
 
     public int CreateNode(Vector2 position)
     {
-        nodes.Add(position);
+        nodes.Add(new PathNode(position));
         return nodes.Count - 1;
     }
 
     /** Returns the index of the of newly created node */
     public int ForkNode(int node, Vector2 position)
     {
-        nodes.Add(position);
-        paths.Add(new Path(node, nodes.Count - 1));
+        paths.Add(new Path(node, nodes.Count));
+
+        nodes.Add(new PathNode(position, node));
+        foreach (List<int> neighbours in nodes[node].PastAndFutureNeighbourhoods)
+        {
+            neighbours.Add(nodes.Count - 1);
+        }
 
         return nodes.Count - 1;
     }
@@ -108,12 +130,38 @@ public class PathNetwork : MonoBehaviour
             Path path = paths[i];
 
             if (path.nodeA == discardedNode)
+            {
                 path.nodeA = mergedNode; // update path to connect to merged node
+
+                // add mergedNode to neighbours list in it's neighbours
+                foreach (List<int> neighbours in nodes[path.nodeB].PastAndFutureNeighbourhoods)
+                {
+                    if (neighbours.Contains(discardedNode))
+                    {
+                        neighbours.Remove(discardedNode);
+                        if (!neighbours.Contains(mergedNode))
+                            neighbours.Add(mergedNode);
+                    }
+                }
+            }
             else if (path.nodeA > discardedNode)
                 path.nodeA--; // update path to respect re-ording of nodes
 
             if (path.nodeB == discardedNode)
+            {
                 path.nodeB = mergedNode; // update path to connect to merged node
+                
+                // add mergedNode to neighbours list in it's neighbours
+                foreach (List<int> neighbours in nodes[path.nodeA].PastAndFutureNeighbourhoods)
+                {
+                    if (neighbours.Contains(discardedNode))
+                    {
+                        neighbours.Remove(discardedNode);
+                        if (!neighbours.Contains(mergedNode))
+                            neighbours.Add(mergedNode);
+                    }
+                }
+            }
             else if (path.nodeB > discardedNode)
                 path.nodeB--; // update path to respect re-ording of nodes
         }
@@ -122,6 +170,11 @@ public class PathNetwork : MonoBehaviour
         // thus if we find repeats we know there are two identical paths
         HashSet<int> connectedNodes = new HashSet<int>();
 
+        foreach (List<int> neighbours in nodes[mergedNode].PastAndFutureNeighbourhoods)
+        {
+            neighbours.Clear();
+        }
+
         for (int i = 0; i < paths.Count; i++)
         {
             Path path = paths[i];
@@ -129,7 +182,7 @@ public class PathNetwork : MonoBehaviour
             if (path.nodeA == path.nodeB)
             {
                 // remove paths in between merged nodes
-                paths.RemoveAt(i);
+                DeletePath(i);
                 i--;
             }
             else if (path.nodeA == mergedNode)
@@ -137,12 +190,17 @@ public class PathNetwork : MonoBehaviour
                 if (connectedNodes.Contains(path.nodeB))
                 {
                     // identical path, remove the copy
-                    paths.RemoveAt(i);
+                    DeletePath(i);
                     i--;
                 }
                 else
                 {
                     connectedNodes.Add(path.nodeB);
+                    
+                    foreach (List<int> neighbours in nodes[mergedNode].PastAndFutureNeighbourhoods)
+                    {
+                        neighbours.Add(path.nodeB);
+                    }
                 }
             }
             else if (path.nodeB == mergedNode)
@@ -150,12 +208,30 @@ public class PathNetwork : MonoBehaviour
                 if (connectedNodes.Contains(path.nodeA))
                 {
                     // identical path, remove the copy
-                    paths.RemoveAt(i);
+                    DeletePath(i);
                     i--;
                 }
                 else
                 {
                     connectedNodes.Add(path.nodeA);
+                    
+                    foreach (List<int> neighbours in nodes[mergedNode].PastAndFutureNeighbourhoods)
+                    {
+                        neighbours.Add(path.nodeA);
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            foreach (List<int> neighbours in nodes[i].PastAndFutureNeighbourhoods)
+            {
+                for (int j = 0; j < neighbours.Count; j++)
+                {
+                    if (neighbours[j] > discardedNode)
+                        // update neighbours to respect re-ording of nodes
+                        neighbours[j]--;
                 }
             }
         }
@@ -163,18 +239,17 @@ public class PathNetwork : MonoBehaviour
 
     public void DeleteNode(int node)
     {
-        nodes.RemoveAt(node);
-
         for (int i = 0; i < paths.Count; i++)
         {
             Path path = paths[i];
             if (path.nodeA == node || path.nodeB == node)
             {
-                paths.RemoveAt(i);
+                DeletePath(i);
                 i--;
             }
             else
             {
+                // update path to respect re-ording of nodes
                 if (path.nodeA > node)
                     path.nodeA--;
 
@@ -182,26 +257,57 @@ public class PathNetwork : MonoBehaviour
                     path.nodeB--;
             }
         }
+
+        // update neighbours to respect re-ording of nodes
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            foreach (List<int> neighbours in nodes[i].PastAndFutureNeighbourhoods)
+            {
+                for (int j = 0; j < neighbours.Count; j++)
+                {
+                    if (neighbours[j] > node)
+                        neighbours[j]--;
+                }
+            }
+        }
+
+        nodes.RemoveAt(node);
     }
 
     /** Returns the index of the of newly created midpoint node */
     public int BreakPath(int path)
     {
-        int nodeA = paths[path].nodeA;
-        int nodeB = paths[path].nodeB;
+        Path existingPath = paths[path];
+        Vector2 midpointPosition = (GetPathPositionB(path) + GetPathPositionB(path)) / 2;
 
-        Vector2 midpointPosition = (nodes[nodeA] + nodes[nodeB]) / 2;
+        foreach (List<int> neighbours in nodes[existingPath.nodeA].PastAndFutureNeighbourhoods)
+        {
+            neighbours.Remove(existingPath.nodeB);
+            neighbours.Add(nodes.Count);
+        }
 
-        nodes.Add(midpointPosition);
+        foreach (List<int> neighbours in nodes[existingPath.nodeB].PastAndFutureNeighbourhoods)
+        {
+            neighbours.Remove(existingPath.nodeA);
+            neighbours.Add(nodes.Count);
+        }
 
-        paths[path].nodeB = nodes.Count - 1;
-        paths.Add(new Path(nodes.Count - 1, nodeB));
+        nodes.Add(new PathNode(midpointPosition, existingPath.nodeA, existingPath.nodeB));
+
+        paths.Add(new Path(nodes.Count - 1, existingPath.nodeB));
+        existingPath.nodeB = nodes.Count - 1;
 
         return nodes.Count - 1;
     }
 
     public void DeletePath(int path)
     {
+        foreach (List<int> neighbours in nodes[paths[path].nodeA].PastAndFutureNeighbourhoods)
+            neighbours.Remove(paths[path].nodeB);
+
+        foreach (List<int> neighbours in nodes[paths[path].nodeB].PastAndFutureNeighbourhoods)
+            neighbours.Remove(paths[path].nodeA);
+
         paths.RemoveAt(path);
     }
 
@@ -215,26 +321,42 @@ public class PathNetwork : MonoBehaviour
         return paths.Count;
     }
 
-    public Vector2 GetNode(int node)
+    public Vector2 GetNodePosition(int node)
     {
-        return nodes[node];
+        return nodes[node].position;
     }
-    
+
+    public bool AreNodesConnected(int nodeA, int nodeB, bool isFuture)
+    {
+        if (isFuture)
+            return nodes[nodeA].futureNeighbours.Contains(nodeB);
+        else
+            return nodes[nodeA].pastNeighbours.Contains(nodeB);
+    }
+
+    public List<int> GetNodeNeighbours(int node, bool isFuture)
+    {
+        if (isFuture)
+            return nodes[node].futureNeighbours;
+        else
+            return nodes[node].pastNeighbours;
+    }
+
     public (Vector2 Start, Vector2 End) PathPointsGoingDirection(int path, Vector2 direction)
     {
-        Vector2 aPosition = GetPathNodeAPosition(path);
-        Vector2 bPosition = GetPathNodeBPosition(path);
+        Vector2 aPosition = GetPathPositionA(path);
+        Vector2 bPosition = GetPathPositionB(path);
 
         if (Vector3.Dot(bPosition - aPosition, direction) > 0)
             return (aPosition, bPosition);
         else
             return (bPosition, aPosition);
     }
-    
+
     public (Vector2 Start, Vector2 End) PathPointsComingFrom(int path, Vector2 position)
     {
-        Vector2 aPosition = GetPathNodeAPosition(path);
-        Vector2 bPosition = GetPathNodeBPosition(path);
+        Vector2 aPosition = GetPathPositionA(path);
+        Vector2 bPosition = GetPathPositionB(path);
 
         if (Vector2.Distance(aPosition, position) < Vector2.Distance(bPosition, position))
             return (aPosition, bPosition);
@@ -242,16 +364,16 @@ public class PathNetwork : MonoBehaviour
             return (bPosition, aPosition);
     }
 
-    public Vector2 GetPathNodeAPosition(int path)
+    public Vector2 GetPathPositionA(int path)
     {
-        return nodes[GetPathNodeA(path)];
+        return nodes[paths[path].nodeA].position;
     }
 
-    public Vector2 GetPathNodeBPosition(int path)
+    public Vector2 GetPathPositionB(int path)
     {
-        return nodes[GetPathNodeB(path)];
+        return nodes[paths[path].nodeB].position;
     }
-    
+
     public int GetPathNodeA(int path)
     {
         return paths[path].nodeA;
@@ -262,12 +384,15 @@ public class PathNetwork : MonoBehaviour
         return paths[path].nodeB;
     }
 
-    public List<int> GetPathNodeAConnections(int path, bool isFuture)
+
+    /**  get all connected paths from nodeA */
+    public List<int> GetPathConnectionsA(int path, bool isFuture)
     {
         return GetPathConnections(path, paths[path].nodeA, isFuture);
     }
-    
-    public List<int> GetPathNodeBConnections(int path, bool isFuture)
+
+    /** get all connected paths from nodeB */
+    public List<int> GetPathConnectionsB(int path, bool isFuture)
     {
         return GetPathConnections(path, paths[path].nodeB, isFuture);
     }
@@ -275,18 +400,18 @@ public class PathNetwork : MonoBehaviour
     private List<int> GetPathConnections(int path, int node, bool isFuture)
     {
         List<int> connectedPaths = new List<int>();
-        
+
         for (int i = 0; i < paths.Count; i++)
         {
             if (i == path) continue;
-            
+
             // skip paths from another time
             if (!paths[i].Traversable(isFuture)) continue;
-            
+
             if (paths[i].nodeA == node ||
                 paths[i].nodeB == node)
             {
-                connectedPaths.Add(i);   
+                connectedPaths.Add(i);
             }
         }
 
@@ -307,278 +432,53 @@ public class PathNetwork : MonoBehaviour
     {
         return paths[path].name;
     }
-}
 
-[System.Serializable]
-public class Path
-{
-    public Path(int nodeA, int nodeB)
+
+    [System.Serializable]
+    private class Path
     {
-        this.nodeA = nodeA;
-        this.nodeB = nodeB;
-    }
+        [HideInInspector] public int nodeA;
+        [HideInInspector] public int nodeB;
+        public string name;
+        public bool pastTraversable = true;
+        public bool futureTraversable = true;
 
-    [HideInInspector] public int nodeA;
-    [HideInInspector] public int nodeB;
-    public string name;
-    public bool pastTraversable = true;
-    public bool futureTraversable = true;
-
-    public bool Traversable(bool isFuture)
-    {
-        if (isFuture)
+        public Path(int nodeA, int nodeB)
         {
-            return futureTraversable;
-        } else {
-            return pastTraversable;
-        }
-    }
-}
-
-
-[CustomEditor(typeof(PathNetwork))]
-public class PathNetworkEditor : Editor
-{
-    private const float NodeRadius = 0.2f;
-    private const float ButtonSize = 0.18f;
-    private const float EditRange = 2.0f;
-
-    private int draggingIndex = -1;
-
-    public void OnSceneGUI()
-    {
-        PathNetwork net = target as PathNetwork;
-        if (net.GetNodeCount() == 0)
-        {
-            net.CreateNode(Vector2.zero);
-            EditorUtility.SetDirty(net);
+            this.nodeA = nodeA;
+            this.nodeB = nodeB;
         }
 
-        Vector2 mousePosition = MouseWorldPosition();
-        DrawPaths(mousePosition);
-        DrawNodes(mousePosition);
-    }
-
-    private void DrawPaths(Vector2 mousePosition)
-    {
-        PathNetwork net = target as PathNetwork;
-
-        for (int i = 0; i < net.GetPathCount(); i++)
+        public bool Traversable(bool isFuture)
         {
-            Vector2 nodeAPosition = net.GetPathNodeAPosition(i);
-            Vector2 nodeBPosition = net.GetPathNodeBPosition(i);
-            Vector2 midpoint = (nodeAPosition + nodeBPosition) / 2;
-
-            if (net.GetPathFutureTraversable(i))
+            if (isFuture)
             {
-                if (net.GetPathPastTraversable(i))
-                {
-                    // always traversable
-                    Handles.color = Color.white;
-                    Handles.DrawLine(nodeAPosition, nodeBPosition);
-                }
-                else
-                {
-                    // traversable in the future
-                    Handles.color = Color.cyan;
-                    Handles.DrawDottedLine(nodeAPosition, nodeBPosition, 3.0f);
-                }
+                return futureTraversable;
             }
             else
             {
-                if (net.GetPathPastTraversable(i))
-                {
-                    // traversable in the past
-                    Handles.color = Color.yellow;
-                    Handles.DrawDottedLine(nodeAPosition, nodeBPosition, 3.0f);
-                }
-                else
-                {
-                    // never traversable
-                    Handles.color = Color.black;
-                    Handles.DrawDottedLine(nodeAPosition, nodeBPosition, 3.0f);
-                }
-            }
-
-            DrawText(midpoint + new Vector2(0, 0.2f), net.GetPathName(i));
-
-            // hide UI far away from the mouse
-            if (Vector2.Distance(mousePosition, midpoint) > EditRange) continue;
-            // hide some of the buttons while dragging
-            if (IsDragging()) continue;
-
-            Handles.color = Color.green;
-            if (DrawButton(midpoint + new Vector2(-0.4f, -0.2f), "+", false))
-            {
-                BeginDrag(net.BreakPath(i));
-                EditorUtility.SetDirty(net);
-            }
-
-            Handles.color = Color.magenta;
-            if (DrawButton(midpoint + new Vector2(0, -0.2f), "✎", false))
-            {
-                FocusPath(i);
-            }
-
-            Handles.color = Color.red;
-            if (DrawButton(midpoint + new Vector2(0.4f, -0.2f), "-", false))
-            {
-                net.DeletePath(i);
-                EditorUtility.SetDirty(net);
-                i--;
+                return pastTraversable;
             }
         }
     }
 
-    void FocusPath(int path)
+    [System.Serializable]
+    private class PathNode
     {
-        SerializedProperty pathsProperty = serializedObject.FindProperty("paths");
-        pathsProperty.isExpanded = true;
+        public Vector2 position;
+        [HideInInspector] public List<int> pastNeighbours;
+        [HideInInspector] public List<int> futureNeighbours;
 
-        // close all others paths, except the selected one
-        for (int i = 0; i < pathsProperty.arraySize; i++)
+        public List<int>[] PastAndFutureNeighbourhoods
         {
-            SerializedProperty pathProperty = pathsProperty.GetArrayElementAtIndex(i);
-            // make sure the focused path is expanded, and all others are not
-            pathProperty.isExpanded = i == path;
+            get { return new[] { pastNeighbours, futureNeighbours }; }
         }
 
-        // no idea why we have to call this twice
-        UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
-        EditorApplication.delayCall += UnityEditorInternal.InternalEditorUtility.RepaintAllViews;
-    }
-
-    private void DrawNodes(Vector2 mousePosition)
-    {
-        PathNetwork net = target as PathNetwork;
-
-        // if a node is being dragged it must be drawn first
-        // this allows other nodes to be drawn over then, and thus the other node can be clicked to merge
-        if (IsDragging())
-            DrawDragHandle(draggingIndex, mousePosition);
-
-        Handles.color = Color.white;
-        for (int i = 0; i < net.GetNodeCount(); i++)
+        public PathNode(Vector2 position, params int[] neighbours)
         {
-            Vector2 position = net.GetNode(i);
-
-            Handles.color = Color.white;
-            Handles.DrawSolidDisc(position, Vector3.forward, NodeRadius);
-
-            // hide UI far away from the mouse
-            if (Vector2.Distance(mousePosition, position) > EditRange) continue;
-
-            // if a node is being dragged it must be drawn first
-            // this allows other nodes to be drawn over then, and thus the other node can be clicked to merge
-            if (!IsDragging(i))
-                DrawDragHandle(i, mousePosition);
-
-            // hide some of the buttons while dragging
-            if (IsDragging()) continue;
-
-            Handles.color = Color.green;
-            if (DrawButton(position + new Vector2(-0.2f, -0.4f), "+", true))
-            {
-                BeginDrag(net.ForkNode(i, mousePosition));
-                EditorUtility.SetDirty(net);
-            }
-
-            Handles.color = Color.red;
-            if (DrawButton(position + new Vector2(0.2f, -0.4f), "-", true))
-            {
-                net.DeleteNode(i);
-                EditorUtility.SetDirty(net);
-                i--;
-            }
+            this.position = position;
+            this.pastNeighbours = neighbours.ToList();
+            this.futureNeighbours = neighbours.ToList();
         }
-    }
-
-    private bool DrawButton(Vector2 position, string text, bool nodeButton)
-    {
-        DrawText(position, text);
-        if (nodeButton)
-        {
-            return Handles.Button(position, Quaternion.identity, ButtonSize, ButtonSize, Handles.RectangleHandleCap);
-        }
-        else
-        {
-            return Handles.Button(position, Quaternion.identity, ButtonSize, ButtonSize, Handles.CircleHandleCap);
-        }
-    }
-
-    private void DrawText(Vector2 position, string text)
-    {
-        GUIStyle style = new GUIStyle(EditorStyles.boldLabel);
-        style.alignment = TextAnchor.MiddleCenter;
-        style.fontSize = 16;
-
-        Handles.Label(position, text, style);
-    }
-
-    private void DrawDragHandle(int index, Vector2 mousePosition)
-    {
-        PathNetwork net = target as PathNetwork;
-        Vector2 position = net.GetNode(index);
-
-        Handles.color = Handles.xAxisColor;
-        Handles.DrawLine(position, position + Vector2.up * (NodeRadius * 3));
-        Handles.color = Handles.yAxisColor;
-        Handles.DrawLine(position, position + Vector2.right * (NodeRadius * 3));
-
-        Handles.color = Handles.zAxisColor;
-        if (Handles.Button(position, Quaternion.identity, NodeRadius, NodeRadius, Handles.RectangleHandleCap))
-        {
-            if (IsDragging(index))
-            {
-                FinishDrag();
-            }
-            else if (!IsDragging())
-            {
-                BeginDrag(index);
-            }
-            else
-            {
-                net.MergeNode(index, draggingIndex);
-                EditorUtility.SetDirty(net);
-                FinishDrag();
-            }
-        }
-
-        if (IsDragging(index))
-        {
-            net.MoveNode(index, mousePosition);
-            EditorUtility.SetDirty(net);
-        }
-    }
-
-    private Vector2 MouseWorldPosition()
-    {
-        Vector3 worldPosition = Event.current.mousePosition;
-
-        Ray ray = HandleUtility.GUIPointToWorldRay(worldPosition);
-        Plane plane = new Plane(Vector3.forward, Vector3.zero);
-
-        plane.Raycast(ray, out float dist);
-        return ray.GetPoint(dist);
-    }
-
-    private bool IsDragging()
-    {
-        return draggingIndex != -1;
-    }
-
-    private bool IsDragging(int index)
-    {
-        return draggingIndex == index;
-    }
-
-    private void FinishDrag()
-    {
-        draggingIndex = -1;
-    }
-
-    private void BeginDrag(int node)
-    {
-        draggingIndex = node;
     }
 }

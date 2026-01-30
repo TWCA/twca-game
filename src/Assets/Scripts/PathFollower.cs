@@ -5,64 +5,193 @@ using UnityEngine;
 
 public class PathFollower : MonoBehaviour
 {
+    // replace later
+    private const bool isFuture = false;
+
     public float speed = 1f;
+
     public float intersectionSize = 0.4f;
+
     /* the max angle in degrees between target walk direction and the path */
-    public float maxPathError = 45f;
+    [Range(0.0f, 90.0f)] public float maxPathError = 60f;
+    [Range(0.0f, 1.0f)] public float pathLerpRate = 0.9f;
 
-    public void WalkOnPath(Vector2 target)
+    private List<int> plannedPath = null;
+    private Vector2 plannedPosition = Vector2.zero;
+
+    public void FixedUpdate()
     {
-        // temporary
-        bool isFuture = false;
-
-        Vector2 targetDirection = (target - (Vector2)transform.position).normalized;
+        if (!IsPathfinding()) return;
 
         PathNetwork net = PathNetwork.Instance;
 
-
-        Vector2 nearestPoint;
-        if (!targetDirection.Equals(Vector2.zero))
+        // check path is still valid
+        for (int i = 0; i < plannedPath.Count - 1; i++)
         {
-            (int path, Vector2 pathEnd) = PlanWalkOnPath(targetDirection, isFuture);
-            transform.position = Vector2.MoveTowards(transform.position, pathEnd, speed * Time.deltaTime);
-            
-            nearestPoint = net.NearestPointOnPath(path, transform.position);
+            if (!net.AreNodesConnected(plannedPath[i], plannedPath[i + 1], isFuture))
+            {
+                if (i == plannedPath.Count - 2)
+                    StopPathfinding(); // last section of path broken, goal unreachable
+                else
+                    if (!PathfindTo(plannedPosition)) // try to path
+                    StopPathfinding(); // if failed stop pathfinding
+                
+                break;
+            }
+        }
+    }
+
+    public void Update()
+    {
+        if (!IsPathfinding()) return;
+
+        PathNetwork net = PathNetwork.Instance;
+
+        Vector2 targetPosition;
+        if (plannedPath.Count > 2)
+            targetPosition = net.GetNodePosition(plannedPath[1]);
+        else
+            targetPosition = plannedPosition;
+
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+
+        if (transform.position.Equals(targetPosition))
+        {
+            plannedPath.RemoveAt(0);
+
+            // if there are no more edges to follow, stop pathing
+            if (plannedPath.Count <= 1)
+                StopPathfinding();
+        }
+    }
+
+    public bool PathfindTo(Vector2 target)
+    {
+        PathNetwork net = PathNetwork.Instance;
+
+        (Vector2 nearestStartPoint, int startPath) =
+            PathNetwork.Instance.NearestPointOnPaths(transform.position, isFuture);
+
+        float startADistance = Vector2.Distance(net.GetPathPositionA(startPath), nearestStartPoint);
+        float startBDistance = Vector2.Distance(net.GetPathPositionB(startPath), nearestStartPoint);
+
+        int start, altStart;
+        if (startADistance < startBDistance)
+        {
+            start = net.GetPathNodeA(startPath);
+            altStart = net.GetPathNodeB(startPath);
         }
         else
         {
-            (nearestPoint, _) = net.NearestPointOnPath(transform.position, isFuture);
+            start = net.GetPathNodeB(startPath);
+            altStart = net.GetPathNodeA(startPath);
         }
 
-        transform.position = Vector2.Lerp(transform.position, nearestPoint, 1 - Mathf.Pow(0.1f, Time.deltaTime));
+        (Vector2 nearestGoalPoint, int goalPath) = PathNetwork.Instance.NearestPointOnPaths(target, isFuture);
+
+        float goalADistance = Vector2.Distance(net.GetPathPositionA(goalPath), nearestGoalPoint);
+        float goalBDistance = Vector2.Distance(net.GetPathPositionB(goalPath), nearestGoalPoint);
+
+        int goal, altGoal;
+        if (goalADistance < goalBDistance)
+        {
+            goal = net.GetPathNodeA(goalPath);
+            altGoal = net.GetPathNodeB(goalPath);
+        }
+        else
+        {
+            goal = net.GetPathNodeB(goalPath);
+            altGoal = net.GetPathNodeA(goalPath);
+        }
+
+        List<int> path = AStarPathfinder.CalculatePath(start, goal, isFuture);
+        if (path == null) return false;
+
+        // make sure start position is in between start and altStart
+        if (!path.Contains(altStart))
+        {
+            path.Insert(0, altStart);
+        }
+
+        // make sure end position is in between goal and altGoal
+        if (!path.Contains(altGoal))
+        {
+            path.Add(altGoal);
+        }
+
+        plannedPath = path;
+        plannedPosition = nearestGoalPoint;
+        return true;
     }
 
-    private (int Path, Vector2 pathEnd) PlanWalkOnPath(Vector2 targetDirection, bool isFuture)
+    public void StopPathfinding()
     {
-        (int nearestPath, List<int> otherPaths) = GetTraversablePaths(isFuture);
+        plannedPath = null;
+        plannedPosition = Vector2.zero;
+    }
 
-        // for now let's assume the best path is the closest
-        int bestPath = nearestPath;
-        (float bestError, Vector2 bestPathEnd) = PathErrorDirectional(nearestPath, targetDirection);
+    public bool IsPathfinding()
+    {
+        return plannedPath != null;
+    }
 
-        // then lets see if the other paths better match the target direction
-        foreach (int otherPath in otherPaths)
+    public void WalkTowards(Vector2 direction, float delta)
+    {
+        PathNetwork net = PathNetwork.Instance;
+
+        StopPathfinding();
+
+        Vector2 nearestPoint;
+        if (!direction.Equals(Vector2.zero))
         {
-            (float error, Vector2 pathEnd) =
-                PathErrorPositional(otherPath, targetDirection);
+            (int path, Vector2 pathEnd) = ChoosePathToWalkOn(direction, isFuture);
+            transform.position = Vector2.MoveTowards(transform.position, pathEnd, speed * delta);
 
-            if (error < bestError)
+            nearestPoint = net.NearestUnclampedPointOnPath(path, transform.position);
+        }
+        else
+        {
+            (nearestPoint, _) = net.NearestPointOnPaths(transform.position, isFuture);
+        }
+
+        float lerpAmount = 1 - Mathf.Pow(1 - pathLerpRate, delta);
+        transform.position = Vector2.Lerp(transform.position, nearestPoint, lerpAmount);
+    }
+
+    private (int Path, Vector2 pathEnd) ChoosePathToWalkOn(Vector2 targetDirection, bool isFuture)
+    {
+        List<int> paths = GetTraversablePaths(isFuture);
+
+        int bestPath = paths[0];
+        float bestError = Single.PositiveInfinity;
+        Vector2 bestPathEnd = transform.position;
+
+        if (paths.Count == 1)
+        {
+            bestPath = paths[0];
+            (bestError, bestPathEnd) = PathErrorDirectional(paths[0], targetDirection);
+        }
+        else
+        {
+            foreach (int path in paths)
             {
-                bestPath = otherPath;
-                bestError = error;
-                bestPathEnd = pathEnd;
+                (float error, Vector2 pathEnd) =
+                    PathErrorPositional(path, targetDirection);
+
+                if (error < bestError)
+                {
+                    bestPath = path;
+                    bestError = error;
+                    bestPathEnd = pathEnd;
+                }
             }
         }
-        
-        // check if we can even walk
-        if (bestError > maxPathError) 
-            return (nearestPath, transform.position);
 
-        return (bestPath, bestPathEnd);
+        // check if we can even walk
+        if (bestError < maxPathError)
+            return (bestPath, bestPathEnd);
+        else
+            return (bestPath, transform.position);
     }
 
     /** Find how closely this path matches the targetDirection, assuming we can go either way */
@@ -86,24 +215,25 @@ public class PathFollower : MonoBehaviour
         return (angleError, end);
     }
 
-    private (int Nearest, List<int> Others) GetTraversablePaths(bool isFuture)
+    private List<int> GetTraversablePaths(bool isFuture)
     {
         PathNetwork net = PathNetwork.Instance;
-        (_, int nearestPath) = net.NearestPointOnPath(transform.position, isFuture);
+        List<int> paths = new List<int>();
+        (_, int nearestPath) = net.NearestPointOnPaths(transform.position, isFuture);
+        paths.Add(nearestPath);
 
-        List<int> otherPaths = new List<int>();
-        if (Vector2.Distance(net.GetPathNodeAPosition(nearestPath), transform.position) < intersectionSize)
+        if (Vector2.Distance(net.GetPathPositionA(nearestPath), transform.position) < intersectionSize)
         {
             // near enough to node B to switch paths
-            otherPaths.AddRange(net.GetPathNodeAConnections(nearestPath, isFuture));
+            paths.AddRange(net.GetPathConnectionsA(nearestPath, isFuture));
         }
 
-        if (Vector2.Distance(net.GetPathNodeBPosition(nearestPath), transform.position) < intersectionSize)
+        if (Vector2.Distance(net.GetPathPositionB(nearestPath), transform.position) < intersectionSize)
         {
             // near enough to node A to switch paths
-            otherPaths.AddRange(net.GetPathNodeBConnections(nearestPath, isFuture));
+            paths.AddRange(net.GetPathConnectionsB(nearestPath, isFuture));
         }
 
-        return (nearestPath, otherPaths);
+        return paths;
     }
 }

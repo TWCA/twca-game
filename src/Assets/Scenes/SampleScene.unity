@@ -157,7 +157,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.322284, y: -0.5105518}
+  m_AnchoredPosition: {x: -1.36, y: -0.36}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &726242758
@@ -184,9 +184,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f8a929ed345b87284cae2e24fa8be3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  speed: 3
   intersectionSize: 0.4
-  maxPathError: 45
+  maxPathError: 60
+  pathLerpRate: 0.9
 --- !u!212 &726242760
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -421,38 +422,69 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodes:
-  - {x: -3.0475078, y: -0.25558022}
-  - {x: 0.43906456, y: 1.7297167}
-  - {x: 2.461568, y: 0.49093324}
-  - {x: 2.0065048, y: -1.4304452}
-  - {x: 6.7627034, y: 2.202224}
-  - {x: 3.548651, y: -3.2385566}
-  - {x: 6.867738, y: -0.42363527}
-  - {x: 5.0191326, y: -0.7387383}
-  - {x: 4.977119, y: -2.6083503}
-  - {x: -3.8667758, y: -1.1378689}
-  - {x: -0.31661385, y: 3.0424993}
-  - {x: -0.65272385, y: -0.5916902}
-  - {x: 2.5193143, y: 2.916458}
-  - {x: 3.4856308, y: 4.1138496}
+  - position: {x: 3.9941385, y: -0.94296855}
+    pastNeighbours: 0100000002000000060000000b000000
+    futureNeighbours: 0100000002000000060000000b000000
+  - position: {x: -1.9385521, y: -1.9122262}
+    pastNeighbours: 000000000200000003000000040000000a0000000e000000
+    futureNeighbours: 000000000200000003000000040000000a0000000e000000
+  - position: {x: -0.65040064, y: 1.6117152}
+    pastNeighbours: 0100000000000000040000000700000008000000
+    futureNeighbours: 0100000000000000040000000700000008000000
+  - position: {x: -6.308509, y: -1.6241931}
+    pastNeighbours: 010000000500000009000000
+    futureNeighbours: 010000000500000009000000
+  - position: {x: -3.3798907, y: 0.06013158}
+    pastNeighbours: 050000000100000002000000
+    futureNeighbours: 050000000100000002000000
+  - position: {x: -6.6680546, y: 0.58984923}
+    pastNeighbours: 030000000400000008000000
+    futureNeighbours: 030000000400000008000000
+  - position: {x: 7.0948734, y: 3.1355622}
+    pastNeighbours: 00000000070000000b0000000d000000
+    futureNeighbours: 00000000070000000b0000000d000000
+  - position: {x: -0.003995061, y: 4.1601415}
+    pastNeighbours: 060000000200000008000000
+    futureNeighbours: 060000000200000008000000
+  - position: {x: -10.030232, y: 4.282115}
+    pastNeighbours: 02000000090000000500000007000000
+    futureNeighbours: 02000000090000000500000007000000
+  - position: {x: -9.786284, y: -4.54878}
+    pastNeighbours: 08000000030000000e000000
+    futureNeighbours: 08000000030000000e000000
+  - position: {x: 6.0459, y: -4.109675}
+    pastNeighbours: 010000000c0000000e000000
+    futureNeighbours: 010000000c0000000e000000
+  - position: {x: 8.833557, y: 0.13599148}
+    pastNeighbours: 0c00000000000000060000000d000000
+    futureNeighbours: 0c00000000000000060000000d000000
+  - position: {x: 9.33929, y: -2.6202521}
+    pastNeighbours: 0a0000000b000000
+    futureNeighbours: 0a0000000b000000
+  - position: {x: 9.920882, y: 3.676121}
+    pastNeighbours: 060000000b000000
+    futureNeighbours: 060000000b000000
+  - position: {x: -3.1775973, y: -4.112164}
+    pastNeighbours: 090000000a00000001000000
+    futureNeighbours: 090000000a00000001000000
   paths:
+  - nodeA: 0
+    nodeB: 1
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
   - nodeA: 1
     nodeB: 2
     name: 
     pastTraversable: 1
     futureTraversable: 1
   - nodeA: 2
+    nodeB: 0
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 1
     nodeB: 3
-    name: 
-    pastTraversable: 1
-    futureTraversable: 1
-  - nodeA: 3
-    nodeB: 11
-    name: 
-    pastTraversable: 1
-    futureTraversable: 1
-  - nodeA: 2
-    nodeB: 4
     name: 
     pastTraversable: 1
     futureTraversable: 1
@@ -460,8 +492,23 @@ MonoBehaviour:
     nodeB: 5
     name: 
     pastTraversable: 1
-    futureTraversable: 0
+    futureTraversable: 1
+  - nodeA: 5
+    nodeB: 4
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
   - nodeA: 4
+    nodeB: 1
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 4
+    nodeB: 2
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 0
     nodeB: 6
     name: 
     pastTraversable: 1
@@ -472,17 +519,27 @@ MonoBehaviour:
     pastTraversable: 1
     futureTraversable: 1
   - nodeA: 7
+    nodeB: 2
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 2
     nodeB: 8
     name: 
     pastTraversable: 1
     futureTraversable: 1
   - nodeA: 8
-    nodeB: 5
+    nodeB: 9
     name: 
     pastTraversable: 1
     futureTraversable: 1
-  - nodeA: 0
-    nodeB: 9
+  - nodeA: 9
+    nodeB: 3
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 5
+    nodeB: 8
     name: 
     pastTraversable: 1
     futureTraversable: 1
@@ -491,18 +548,53 @@ MonoBehaviour:
     name: 
     pastTraversable: 1
     futureTraversable: 1
+  - nodeA: 10
+    nodeB: 12
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 12
+    nodeB: 11
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
   - nodeA: 11
     nodeB: 0
     name: 
     pastTraversable: 1
     futureTraversable: 1
-  - nodeA: 1
-    nodeB: 12
+  - nodeA: 11
+    nodeB: 6
     name: 
-    pastTraversable: 0
+    pastTraversable: 1
     futureTraversable: 1
-  - nodeA: 12
+  - nodeA: 6
     nodeB: 13
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 13
+    nodeB: 11
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 7
+    nodeB: 8
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 9
+    nodeB: 14
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 14
+    nodeB: 10
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 14
+    nodeB: 1
     name: 
     pastTraversable: 1
     futureTraversable: 1
