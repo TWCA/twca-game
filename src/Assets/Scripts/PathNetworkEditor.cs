@@ -4,9 +4,10 @@ using UnityEditor;
 [CustomEditor(typeof(PathNetwork))]
 public class PathNetworkEditor : Editor
 {
-    private const float NodeRadius = 0.2f;
-    private const float ButtonSize = 0.18f;
-    private const float EditRange = 2.0f;
+    private const float NodeRadius = 7f;
+    private const float ButtonSize = 5f;
+    private const float ButtonSpacing = 12f;
+    private const float EditRange = 60f;
 
     private int draggingIndex = -1;
 
@@ -72,7 +73,7 @@ public class PathNetworkEditor : Editor
                 }
             }
 
-            DrawText(midpoint + new Vector2(0, 0.2f), net.GetPathName(i));
+            DrawText(midpoint + new Vector2(0, ButtonSpacing / 2), net.GetPathName(i));
 
             // hide UI far away from the mouse
             if (Vector2.Distance(mousePosition, midpoint) > EditRange) continue;
@@ -80,20 +81,20 @@ public class PathNetworkEditor : Editor
             if (IsDragging()) continue;
 
             Handles.color = Color.green;
-            if (DrawButton(midpoint + new Vector2(-0.4f, -0.2f), "+", false))
+            if (DrawButton(midpoint + new Vector2(-ButtonSpacing, -ButtonSpacing / 2), "+", false))
             {
                 BeginDrag(net.BreakPath(i));
                 EditorUtility.SetDirty(net);
             }
 
             Handles.color = Color.magenta;
-            if (DrawButton(midpoint + new Vector2(0, -0.2f), "✎", false))
+            if (DrawButton(midpoint + new Vector2(0, -ButtonSpacing / 2), "✎", false))
             {
                 FocusPath(i);
             }
 
             Handles.color = Color.red;
-            if (DrawButton(midpoint + new Vector2(0.4f, -0.2f), "-", false))
+            if (DrawButton(midpoint + new Vector2(ButtonSpacing, -ButtonSpacing / 2), "-", false))
             {
                 net.DeletePath(i);
                 EditorUtility.SetDirty(net);
@@ -152,14 +153,14 @@ public class PathNetworkEditor : Editor
             if (IsDragging()) continue;
 
             Handles.color = Color.green;
-            if (DrawButton(position + new Vector2(-0.2f, -0.4f), "+", true))
+            if (DrawButton(position + new Vector2(-ButtonSpacing / 2, -NodeRadius * 2), "+", true))
             {
                 BeginDrag(net.ForkNode(i, mousePosition));
                 EditorUtility.SetDirty(net);
             }
 
             Handles.color = Color.red;
-            if (DrawButton(position + new Vector2(0.2f, -0.4f), "-", true))
+            if (DrawButton(position + new Vector2(ButtonSpacing / 2, -NodeRadius * 2), "-", true))
             {
                 net.DeleteNode(i);
                 EditorUtility.SetDirty(net);

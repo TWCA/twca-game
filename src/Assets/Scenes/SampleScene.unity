@@ -157,8 +157,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.36, y: -0.36}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 16, y: 16}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &726242758
 MonoBehaviour:
@@ -184,8 +184,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f8a929ed345b87284cae2e24fa8be3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 3
-  intersectionSize: 0.4
+  speed: 60
+  intersectionSize: 12
   maxPathError: 60
   pathLerpRate: 0.9
 --- !u!212 &726242760
@@ -252,6 +252,7 @@ GameObject:
   - component: {fileID: 961919541}
   - component: {fileID: 961919540}
   - component: {fileID: 961919539}
+  - component: {fileID: 961919543}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -338,15 +339,15 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
+    x: 0.22388059
+    y: 0.2098501
+    width: 0.5510907
+    height: 0.57815844
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 135
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -377,6 +378,30 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &961919543
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 961919538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c88f5cead0c0b2a4eb05b5900433f8d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ComponentVersion: 1
+  m_AssetsPPU: 1
+  m_RefResolutionX: 480
+  m_RefResolutionY: 270
+  m_CropFrame: 3
+  m_GridSnapping: 1
+  m_FilterMode: 0
+  m_UpscaleRT: 0
+  m_PixelSnapping: 0
+  m_CropFrameX: 0
+  m_CropFrameY: 0
+  m_StretchFill: 0
 --- !u!1 &1956255122
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,49 +447,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodes:
-  - position: {x: 3.9941385, y: -0.94296855}
+  - position: {x: 85.858894, y: 1.9044776}
     pastNeighbours: 0100000002000000060000000b000000
     futureNeighbours: 0100000002000000060000000b000000
-  - position: {x: -1.9385521, y: -1.9122262}
+  - position: {x: -11.577139, y: -46.435883}
     pastNeighbours: 000000000200000003000000040000000a0000000e000000
     futureNeighbours: 000000000200000003000000040000000a0000000e000000
-  - position: {x: -0.65040064, y: 1.6117152}
+  - position: {x: 13.348358, y: 51.755474}
     pastNeighbours: 0100000000000000040000000700000008000000
     futureNeighbours: 0100000000000000040000000700000008000000
-  - position: {x: -6.308509, y: -1.6241931}
+  - position: {x: -158.86418, y: -38.127384}
     pastNeighbours: 010000000500000009000000
     futureNeighbours: 010000000500000009000000
-  - position: {x: -3.3798907, y: 0.06013158}
+  - position: {x: -106.74722, y: 48.734203}
     pastNeighbours: 050000000100000002000000
     futureNeighbours: 050000000100000002000000
-  - position: {x: -6.6680546, y: 0.58984923}
+  - position: {x: -212.37444, y: 40.30201}
     pastNeighbours: 030000000400000008000000
     futureNeighbours: 030000000400000008000000
-  - position: {x: 7.0948734, y: 3.1355622}
+  - position: {x: 82.13476, y: 118.53347}
     pastNeighbours: 00000000070000000b0000000d000000
     futureNeighbours: 00000000070000000b0000000d000000
-  - position: {x: -0.003995061, y: 4.1601415}
+  - position: {x: 4.9201355, y: 112.9627}
     pastNeighbours: 060000000200000008000000
     futureNeighbours: 060000000200000008000000
-  - position: {x: -10.030232, y: 4.282115}
-    pastNeighbours: 02000000090000000500000007000000
-    futureNeighbours: 02000000090000000500000007000000
-  - position: {x: -9.786284, y: -4.54878}
+  - position: {x: -234.3855, y: 130.30647}
+    pastNeighbours: 02000000090000000700000005000000
+    futureNeighbours: 02000000090000000700000005000000
+  - position: {x: -228.15704, y: -118.74504}
     pastNeighbours: 08000000030000000e000000
     futureNeighbours: 08000000030000000e000000
-  - position: {x: 6.0459, y: -4.109675}
+  - position: {x: 196.89066, y: -117.43579}
     pastNeighbours: 010000000c0000000e000000
     futureNeighbours: 010000000c0000000e000000
-  - position: {x: 8.833557, y: 0.13599148}
+  - position: {x: 189.33748, y: 14.744885}
     pastNeighbours: 0c00000000000000060000000d000000
     futureNeighbours: 0c00000000000000060000000d000000
-  - position: {x: 9.33929, y: -2.6202521}
+  - position: {x: 154.59283, y: -41.903976}
     pastNeighbours: 0a0000000b000000
     futureNeighbours: 0a0000000b000000
-  - position: {x: 9.920882, y: 3.676121}
+  - position: {x: 212.0975, y: 115.99002}
     pastNeighbours: 060000000b000000
     futureNeighbours: 060000000b000000
-  - position: {x: -3.1775973, y: -4.112164}
+  - position: {x: -62.183453, y: -104.59538}
     pastNeighbours: 090000000a00000001000000
     futureNeighbours: 090000000a00000001000000
   paths:
@@ -538,11 +563,6 @@ MonoBehaviour:
     name: 
     pastTraversable: 1
     futureTraversable: 1
-  - nodeA: 5
-    nodeB: 8
-    name: 
-    pastTraversable: 1
-    futureTraversable: 1
   - nodeA: 1
     nodeB: 10
     name: 
@@ -595,6 +615,11 @@ MonoBehaviour:
     futureTraversable: 1
   - nodeA: 14
     nodeB: 1
+    name: 
+    pastTraversable: 1
+    futureTraversable: 1
+  - nodeA: 5
+    nodeB: 8
     name: 
     pastTraversable: 1
     futureTraversable: 1
