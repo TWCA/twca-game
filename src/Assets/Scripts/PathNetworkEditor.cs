@@ -17,10 +17,11 @@ public class PathNetworkEditor : Editor
     public void OnSceneGUI()
     {
         PathNetwork net = target as PathNetwork;
-        
+
         if (net.GetNodeCount() == 0)
         {
             net.CreateNode(Vector2.zero);
+            net.ForkNode(0, Vector2.up * 32);
             EditorUtility.SetDirty(net);
         }
 
@@ -96,7 +97,8 @@ public class PathNetworkEditor : Editor
             Handles.color = Color.red;
             if (DrawButton(midpoint + new Vector2(ButtonSpacing, -ButtonSpacing / 2), "-", false))
             {
-                net.DeletePath(i);
+                net.ErasePath(i);
+                net.EraseOrphanNodes();
                 EditorUtility.SetDirty(net);
                 i--;
             }
@@ -162,7 +164,8 @@ public class PathNetworkEditor : Editor
             Handles.color = Color.red;
             if (DrawButton(position + new Vector2(ButtonSpacing / 2, -NodeRadius * 2), "-", true))
             {
-                net.DeleteNode(i);
+                net.EraseNode(i);
+                net.EraseOrphanNodes();
                 EditorUtility.SetDirty(net);
                 i--;
             }
