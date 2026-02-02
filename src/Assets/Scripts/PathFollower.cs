@@ -7,11 +7,11 @@ public class PathFollower : MonoBehaviour
     // TODO: replace when we have a time-travel setup!
     private const bool IsFuture = false;
 
-    /** Units per second. */
-    public float speed = 1f;
+    /** Pixels per second. */
+    public float speed = 40f;
 
-    /** The distance to another path you must be to switch. */
-    public float intersectionSize = 0.4f;
+    /** The distance in pixels to another path where you may switch. */
+    public float intersectionSize = 12f;
 
     /** The max angle in degrees between target walk direction and the path/ */
     [Range(0.0f, 90.0f)] public float maxPathError = 60f;

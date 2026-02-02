@@ -204,7 +204,7 @@ public class PathNetwork : MonoBehaviour
             if (path.nodeA == path.nodeB)
             {
                 // remove paths in between merged nodes
-                DeletePath(i);
+                ErasePath(i);
                 i--;
             }
             else if (path.nodeA == mergedNode)
@@ -212,7 +212,7 @@ public class PathNetwork : MonoBehaviour
                 if (!connectedNodes.Add(path.nodeB))
                 {
                     // identical path already exists, remove the copy
-                    DeletePath(i);
+                    ErasePath(i);
                     i--;
                 }
                 else
@@ -228,7 +228,7 @@ public class PathNetwork : MonoBehaviour
                 if (connectedNodes.Contains(path.nodeA))
                 {
                     // identical path already exists, remove the copy
-                    DeletePath(i);
+                    ErasePath(i);
                     i--;
                 }
                 else
@@ -259,19 +259,49 @@ public class PathNetwork : MonoBehaviour
         return mergedNode;
     }
 
+
+    /**
+     * Removes any path node that is not connected to a path. Returns the number of nodes erased.
+     * <br/> <br/>
+     * <b>This will invalidate all previously returned node indexes! This will break A* paths.</b>
+     */
+    public int EraseOrphanNodes()
+    {
+        HashSet<int> connectedNodes = new HashSet<int>();
+        
+        for (int i = 0; i < paths.Count; i++)
+        {
+            connectedNodes.Add(paths[i].nodeA);
+            connectedNodes.Add(paths[i].nodeB);
+        }
+
+        int nodesErased = 0;
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            if (!connectedNodes.Contains(i + nodesErased))
+            {
+                EraseNode(i);
+                i--;
+                nodesErased++;
+            }
+        }
+
+        return nodesErased;
+    }
+    
     /**
      * Removes a path node, and all connected paths.
      * <br/> <br/>
      * <b>This will invalidate all previously returned node and path indexes! This will break A* paths.</b>
      */
-    public void DeleteNode(int node)
+    public void EraseNode(int node)
     {
         for (int i = 0; i < paths.Count; i++)
         {
             Path path = paths[i];
             if (path.nodeA == node || path.nodeB == node)
             {
-                DeletePath(i);
+                ErasePath(i);
                 i--;
             }
             else
@@ -344,7 +374,7 @@ public class PathNetwork : MonoBehaviour
      * <br/> <br/>
      * <b>This will invalidate all previously returned path indexes!</b> Node indexes are unaffected.
      */
-    public void DeletePath(int path)
+    public void ErasePath(int path)
     {
         foreach (List<int> neighbours in nodes[paths[path].nodeA].PastAndFutureNeighbourhoods)
             neighbours.Remove(paths[path].nodeB);
