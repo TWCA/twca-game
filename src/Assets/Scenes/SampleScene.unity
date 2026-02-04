@@ -240,7 +240,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!95 &726242761
 Animator:
   serializedVersion: 5
@@ -361,10 +361,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.24947809
-    y: 0.24767226
-    width: 0.50104386
-    height: 0.5027933
+    x: 0.14497042
+    y: 0.014362657
+    width: 0.71005917
+    height: 0.9694794
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -434,6 +434,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1956255123}
   - component: {fileID: 1956255124}
+  - component: {fileID: 1956255125}
   m_Layer: 0
   m_Name: Admin
   m_TagString: Untagged
@@ -645,6 +646,20 @@ MonoBehaviour:
     name: 
     pastTraversable: 1
     futureTraversable: 1
+--- !u!114 &1956255125
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956255122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47c03825b9de085c39ca4e85a92948b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  paletteSwapMaterial: {fileID: 2100000, guid: 68479e80bdff35931b4e36267d9ac23c, type: 2}
+  time: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
