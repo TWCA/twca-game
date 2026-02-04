@@ -262,7 +262,7 @@
     "m_StageCapability": 3,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"534ac11a988636492a12595fa9a839a8\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"40e586f5b383a6042b983469c82cb9fc\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 0
@@ -363,7 +363,7 @@
     "m_StageCapability": 3,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"aaa935d9d0afa92eba49435c64cfb90a\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"416cdad52a0681cd2865f4caee8a6cc6\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 0
@@ -657,7 +657,7 @@
     "m_StageCapability": 3,
     "m_BareResource": false,
     "m_Texture": {
-        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"686ad1cc8c5889bbe8b87db91323b5cb\",\"type\":3}}",
+        "m_SerializedTexture": "{\"texture\":{\"fileID\":2800000,\"guid\":\"848411bea99487349a24632c7ca9f9c3\",\"type\":3}}",
         "m_Guid": ""
     },
     "m_DefaultType": 0
