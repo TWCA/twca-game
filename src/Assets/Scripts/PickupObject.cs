@@ -1,39 +1,45 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class PickupObject : MonoBehaviour
 {
     public bool BeingCarried = false;
     private GameObject canvas;
+    private InventorySystem inventorySystem;
 
     // Start is called before the first frame update
     void Start()
     {
         canvas = GameObject.Find("InventoryCanvas");
+
+        inventorySystem = InventorySystem.Instance;
+
+        SetToMousePosition();
     }
 
     // Update is called once per frame
     void Update()
     {
+        SetToMousePosition();
+    }
+
+    void OnMouseDown() {
+        if (BeingCarried) {
+            BeingCarried = false;
+        } else {
+            Debug.Log(name);
+            inventorySystem.AddItem(name);
+
+            Destroy(gameObject);
+        }
+    }
+
+    private void SetToMousePosition() {
         if (BeingCarried) {
             Vector3 mousePosition = Input.mousePosition;
             Vector3 finalPosition = Camera.main.ScreenToWorldPoint(mousePosition);
             finalPosition.z = 0;
 
             transform.position = finalPosition;
-        }
-    }
-
-    void OnMouseDown() {
-        if (BeingCarried) {
-            BeingCarried = false;
-        } else if (canvas != null) {
-            InventoryScript inventory = canvas.GetComponent<InventoryScript>();
-            inventory.AddItem(name);
-
-            Destroy(gameObject);
         }
     }
 }
