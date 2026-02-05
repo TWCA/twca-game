@@ -46,8 +46,9 @@ public class InventorySystem : MonoBehaviour
 
     /*
     * Adds an item to the inventory (keeps track by name of item)
+    * returns true if it was a success (if stacking is prevented or not)
     */
-    public void AddItem(string itemName) {
+    public bool AddItem(string itemName) {
         if (inventoryUIObject.childCount >= ItemMax) {
             Debug.Log($"Inventory reached max size of {ItemMax}!");
         }
@@ -56,14 +57,29 @@ public class InventorySystem : MonoBehaviour
         Item existingItem = GetExistingItem(itemName);
 
         if (existingItem != null) {
+            PickupObject pickupObject = prefab.GetComponent<PickupObject>();
+
+            // Don't update the item count or actually pick up the item if we don't allow stacking
+            if (pickupObject.AllowStacking == false)
+            {
+                return false;
+            }
+
+            // Update the count on the UI object
             InventoryItem existingInventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
-            existingInventoryItem.UpdateItemCount(existingInventoryItem.GetItemCount() + 1);
+            existingInventoryItem.UpdateItemCount(existingInventoryItem.ItemCount + 1);
         } else {
             Item newItem = new Item(prefab, itemName);
             items.Add(newItem);
         }
+
+        return true;
     }
 
+    /*
+    * Object that represents an Item in the inventory and its UI elements
+    * Used for properly insantiating items in the scene
+    */
     private class Item
     {
         public string name;
@@ -72,6 +88,7 @@ public class InventorySystem : MonoBehaviour
         public Item(GameObject prefab, string itemName) {
             InventorySystem inventorySystem = InventorySystem.Instance;
 
+            // Create UI object and set it to proper position
             Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);
             UnityEditor.GameObjectUtility.SetParentAndAlign(newItemUIObject.gameObject, inventorySystem.inventoryUIObject.gameObject);
 

@@ -3,14 +3,12 @@ using UnityEngine;
 public class PickupObject : MonoBehaviour
 {
     public bool BeingCarried = false;
-    private GameObject canvas;
+    public bool AllowStacking = true; // Can the object be stacked? No support for stack size maximums for now, not sure if needed.
     private InventorySystem inventorySystem;
 
     // Start is called before the first frame update
     void Start()
     {
-        canvas = GameObject.Find("InventoryCanvas");
-
         inventorySystem = InventorySystem.Instance;
 
         SetToMousePosition();
@@ -22,16 +20,24 @@ public class PickupObject : MonoBehaviour
         SetToMousePosition();
     }
 
+    /*
+    * Called when the object is actually clicked, basically tries to add to inventory
+    */
     void OnMouseDown() {
         if (BeingCarried) {
             BeingCarried = false;
         } else {
-            inventorySystem.AddItem(name);
+            bool success = inventorySystem.AddItem(name);
 
-            Destroy(gameObject);
+            if (success) {
+                Destroy(gameObject);
+            }
         }
     }
 
+    /*
+    * Moves the object to the mouse current position in world space
+    */
     private void SetToMousePosition() {
         if (BeingCarried) {
             Vector3 mousePosition = Input.mousePosition;

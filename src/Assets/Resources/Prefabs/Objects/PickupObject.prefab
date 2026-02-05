@@ -99,6 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BeingCarried: 0
+  AllowStacking: 0
 --- !u!58 &8230462399324554846
 CircleCollider2D:
   m_ObjectHideFlags: 0
