@@ -30,7 +30,7 @@ public class PathFollower : MonoBehaviour
         // check if the last section of the path is intact
         if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], IsFuture))
             StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
-        
+
         // check if the last section of the path is intact
         if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], IsFuture))
             StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
@@ -47,15 +47,9 @@ public class PathFollower : MonoBehaviour
     {
         if (!IsPathfinding()) return;
 
-        PathNetwork net = PathNetwork.Instance;
-
-        Vector2 targetPosition;
-        if (plannedPath.Count > 2)
-            targetPosition = net.GetNodePosition(plannedPath[1]);
-        else
-            targetPosition = plannedEndPosition;
-
-        transform.position = Vector2.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
+        Vector2 targetPosition = GetPathfindingTarget();
+        float stepSize = speed * Time.deltaTime;
+        transform.position = Vector2.MoveTowards(transform.position, targetPosition, stepSize);
 
         if (transform.position.Equals(targetPosition))
         {
@@ -73,7 +67,8 @@ public class PathFollower : MonoBehaviour
      */
     public bool PathfindTo(Vector2 target)
     {
-        (plannedPath, _, plannedEndPosition) = AStarPathfinder.CalculatePathBetweenPositions(transform.position, target, IsFuture);
+        (plannedPath, _, plannedEndPosition) =
+            AStarPathfinder.CalculatePathBetweenPositions(transform.position, target, IsFuture);
         return plannedPath != null;
     }
 
@@ -94,21 +89,37 @@ public class PathFollower : MonoBehaviour
         return plannedPath != null;
     }
 
+    public Vector2 GetPathfindingDirection()
+    {
+        Vector2 targetPosition = GetPathfindingTarget();
+        return (targetPosition - (Vector2)transform.position).normalized;
+    }
+
+    public Vector2 GetPathfindingTarget()
+    {
+        if (plannedPath.Count > 2)
+            return PathNetwork.Instance.GetNodePosition(plannedPath[1]);
+        else
+            return plannedEndPosition;
+    }
+
     /**
      * Moves this entity along a direction (or as close as possible) in the path network.
      * This will cancel any attempt to pathfind.
      */
-    public void WalkTowards(Vector2 direction, float delta)
+    public Vector2 WalkTowards(Vector2 inputDirection, float delta)
     {
         PathNetwork net = PathNetwork.Instance;
 
         StopPathfinding();
 
         Vector2 nearestPoint;
-        if (!direction.Equals(Vector2.zero))
+        Vector2 movementDirection = Vector2.zero;
+        if (!inputDirection.Equals(Vector2.zero))
         {
-            (int path, Vector2 pathEnd) = ChoosePathToWalkOn(direction, IsFuture);
+            (int path, Vector2 pathEnd) = ChoosePathToWalkOn(inputDirection, IsFuture);
             transform.position = Vector2.MoveTowards(transform.position, pathEnd, speed * delta);
+            movementDirection = (pathEnd - (Vector2)transform.position).normalized;
 
             nearestPoint = net.NearestPointOnPath(path, transform.position, false);
         }
@@ -119,6 +130,8 @@ public class PathFollower : MonoBehaviour
 
         float lerpAmount = 1 - Mathf.Pow(1 - pathLerpRate, delta);
         transform.position = Vector2.Lerp(transform.position, nearestPoint, lerpAmount);
+
+        return movementDirection;
     }
 
     /**
