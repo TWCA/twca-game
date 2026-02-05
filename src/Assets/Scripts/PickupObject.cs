@@ -34,7 +34,11 @@ public class PickupObject : MonoBehaviour
     void ItemRelease() {
         ItemDropNode itemDropNode = RaycastManager.IsComponentBelowMouse<ItemDropNode>();
         if (itemDropNode != null) {
-            itemDropNode.ItemIncoming(PickupObjectPrefab);
+            bool accepted = itemDropNode.ItemIncoming(PickupObjectPrefab);
+
+            if (!accepted) {
+                inventorySystem.AddItem(PickupObjectPrefab);
+            }
         } else {
             inventorySystem.AddItem(PickupObjectPrefab);
         }

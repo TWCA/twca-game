@@ -6,6 +6,10 @@ public class ItemDropNode : MonoBehaviour
     public GameObject ActiveItem;
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
+
+    /*
+    * Used to draw some editor effects for easier use
+    */
     void OnDrawGizmos()
     {
         circleCollider = GetComponent<CircleCollider2D>();
@@ -29,13 +33,22 @@ public class ItemDropNode : MonoBehaviour
 
     }
 
-    public void ItemIncoming(GameObject prefab) {
-        if (ActiveItem != null) {
-            // Call some abitrary function that runs when one item is dragged onto the other
-            ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
+    public bool ItemIncoming(GameObject prefab) {
+        // Do we even allow this item in this node?
+        if (AllowDeny.IsItemAllowed(prefab.name)) {
+            if (ActiveItem != null) {
+                // Call some abitrary function that runs when one item is dragged onto the other
+                ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
+            } else {
+                ActiveItem = inventorySystem.HeldItem;
+                inventorySystem.HeldItem = null;
+            }
+
+            return true;
         } else {
-            ActiveItem = inventorySystem.HeldItem;
-            inventorySystem.HeldItem = null;
+            Debug.Log("No, you cannot put that item there.");
+
+            return false;
         }
     }
 
