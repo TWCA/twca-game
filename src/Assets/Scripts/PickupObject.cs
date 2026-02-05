@@ -26,7 +26,6 @@ public class PickupObject : MonoBehaviour
         if (BeingCarried) {
             BeingCarried = false;
         } else {
-            Debug.Log(name);
             inventorySystem.AddItem(name);
 
             Destroy(gameObject);

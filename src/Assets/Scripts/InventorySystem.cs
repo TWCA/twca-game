@@ -1,6 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/**
+ * A singleton that handles core player inventory interactions.
+ * Keeps track of all items in the players inventory
+**/
 public class InventorySystem : MonoBehaviour
 {
     public int ItemMax = 5;
@@ -23,6 +27,10 @@ public class InventorySystem : MonoBehaviour
         Instance = this;
     }
 
+    /*
+    * Checks if an item is already in the inventory (for stacking)
+    * Filters out and removes items that no longer have ui objects
+    */
     private Item GetExistingItem(string otherItemName) {
         Item item = items.Find(item => item.name == otherItemName);
 
@@ -36,6 +44,9 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
+    /*
+    * Adds an item to the inventory (keeps track by name of item)
+    */
     public void AddItem(string itemName) {
         if (inventoryUIObject.childCount >= ItemMax) {
             Debug.Log($"Inventory reached max size of {ItemMax}!");
