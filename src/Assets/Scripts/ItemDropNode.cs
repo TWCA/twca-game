@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class ItemDropNode : MonoBehaviour
 {
@@ -10,8 +6,6 @@ public class ItemDropNode : MonoBehaviour
     public GameObject ActiveItem;
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
-    private bool mouseIn;
-    private InputAction clickAction;
     void OnDrawGizmos()
     {
         circleCollider = GetComponent<CircleCollider2D>();
@@ -24,7 +18,6 @@ public class ItemDropNode : MonoBehaviour
     void Start()
     {
         circleCollider = GetComponent<CircleCollider2D>();
-        clickAction = InputSystem.actions.FindAction("Click");
 
         inventorySystem = InventorySystem.Instance;
         transform.localScale = new Vector3(circleCollider.radius, circleCollider.radius, 1);
@@ -33,25 +26,25 @@ public class ItemDropNode : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (clickAction.WasReleasedThisFrame() && mouseIn) {
-            ItemIncoming();
+
+    }
+
+    public void ItemIncoming(GameObject prefab) {
+        if (ActiveItem != null) {
+            // Call some abitrary function that runs when one item is dragged onto the other
+            ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
+        } else {
+            ActiveItem = inventorySystem.HeldItem;
+            inventorySystem.HeldItem = null;
         }
     }
 
-    void ItemIncoming() {
-        Debug.Log("DROP");
-        // if (inventorySystem.HeldItem != null) {
-        //     if (ActiveItem != null) {
-        //         // do something
-        //     } else {
-        //         ActiveItem = inventorySystem.HeldItem;
-        //         inventorySystem.HeldItem = null;
-        //     }
-        // }
-    }
-
     void OnMouseDown() {
-        inventorySystem.CreatePickupObject(ActiveItem);
-        ActiveItem = null;
+        if (ActiveItem != null) {
+            inventorySystem.CreatePickupObject(ActiveItem);
+            ActiveItem = null;
+        } else {
+            Debug.Log("No active item in this node");
+        }
     }
 }

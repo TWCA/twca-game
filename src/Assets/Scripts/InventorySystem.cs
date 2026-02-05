@@ -49,13 +49,12 @@ public class InventorySystem : MonoBehaviour
     * Adds an item to the inventory (keeps track by name of item)
     * returns true if it was a success (if stacking is prevented or not)
     */
-    public bool AddItem(string itemName) {
+    public bool AddItem(GameObject prefab) {
         if (inventoryUIObject.childCount >= ItemMax) {
             Debug.Log($"Inventory reached max size of {ItemMax}!");
         }
 
-        GameObject prefab = Resources.Load<GameObject>($"Prefabs/Objects/{itemName}");
-        Item existingItem = GetExistingItem(itemName);
+        Item existingItem = GetExistingItem(prefab.name);
 
         if (existingItem != null) {
             PickupObject pickupObject = prefab.GetComponent<PickupObject>();
@@ -70,13 +69,16 @@ public class InventorySystem : MonoBehaviour
             InventoryItem existingInventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
             existingInventoryItem.UpdateItemCount(existingInventoryItem.ItemCount + 1);
         } else {
-            Item newItem = new Item(prefab, itemName);
+            Item newItem = new Item(prefab);
             items.Add(newItem);
         }
 
         return true;
     }
 
+    /*
+    * Creates a pickupobject (an object that you move around with your mouse from place to place)
+    */
     public GameObject CreatePickupObject(GameObject prefab) {
         Transform newObject = Instantiate(prefab.transform, prefab.transform.position, Quaternion.identity);
 
@@ -101,7 +103,7 @@ public class InventorySystem : MonoBehaviour
         public string name;
         public Transform uiObject;
 
-        public Item(GameObject prefab, string itemName) {
+        public Item(GameObject prefab) {
             InventorySystem inventorySystem = InventorySystem.Instance;
 
             // Create UI object and set it to proper position
@@ -112,7 +114,7 @@ public class InventorySystem : MonoBehaviour
 
             newInventoryItem.PickupObjectPrefab = prefab;
 
-            this.name = itemName;
+            this.name = prefab.name;
             this.uiObject = newItemUIObject;
         }
     }

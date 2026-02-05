@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 public class PickupObject : MonoBehaviour
 {
-    public bool BeingCarried = false;
     public bool AllowStacking = true; // Can the object be stacked? No support for stack size maximums for now, not sure if needed.
     public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
@@ -30,27 +29,14 @@ public class PickupObject : MonoBehaviour
     }
 
     /*
-    * Called when the object is actually clicked, basically tries to add to inventory
+    * Decide what to do with an item when it is released by the player based on the current context
     */
-    void OnMouseDown() {
-        // BeingCarried = true;
-        // if (BeingCarried) {
-        //     BeingCarried = false;
-        // } else {
-        //     bool success = inventorySystem.AddItem(name);
-
-        //     if (success) {
-        //         Destroy(gameObject);
-        //     }
-        // }
-    }
-
     void ItemRelease() {
         ItemDropNode itemDropNode = RaycastManager.IsComponentBelowMouse<ItemDropNode>();
         if (itemDropNode != null) {
-            itemDropNode.ActiveItem = PickupObjectPrefab;
+            itemDropNode.ItemIncoming(PickupObjectPrefab);
         } else {
-            inventorySystem.AddItem(name);
+            inventorySystem.AddItem(PickupObjectPrefab);
         }
 
         inventorySystem.HeldItem = null;
@@ -61,12 +47,18 @@ public class PickupObject : MonoBehaviour
     * Moves the object to the mouse current position in world space
     */
     private void SetToMousePosition() {
-        // if (BeingCarried) {
         Vector3 mousePosition = Input.mousePosition;
         Vector3 finalPosition = Camera.main.ScreenToWorldPoint(mousePosition);
         finalPosition.z = 0;
 
         transform.position = finalPosition;
-        // }
+    }
+
+    /*
+    * Called when one item is dragged onto this item
+    * Basically what happens when two items interact
+    */
+    public virtual void DraggedOnto(GameObject otherObject) {
+        Debug.Log("Some item was dragged onto another.");
     }
 }
