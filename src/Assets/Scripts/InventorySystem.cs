@@ -12,6 +12,7 @@ public class InventorySystem : MonoBehaviour
     public GameObject TemplateItem;
     private Transform inventoryUIObject;
     public static InventorySystem Instance { get; private set; }
+    public GameObject HeldItem;
 
     private List<Item> items;
 
@@ -74,6 +75,21 @@ public class InventorySystem : MonoBehaviour
         }
 
         return true;
+    }
+
+    public GameObject CreatePickupObject(GameObject prefab) {
+        Transform newObject = Instantiate(prefab.transform, prefab.transform.position, Quaternion.identity);
+
+        if (newObject) {
+            newObject.name = prefab.name;
+            newObject.GetComponent<PickupObject>().PickupObjectPrefab = prefab;
+
+            HeldItem = newObject.gameObject;
+
+            return newObject.gameObject;
+        }
+
+        return null;
     }
 
     /*

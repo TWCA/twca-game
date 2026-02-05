@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 990996692200902691}
   - component: {fileID: 6237717639685285321}
   - component: {fileID: 8230462399324554846}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: PickupObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   BeingCarried: 0
-  AllowStacking: 0
+  AllowStacking: 1
 --- !u!58 &8230462399324554846
 CircleCollider2D:
   m_ObjectHideFlags: 0

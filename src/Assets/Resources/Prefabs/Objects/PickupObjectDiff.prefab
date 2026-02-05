@@ -10,7 +10,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 537990157711792668, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: m_Name
-      value: PickupObjectDiff Variant
+      value: PickupObjectDiff
       objectReference: {fileID: 0}
     - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: m_Color.b

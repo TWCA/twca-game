@@ -2,15 +2,17 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine;
 
-public class InventoryItem : MonoBehaviour, IPointerClickHandler
+public class InventoryItem : MonoBehaviour, IPointerDownHandler
 {
     public int ItemCount = 1; // Starts at 1 by default
     public GameObject CountText;
     public GameObject PickupObjectPrefab;
+    private InventorySystem inventorySystem;
 
     // Start is called before the first frame update
     void Start()
     {
+        inventorySystem = InventorySystem.Instance;
     }
 
     // Update is called once per frame
@@ -37,15 +39,10 @@ public class InventoryItem : MonoBehaviour, IPointerClickHandler
     /*
     * Create an object when clicking on the inventory item.
     */
-    public void OnPointerClick(PointerEventData eventData) {
-        Transform newObject = Instantiate(PickupObjectPrefab.transform, PickupObjectPrefab.transform.position, Quaternion.identity);
+    public void OnPointerDown(PointerEventData eventData) {
+        GameObject newObject = inventorySystem.CreatePickupObject(PickupObjectPrefab);
 
         if (newObject) {
-            newObject.name = PickupObjectPrefab.name;
-
-            PickupObject pickupObject = newObject.GetComponent<PickupObject>();
-            pickupObject.BeingCarried = true;
-
             ItemCount--;
             UpdateText();
         }
