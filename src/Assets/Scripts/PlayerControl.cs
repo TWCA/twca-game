@@ -4,12 +4,16 @@ using UnityEngine.InputSystem;
 public class PlayerControl : MonoBehaviour
 {
     private PathFollower pathFollower;
+    private Animator animator;
+    private SpriteRenderer sprite;
 
     private InputAction moveAction, clickAction, pointAction;
 
     public void Start()
     {
         pathFollower = GetComponent<PathFollower>();
+        animator = GetComponent<Animator>();
+        sprite = GetComponent<SpriteRenderer>();
 
         moveAction = InputSystem.actions.FindAction("Move");
         clickAction = InputSystem.actions.FindAction("Click");
@@ -22,15 +26,25 @@ public class PlayerControl : MonoBehaviour
 
     public void Update()
     {
-        Vector2 movement = moveAction.ReadValue<Vector2>();
-        
+        Vector2 inputDirection = moveAction.ReadValue<Vector2>();
+
         // stop pathfinding path if manual input is entered
-        if(!movement.Equals(Vector2.zero))
+        if (!inputDirection.Equals(Vector2.zero))
             pathFollower.StopPathfinding();
 
-        // try walking if we are not pathfinding already
-        if (!pathFollower.IsPathfinding())
-            pathFollower.WalkTowards(movement, Time.deltaTime);
+        Vector2 movementDirection;
+        if (pathFollower.IsPathfinding())
+            // find our movement direction if we are pathfinding
+            movementDirection = pathFollower.GetPathfindingDirection();
+        else
+            // try walking if we are not pathfinding already
+            movementDirection = pathFollower.WalkTowards(inputDirection, Time.deltaTime);
+
+        bool moving = !movementDirection.Equals(Vector2.zero);
+        animator.SetBool("moving", moving);
+        
+        if (moving) // only update while moving
+            sprite.flipX = movementDirection.x > 0;
     }
 
     /**
