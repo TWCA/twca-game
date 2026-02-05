@@ -40,7 +40,7 @@ public class ItemDropNode : MonoBehaviour
                 // Call some abitrary function that runs when one item is dragged onto the other
                 ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
             } else {
-                ActiveItem = inventorySystem.HeldItem;
+                ActiveItem = prefab;
                 inventorySystem.HeldItem = null;
             }
 
