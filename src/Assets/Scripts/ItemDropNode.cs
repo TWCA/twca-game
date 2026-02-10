@@ -26,7 +26,7 @@ public class ItemDropNode : MonoBehaviour
         Initialize();
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, circleCollider.radius);
+        Gizmos.DrawWireSphere(transform.position, circleCollider.radius * 2);
     }
 
     // Start is called before the first frame update
@@ -35,7 +35,6 @@ public class ItemDropNode : MonoBehaviour
         Initialize();
 
         inventorySystem = InventorySystem.Instance;
-        transform.localScale = new Vector3(circleCollider.radius, circleCollider.radius, 1);
     }
 
     // Update is called once per frame
@@ -48,6 +47,7 @@ public class ItemDropNode : MonoBehaviour
         if (ActiveItem != null) {
             SpriteRenderer activeItemSpriteRenderer = ActiveItem.GetComponent<SpriteRenderer>();
             spriteRenderer.sprite = activeItemSpriteRenderer.sprite;
+            spriteRenderer.color = activeItemSpriteRenderer.color;
         } else {
             spriteRenderer.sprite = null;
         }

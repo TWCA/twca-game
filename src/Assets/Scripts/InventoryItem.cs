@@ -10,6 +10,7 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
     public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
     private Image image;
+    private SpriteRenderer pickupObjectSpriteRenderer;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +18,10 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
         inventorySystem = InventorySystem.Instance;
 
         image = GetComponent<Image>();
-        image.sprite = PickupObjectPrefab.GetComponent<SpriteRenderer>().sprite;
+        pickupObjectSpriteRenderer = PickupObjectPrefab.GetComponent<SpriteRenderer>();
+
+        image.sprite = pickupObjectSpriteRenderer.sprite;
+        image.color = pickupObjectSpriteRenderer.color;
     }
 
     // Update is called once per frame

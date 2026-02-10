@@ -13,6 +13,10 @@ PrefabInstance:
       value: PickupObjectDiff
       objectReference: {fileID: 0}
     - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 1d7b4a6b3b8328224ac5d50caa0db7eb, type: 3}
+    - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: m_Color.b
       value: 0.1544589
       objectReference: {fileID: 0}
@@ -63,6 +67,10 @@ PrefabInstance:
     - target: {fileID: 7201299096094867918, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8230462399324554846, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: m_Radius
+      value: 32
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
