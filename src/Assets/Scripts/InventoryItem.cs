@@ -1,6 +1,7 @@
 using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class InventoryItem : MonoBehaviour, IPointerDownHandler
 {
@@ -8,11 +9,15 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
     public GameObject CountText;
     public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
+    private Image image;
 
     // Start is called before the first frame update
     void Start()
     {
         inventorySystem = InventorySystem.Instance;
+
+        image = GetComponent<Image>();
+        image.sprite = PickupObjectPrefab.GetComponent<SpriteRenderer>().sprite;
     }
 
     // Update is called once per frame

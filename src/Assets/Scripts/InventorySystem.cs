@@ -104,7 +104,7 @@ public class InventorySystem : MonoBehaviour
         public Transform uiObject;
 
         public Item(GameObject prefab) {
-            InventorySystem inventorySystem = InventorySystem.Instance;
+            InventorySystem inventorySystem = Instance;
 
             // Create UI object and set it to proper position
             Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);

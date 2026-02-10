@@ -6,13 +6,24 @@ public class ItemDropNode : MonoBehaviour
     public GameObject ActiveItem;
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
+    private SpriteRenderer spriteRenderer;
+
+    /*
+    * Runs some logic that sets up the ItemDropNode
+    */
+    private void Initialize() {
+        circleCollider = GetComponent<CircleCollider2D>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+
+        InitializeSprite();
+    }
 
     /*
     * Used to draw some editor effects for easier use
     */
     void OnDrawGizmos()
     {
-        circleCollider = GetComponent<CircleCollider2D>();
+        Initialize();
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, circleCollider.radius);
@@ -21,7 +32,7 @@ public class ItemDropNode : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        circleCollider = GetComponent<CircleCollider2D>();
+        Initialize();
 
         inventorySystem = InventorySystem.Instance;
         transform.localScale = new Vector3(circleCollider.radius, circleCollider.radius, 1);
@@ -33,6 +44,15 @@ public class ItemDropNode : MonoBehaviour
 
     }
 
+    private void InitializeSprite() {
+        if (ActiveItem != null) {
+            SpriteRenderer activeItemSpriteRenderer = ActiveItem.GetComponent<SpriteRenderer>();
+            spriteRenderer.sprite = activeItemSpriteRenderer.sprite;
+        } else {
+            spriteRenderer.sprite = null;
+        }
+    }
+
     public bool ItemIncoming(GameObject prefab) {
         // Do we even allow this item in this node?
         if (AllowDeny.IsItemAllowed(prefab.name)) {
@@ -42,6 +62,8 @@ public class ItemDropNode : MonoBehaviour
             } else {
                 ActiveItem = prefab;
                 inventorySystem.HeldItem = null;
+
+                InitializeSprite();
             }
 
             return true;
@@ -56,6 +78,8 @@ public class ItemDropNode : MonoBehaviour
         if (ActiveItem != null) {
             inventorySystem.CreatePickupObject(ActiveItem);
             ActiveItem = null;
+
+            InitializeSprite();
         } else {
             Debug.Log("No active item in this node");
         }
