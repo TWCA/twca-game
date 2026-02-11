@@ -12,7 +12,6 @@ public class AudioManager : MonoBehaviour
 
     public AudioSource stepSource, insectSource, rainSource;
     public List<AudioClip> steps;
-    public AudioClip insects, rain;
     private Vector3 previousPosition;
     private RectTransform rect;
     
@@ -53,7 +52,6 @@ public class AudioManager : MonoBehaviour
     
     public void playInsects()
     {
-        insectSource.clip = insects;
         insectSource.loop = true;
         //insectSource.PlayOneShot(insects);
         insectSource.Play();
@@ -62,7 +60,6 @@ public class AudioManager : MonoBehaviour
     
     public void playRain()
     {
-        insectSource.clip = rain;
         rainSource.loop = true;
         //rainSource.PlayOneShot(rain);
         rainSource.Play();
