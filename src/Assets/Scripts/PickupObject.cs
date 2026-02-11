@@ -5,7 +5,6 @@ public class PickupObject : MonoBehaviour
 {
     public bool AllowStacking = true; // Can the object be stacked? No support for stack size maximums for now, not sure if needed.
     public GameObject PickupObjectPrefab;
-    private Sprite displaySprite;
     private InventorySystem inventorySystem;
     private InputAction clickAction;
 
@@ -15,8 +14,6 @@ public class PickupObject : MonoBehaviour
         inventorySystem = InventorySystem.Instance;
 
         clickAction = InputSystem.actions.FindAction("Click");
-
-        displaySprite = GetComponent<SpriteRenderer>().sprite;
 
         SetToMousePosition();
     }

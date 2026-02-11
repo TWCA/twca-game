@@ -13,7 +13,6 @@ public class InventorySystem : MonoBehaviour
     private Transform inventoryUIObject;
     public static InventorySystem Instance { get; private set; }
     public GameObject HeldItem;
-
     private List<Item> items;
 
     // Start is called before the first frame update

@@ -11,7 +11,6 @@ public static class RaycastManager
 
         if (hit.collider != null)
         {
-            Debug.Log(hit.collider.gameObject);
             T component = hit.collider.gameObject.GetComponent<T>();
 
             if (component != null) {
