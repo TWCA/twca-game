@@ -26,7 +26,7 @@ public class LevelPortal : MonoBehaviour
 
     // The last walk to the exit / portal / door that the player does
     private void DoFinalMove(PlayerControl playerControl, PathFollower pathFollower) {
-        playerControl.CanMove = false;
+        playerControl.enabled = false;
         pathFollower.PathfindTo(PortalPosition);
         pathFollower.DonePathing += () => transitionController.SwitchScenes(LevelToLoad);
     }
