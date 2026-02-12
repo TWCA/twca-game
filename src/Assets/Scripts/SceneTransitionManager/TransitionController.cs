@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -49,12 +46,14 @@ public class TransitionController : MonoBehaviour
         SceneManager.LoadSceneAsync(sceneName);
     }
 
-    // Creates a node in the path network corresponding to the position of the level portal
-    public void RegisterLevelPortal(Vector2 levelPortalPosition) {
+    // Creates a node in the path network corresponding to the position of the level portal & the exit node
+    public void RegisterLevelPortal(Vector2 levelPortalPosition, Vector2 exitPosition) {
         pathNetwork = PathNetwork.Instance;
 
-        (float nearestNodeDistance, int nearestNode) = pathNetwork.NearestNode(levelPortalPosition);
-        pathNetwork.ForkNode(nearestNode, levelPortalPosition);
+        (float _, int nearestNode) = pathNetwork.NearestNode(levelPortalPosition);
+        int triggerNode = pathNetwork.ForkNode(nearestNode, levelPortalPosition);
+
+        pathNetwork.ForkNode(triggerNode, exitPosition);
     }
 
     // Does the fade in sceen effect

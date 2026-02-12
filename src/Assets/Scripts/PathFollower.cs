@@ -18,6 +18,8 @@ public class PathFollower : MonoBehaviour
 
     [Range(0.0f, 1.0f)] public float pathLerpRate = 0.9f;
 
+    public event Action DonePathing;
+
     private List<int> plannedPath;
     private Vector2 plannedEndPosition = Vector2.zero;
 
@@ -77,6 +79,10 @@ public class PathFollower : MonoBehaviour
      */
     public void StopPathfinding()
     {
+        if (plannedPath != null) {
+            DonePathing?.Invoke();
+        }
+
         plannedPath = null;
         plannedEndPosition = Vector2.zero;
     }
