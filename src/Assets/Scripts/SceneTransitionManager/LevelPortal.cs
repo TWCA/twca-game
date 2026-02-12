@@ -4,24 +4,18 @@ using UnityEngine;
 
 public class LevelPortal : MonoBehaviour
 {
+    public string LevelToLoad;
     private TransitionController transitionController;
-    void OnDrawGizmos() {
-    }
 
-    // Start is called before the first frame update
     void Start()
     {
         transitionController = TransitionController.Instance;
+        transitionController.RegisterLevelPortal(transform.position);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    // Handle when the player reaches the level portal
     void OnCollisionEnter2D(Collision2D collision)
     {
-        transitionController.SwitchScenes("test");
+        transitionController.SwitchScenes(LevelToLoad);
     }
 }
