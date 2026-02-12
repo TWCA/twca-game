@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class DialogAutoStart : MonoBehaviour
 {
+    public string dialogKnot;
     private void Start()
     {
-        DialogManager.Instance.StartDialog("checkup_text");
+        DialogManager.Instance.StartDialog(dialogKnot);
     }
 }

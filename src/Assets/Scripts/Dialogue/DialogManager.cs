@@ -13,23 +13,22 @@ public class DialogManager : MonoBehaviour
     public Transform choicesRoot;
     public GameObject choiceButtonPrefab;
     private Story story;
-    private bool isRunning;
+    //private bool isRunning;
     public GameObject DialogRoot;
     private System.Action onDialogFinished;
     public Behaviour[] disableWhileDialog;
-    
 
 
     private void Awake()
     {
         if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+            Destroy(Instance.gameObject);
+        else
+            DontDestroyOnLoad(gameObject);
+
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
+
     private void SetMovementEnabled(bool enabled)
     {
         if (disableWhileDialog == null) return;
@@ -38,38 +37,42 @@ public class DialogManager : MonoBehaviour
             if (b != null) b.enabled = enabled;
         }
     }
+
     public void StartDialog(string knot = "checkup_text", System.Action onFinished = null)
-    {   
+    {
         Debug.Log("StartDialog called!");
         if (inkJson == null)
         {
             Debug.LogError("DialogManager: inkJson is not assigned!");
             return;
         }
+
         onDialogFinished = onFinished;
         story = new Story(inkJson.text);
         if (!string.IsNullOrEmpty(knot))
             story.ChoosePathString(knot);
-        isRunning = true;
+        //isRunning = true;
         if (DialogRoot != null) DialogRoot.SetActive(true);
         onDialogFinished = onFinished;
         ClearChoices();
         ContinueStory();
-         if (DialogRoot != null) DialogRoot.SetActive(true);
+        if (DialogRoot != null) DialogRoot.SetActive(true);
         SetMovementEnabled(false);
     }
+
     public void EndDialog()
     {
-        isRunning = false;
+        //isRunning = false;
         story = null;
         ClearChoices();
         if (DialogRoot != null) DialogRoot.SetActive(false);
         var cb = onDialogFinished;
         onDialogFinished = null;
         cb?.Invoke();
-         if (DialogRoot != null) DialogRoot.SetActive(false);
+        if (DialogRoot != null) DialogRoot.SetActive(false);
         SetMovementEnabled(true);
     }
+
     private void ContinueStory()
     {
         if (story == null) return;
@@ -87,8 +90,10 @@ public class DialogManager : MonoBehaviour
                     break;
                 }
             }
+
             AddMessage(line, isPlayer);
         }
+
         RefreshChoices();
         Canvas.ForceUpdateCanvases();
         if (historyScrollRect != null)
@@ -114,22 +119,24 @@ public class DialogManager : MonoBehaviour
                 ContinueStory();
             });
         }
+
         if (choices.Count == 0 && !story.canContinue)
         {
             EndDialog();
         }
     }
-    
+
 
     private void AddMessage(string text, bool isPlayer)
     {
         GameObject obj = Instantiate(messageBubblePrefab, historyContent);
-        var bubble = obj.GetComponent<MessageBubbleUI>();
+        var bubble = obj.GetComponent<MessageBubble>();
         if (bubble != null)
             bubble.SetMessage(text, isPlayer);
         else
-            Debug.LogWarning("Message bubble prefab missing MessageBubbleUI script.");
+            Debug.LogWarning("Message bubble prefab missing MessageBubble script.");
     }
+
     private void ClearChoices()
     {
         for (int i = choicesRoot.childCount - 1; i >= 0; i--)
