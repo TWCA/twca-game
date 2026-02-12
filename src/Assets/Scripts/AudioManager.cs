@@ -18,36 +18,30 @@ public class AudioManager : MonoBehaviour
     public List<AudioClip> Notifications;
     private Vector3 previousPosition;
     private RectTransform rect;
-    private bool future;
     private bool rainStarted = false;
     [SerializeField] private GameObject admin;
-    private TimeManager timeManager;
     
 
     void Awake()
     {
         _instance = this;
         rect = GetComponent<RectTransform>();
-        timeManager = admin.GetComponent<TimeManager>();
         playRain();
-
-
-        future = timeManager.IsFuture();
-        //timeManager = TimeManager.Instance;
     }
 
     // Update is called once per frame
     void Update()
     {
-        future = timeManager.IsFuture();
+        bool isFuture = TimeManager.Instance.IsFuture();
+        
         if (rect != null && rect.position != previousPosition && !stepSource.isPlaying)
         {
-            playSteps();
-            Debug.Log("Playing step");
+            playSteps(isFuture);
+            // Debug.Log("Playing step");
         }
         previousPosition = rect.position;
 
-        if (future == true && !rainStarted)
+        if (isFuture && !rainStarted)
         {
             playTimeForward();
             stopRain();
@@ -57,7 +51,7 @@ public class AudioManager : MonoBehaviour
             //stopChickadee();
             rainStarted = true;
         }
-        if (future == false && rainStarted)
+        if (isFuture && rainStarted)
         {
             playTimeBackward();
             stopThunder();
@@ -70,10 +64,10 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void playSteps()
+    public void playSteps(bool isFuture)
     {
         AudioClip step;
-        if (future == true)
+        if (isFuture)
         {
             step = stepsWet[Random.Range(0, stepsWet.Count)];
         }
