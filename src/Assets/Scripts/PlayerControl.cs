@@ -53,7 +53,7 @@ public class PlayerControl : MonoBehaviour
      */
     private void PathfindToMouse(InputAction.CallbackContext context)
     {
-        if (!isActiveAndEnabled) return;
+        if (!isActiveAndEnabled && CanMove) return;
         Vector2 targetPosition = GetMouseWorldPosition();
         pathFollower.PathfindTo(targetPosition);
     }
