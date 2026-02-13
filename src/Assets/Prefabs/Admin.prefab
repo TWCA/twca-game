@@ -13,7 +13,11 @@ GameObject:
   - component: {fileID: 2891518882324367103}
   - component: {fileID: 4425984495630937229}
   - component: {fileID: 6550940556160746529}
+<<<<<<< HEAD
+  - component: {fileID: 3168119348259113493}
+=======
   - component: {fileID: 875089806589822573}
+>>>>>>> main
   m_Layer: 0
   m_Name: Admin
   m_TagString: Untagged
@@ -32,8 +36,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2358817261894685970}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -94,7 +97,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930ff6d9aae67858585c982655c78448, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
+  screenFadeObject: {fileID: 0}
+=======
   screenFadeObject: {fileID: 5501483572454794932}
+>>>>>>> main
   FadeDelay: 2000
   StartDelay: 1000
 --- !u!222 &6550940556160746529
@@ -105,6 +112,9 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2251703310826657736}
   m_CullTransparentMesh: 1
+<<<<<<< HEAD
+--- !u!114 &3168119348259113493
+=======
 --- !u!114 &875089806589822573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,18 +162,17 @@ Transform:
   m_Father: {fileID: 1393709265386289331}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &6667416971050386506
+>>>>>>> main
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5501483572454794932}
+  m_GameObject: {fileID: 2251703310826657736}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Script: {fileID: 11500000, guid: 949ce9dd94e3e4a91bec9a6d211a2eb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: a44edf2a589d8a48fa6c23f7852e19da, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 0453cc74993677c149e11163159d33a9, type: 3}
-  m_SortingOrder: 0
+  pathSegment: {fileID: 5217357667674723715, guid: ce9131d579b6b22b7af19600ddeae203, type: 3}
+  zDepth: 1

@@ -32,7 +32,7 @@ public class PlayerControl : MonoBehaviour
             inputDirection = moveAction.ReadValue<Vector2>();
 
         // stop pathfinding path if manual input is entered
-        if (!inputDirection.Equals(Vector2.zero))
+        if (!inputDirection.Equals(Vector2.zero) || !CanMove)
             pathFollower.StopPathfinding();
 
         Vector2 movementDirection;

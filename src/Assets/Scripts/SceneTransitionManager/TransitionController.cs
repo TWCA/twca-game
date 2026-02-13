@@ -1,53 +1,63 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class TransitionController : MonoBehaviour
 {
     public static TransitionController Instance { get; private set; }
-    public GameObject screenFadeObject;
 
     // Changes the amount of time fading in and out takes
     // WARNING: you need to edit this AND the fade.uxml animation time to the time you desire in ms
     // This is because there is no way to change the fade.uxml animation time at runtime afaik
-    public int FadeDelay = 2000;
-    
+    public float FadeOutDelay = 2f;
+
     // Changes how long the system waits at the beginning of the game before fading away from the black screen
     // You want to have a reasonable delay because sometimes the window appears a bit after the animation has completed
-    public int StartDelay = 1000;
+    public float FadeInDelay = 1f;
+
     private PathNetwork pathNetwork;
-    private UIDocument screenFadeUIDocument;
-    private VisualElement screenFadeVisualElement;
-
-
-    TransitionController() { }
+    private Image screenFadeImage;
+    private float alpha;
+    private float targetAlpha;
+    private float alphaChangeTime;
 
     private void Awake()
     {
         Instance = this;
 
-        screenFadeUIDocument = screenFadeObject.GetComponent<UIDocument>();
-        screenFadeVisualElement = screenFadeUIDocument.rootVisualElement;
+        screenFadeImage = GameObject.FindGameObjectWithTag("FadeTexture").GetComponent<Image>();
     }
 
-    async void Start() {
-        screenFadeVisualElement.AddToClassList("fade");
-
-        // wait and then fade out
-        await Task.Delay(StartDelay);
-        await FadeOut();
+    void Start()
+    {
+        screenFadeImage.color = new Color(0, 0, 0, 1.0f);
+        alpha = 1;
+        FadeIn();
     }
 
-    public async void SwitchScenes(string sceneName) {
-        await FadeIn();
+    void Update()
+    {
+        if (!alpha.Equals(targetAlpha))
+        {
+            alpha = Mathf.MoveTowards(alpha, targetAlpha, Time.deltaTime / alphaChangeTime);
+            screenFadeImage.color = new Color(0, 0, 0, alpha);
+        }
+    }
+
+    public async void SwitchScenes(string sceneName)
+    {
+        FadeOut();
+
+        await Task.Delay((int)(FadeOutDelay * 1000));
 
         // Load desired scene
         SceneManager.LoadSceneAsync(sceneName);
     }
 
     // Creates a node in the path network corresponding to the position of the level portal & the exit node
-    public void RegisterLevelPortal(Vector2 levelPortalPosition, Vector2 exitPosition) {
+    public void RegisterLevelPortal(Vector2 levelPortalPosition, Vector2 exitPosition)
+    {
         pathNetwork = PathNetwork.Instance;
 
         (float _, int nearestNode) = pathNetwork.NearestNode(levelPortalPosition);
@@ -56,19 +66,17 @@ public class TransitionController : MonoBehaviour
         pathNetwork.ForkNode(triggerNode, exitPosition);
     }
 
-    // Does the fade in sceen effect
-    public async Task FadeIn() {
-        screenFadeVisualElement.RemoveFromClassList("no-fade");
-        screenFadeVisualElement.AddToClassList("fade");
-
-        await Task.Delay(FadeDelay);
+    // Does the fade out screen effect
+    public void FadeOut()
+    {
+        targetAlpha = 1;
+        alphaChangeTime = FadeOutDelay;
     }
 
-    // Does the fade out screen effect
-    public async Task FadeOut() {
-        screenFadeVisualElement.RemoveFromClassList("fade");
-        screenFadeVisualElement.AddToClassList("no-fade");
-
-        await Task.Delay(FadeDelay);
+    // Does the fade in sceen effect
+    public void FadeIn()
+    {
+        targetAlpha = 0;
+        alphaChangeTime = FadeInDelay;
     }
 }

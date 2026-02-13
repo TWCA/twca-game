@@ -5,6 +5,9 @@ using UnityEngine;
 public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance { get; private set; }
+    
+    public delegate void OnTimeChanged();
+    [HideInInspector] public OnTimeChanged onTimeChanged;
 
     [SerializeField] public Material paletteSwapMaterial;
     [SerializeField] private bool isFuture = false;
@@ -63,7 +66,8 @@ public class TimeManager : MonoBehaviour
     public void SetTime(bool isFuture)
     {
         this.isFuture = isFuture;
-        
+
+        onTimeChanged();
         UpdateTimeObjectsActive();
     }
 

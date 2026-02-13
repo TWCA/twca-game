@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class PathFollower : MonoBehaviour
 {
-    // TODO: replace when we have a time-travel setup!
-    private const bool IsFuture = false;
-
     /** Pixels per second. */
     public float speed = 40f;
 
@@ -28,17 +25,18 @@ public class PathFollower : MonoBehaviour
         if (!IsPathfinding()) return;
 
         PathNetwork net = PathNetwork.Instance;
+        bool isFuture = TimeManager.Instance.IsFuture();
 
         // check if the last section of the path is intact
-        if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], IsFuture))
+        if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], isFuture))
             StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
 
         // check if the last section of the path is intact
-        if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], IsFuture))
+        if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], isFuture))
             StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
 
         // check path is still valid
-        if (!AStarPathfinder.CheckPathStillValid(plannedPath, IsFuture))
+        if (!AStarPathfinder.CheckPathStillValid(plannedPath, isFuture))
             // if invalid try to recalculate path
             if (!PathfindTo(plannedEndPosition))
                 // if failed stop pathfinding
@@ -69,8 +67,9 @@ public class PathFollower : MonoBehaviour
      */
     public bool PathfindTo(Vector2 target)
     {
+        bool isFuture = TimeManager.Instance.IsFuture();
         (plannedPath, _, plannedEndPosition) =
-            AStarPathfinder.CalculatePathBetweenPositions(transform.position, target, IsFuture);
+            AStarPathfinder.CalculatePathBetweenPositions(transform.position, target, isFuture);
         return plannedPath != null;
     }
 
@@ -116,6 +115,7 @@ public class PathFollower : MonoBehaviour
     public Vector2 WalkTowards(Vector2 inputDirection, float delta)
     {
         PathNetwork net = PathNetwork.Instance;
+        bool isFuture = TimeManager.Instance.IsFuture();
 
         StopPathfinding();
 
@@ -123,7 +123,7 @@ public class PathFollower : MonoBehaviour
         Vector2 movementDirection = Vector2.zero;
         if (!inputDirection.Equals(Vector2.zero))
         {
-            (int path, Vector2 pathEnd) = ChoosePathToWalkOn(inputDirection, IsFuture);
+            (int path, Vector2 pathEnd) = ChoosePathToWalkOn(inputDirection, isFuture);
             transform.position = Vector2.MoveTowards(transform.position, pathEnd, speed * delta);
             movementDirection = (pathEnd - (Vector2)transform.position).normalized;
 
@@ -131,7 +131,7 @@ public class PathFollower : MonoBehaviour
         }
         else
         {
-            (nearestPoint, _) = net.NearestPointOnPaths(transform.position, IsFuture);
+            (nearestPoint, _) = net.NearestPointOnPaths(transform.position, isFuture);
         }
 
         float lerpAmount = 1 - Mathf.Pow(1 - pathLerpRate, delta);
