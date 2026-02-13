@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -10,12 +11,28 @@ public class PathRenderer : MonoBehaviour
     private int zDepth = 1;
 
     private List<GameObject> pathSegments = new List<GameObject>();
+    private bool initalized = false;
 
     public static PathRenderer Instance { get; private set; }
 
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void FixedUpdate()
+    {
+        if (!initalized)
+        {
+            // Awake, OnEnable, Reset, and Start.
+            // Four different freaking setup functions, but not ONE of them can guarantee that TimeManager is initialized
+            // They all run, one after another, for each object.
+            // What's the point?
+            // What no job site, green coat, zero-trades, nitwit made this game engine?
+            // It's 2am if you can't tell. :3
+            TimeManager.Instance.onTimeChanged += DrawTraversablePaths;
+            initalized = true;
+        }
     }
 
     /**
