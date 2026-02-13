@@ -26,6 +26,7 @@ public class PathNetwork : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+        UpdateNodeNeighbors();
     }
 
     private void Update()
@@ -33,6 +34,7 @@ public class PathNetwork : MonoBehaviour
         if (renderDirty)
         {
             PathRenderer.Instance.DrawTraversablePaths();
+            UpdateNodeNeighbors();
             renderDirty = false; 
         }
     }
@@ -132,10 +134,6 @@ public class PathNetwork : MonoBehaviour
         paths.Add(new Path(node, nodes.Count));
 
         nodes.Add(new PathNode(position, node));
-        foreach (List<int> neighbours in nodes[node].PastAndFutureNeighbourhoods)
-        {
-            neighbours.Add(nodes.Count - 1);
-        }
 
         renderDirty = true;
         return nodes.Count - 1;
@@ -169,16 +167,6 @@ public class PathNetwork : MonoBehaviour
             if (path.nodeA == discardedNode)
             {
                 path.nodeA = mergedNode; // update path to connect to merged node
-
-                // add mergedNode to neighbours list in its neighbours
-                foreach (List<int> neighbours in nodes[path.nodeB].PastAndFutureNeighbourhoods)
-                {
-                    if (!neighbours.Contains(discardedNode)) continue;
-                    
-                    neighbours.Remove(discardedNode);
-                    if (!neighbours.Contains(mergedNode))
-                        neighbours.Add(mergedNode);
-                }
             }
             else if (path.nodeA > discardedNode)
                 path.nodeA--; // update path to respect reordering of nodes
@@ -186,16 +174,6 @@ public class PathNetwork : MonoBehaviour
             if (path.nodeB == discardedNode)
             {
                 path.nodeB = mergedNode; // update path to connect to merged node
-
-                // add mergedNode to neighbours list in its neighbours
-                foreach (List<int> neighbours in nodes[path.nodeA].PastAndFutureNeighbourhoods)
-                {
-                    if (!neighbours.Contains(discardedNode)) continue;
-                    
-                    neighbours.Remove(discardedNode);
-                    if (!neighbours.Contains(mergedNode))
-                        neighbours.Add(mergedNode);
-                }
             }
             else if (path.nodeB > discardedNode)
                 path.nodeB--; // update path to respect reordering of nodes
@@ -204,11 +182,6 @@ public class PathNetwork : MonoBehaviour
         // track all the nodes connected to the merged node
         // thus if we find repeats we know there are two identical paths
         HashSet<int> connectedNodes = new HashSet<int>();
-
-        foreach (List<int> neighbours in nodes[mergedNode].PastAndFutureNeighbourhoods)
-        {
-            neighbours.Clear();
-        }
 
         for (int i = 0; i < paths.Count; i++)
         {
@@ -228,13 +201,6 @@ public class PathNetwork : MonoBehaviour
                     ErasePath(i);
                     i--;
                 }
-                else
-                {
-                    foreach (List<int> neighbours in nodes[mergedNode].PastAndFutureNeighbourhoods)
-                    {
-                        neighbours.Add(path.nodeB);
-                    }
-                }
             }
             else if (path.nodeB == mergedNode)
             {
@@ -247,24 +213,6 @@ public class PathNetwork : MonoBehaviour
                 else
                 {
                     connectedNodes.Add(path.nodeA);
-
-                    foreach (List<int> neighbours in nodes[mergedNode].PastAndFutureNeighbourhoods)
-                    {
-                        neighbours.Add(path.nodeA);
-                    }
-                }
-            }
-        }
-
-        foreach (var t in nodes)
-        {
-            foreach (List<int> neighbours in t.PastAndFutureNeighbourhoods)
-            {
-                for (int j = 0; j < neighbours.Count; j++)
-                {
-                    if (neighbours[j] > discardedNode)
-                        // update neighbours to respect reordering of nodes
-                        neighbours[j]--;
                 }
             }
         }
@@ -330,19 +278,6 @@ public class PathNetwork : MonoBehaviour
             }
         }
 
-        // update neighbours to respect reordering of nodes
-        foreach (var t in nodes)
-        {
-            foreach (List<int> neighbours in t.PastAndFutureNeighbourhoods)
-            {
-                for (int j = 0; j < neighbours.Count; j++)
-                {
-                    if (neighbours[j] > node)
-                        neighbours[j]--;
-                }
-            }
-        }
-
         renderDirty = true;
         nodes.RemoveAt(node);
     }
@@ -366,18 +301,6 @@ public class PathNetwork : MonoBehaviour
     {
         Path existingPath = paths[path];
 
-        foreach (List<int> neighbours in nodes[existingPath.nodeA].PastAndFutureNeighbourhoods)
-        {
-            neighbours.Remove(existingPath.nodeB);
-            neighbours.Add(nodes.Count);
-        }
-
-        foreach (List<int> neighbours in nodes[existingPath.nodeB].PastAndFutureNeighbourhoods)
-        {
-            neighbours.Remove(existingPath.nodeA);
-            neighbours.Add(nodes.Count);
-        }
-
         nodes.Add(new PathNode(middlePosition, existingPath.nodeA, existingPath.nodeB));
 
         paths.Add(new Path(nodes.Count - 1, existingPath.nodeB));
@@ -394,12 +317,6 @@ public class PathNetwork : MonoBehaviour
      */
     public void ErasePath(int path)
     {
-        foreach (List<int> neighbours in nodes[paths[path].nodeA].PastAndFutureNeighbourhoods)
-            neighbours.Remove(paths[path].nodeB);
-
-        foreach (List<int> neighbours in nodes[paths[path].nodeB].PastAndFutureNeighbourhoods)
-            neighbours.Remove(paths[path].nodeA);
-
         renderDirty = true;
         paths.RemoveAt(path);
     }
@@ -606,6 +523,30 @@ public class PathNetwork : MonoBehaviour
         return paths[path].name;
     }
 
+    private void UpdateNodeNeighbors()
+    {
+        foreach (PathNode node in nodes)
+        {
+            node.pastNeighbours.Clear();
+            node.futureNeighbours.Clear();
+        }
+        
+        foreach (Path path in paths)
+        {
+            if (path.pastTraversable)
+            {
+                nodes[path.nodeA].pastNeighbours.Add(path.nodeB);
+                nodes[path.nodeB].pastNeighbours.Add(path.nodeA);
+            }
+
+            if (path.futureTraversable)
+            {
+                nodes[path.nodeA].futureNeighbours.Add(path.nodeB);
+                nodes[path.nodeB].futureNeighbours.Add(path.nodeA);
+            }
+        }
+    }
+
     /**
      * Represents a path between two nodes.
      * Paths may be traversable at some times, but not others.
@@ -652,11 +593,6 @@ public class PathNetwork : MonoBehaviour
         public Vector2 position;
         [HideInInspector] public List<int> pastNeighbours;
         [HideInInspector] public List<int> futureNeighbours;
-
-        public List<int>[] PastAndFutureNeighbourhoods
-        {
-            get { return new[] { pastNeighbours, futureNeighbours }; }
-        }
 
         public PathNode(Vector2 position, params int[] neighbours)
         {

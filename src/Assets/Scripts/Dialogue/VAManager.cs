@@ -7,9 +7,17 @@ public class VAManager : MonoBehaviour
     [SerializeField] public AudioSource VA;
     public List<AudioClip> Scene1Robin;
     public List<AudioClip> Scene1Friend;
-    public List<AudioClip> queue;
-    public AudioClip lastQueue;
+    private List<AudioClip> queue = new List<AudioClip>();
+    private AudioClip lastQueue;
 
+    
+    public static VAManager Instance { get; private set; }
+
+    void Awake()
+    {
+        Instance = this;
+    }
+    
     // Start is called before the first frame update
     void Start()
     {
