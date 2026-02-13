@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
 {
+    public bool CanMove = true;
     private PathFollower pathFollower;
     private Animator animator;
     private SpriteRenderer sprite;
@@ -26,7 +27,9 @@ public class PlayerControl : MonoBehaviour
 
     public void Update()
     {
-        Vector2 inputDirection = moveAction.ReadValue<Vector2>();
+        Vector2 inputDirection = Vector2.zero;
+        if (CanMove)
+            inputDirection = moveAction.ReadValue<Vector2>();
 
         // stop pathfinding path if manual input is entered
         if (!inputDirection.Equals(Vector2.zero))
@@ -42,7 +45,7 @@ public class PlayerControl : MonoBehaviour
 
         bool moving = !movementDirection.Equals(Vector2.zero);
         animator.SetBool("moving", moving);
-        
+
         if (moving) // only update while moving
             sprite.flipX = movementDirection.x > 0;
     }
@@ -52,7 +55,7 @@ public class PlayerControl : MonoBehaviour
      */
     private void PathfindToMouse(InputAction.CallbackContext context)
     {
-        if (!isActiveAndEnabled) return;
+        if (!isActiveAndEnabled || !CanMove) return;
         Vector2 targetPosition = GetMouseWorldPosition();
         pathFollower.PathfindTo(targetPosition);
     }

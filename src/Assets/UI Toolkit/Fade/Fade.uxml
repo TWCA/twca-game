@@ -1,0 +1,4 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/Fade/Fade.uss?fileID=7433441132597879392&amp;guid=28f2c2b6bb4575f749a39ac49d732427&amp;type=3#Fade" />
+    <ui:VisualElement style="flex-grow: 1; background-color: rgb(0, 0, 0); width: 100%; height: 100%; transition-property: all; transition-duration: 2s; opacity: 1;" />
+</ui:UXML>

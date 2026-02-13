@@ -25,7 +25,7 @@ public class PathNetworkEditor : Editor
             EditorUtility.SetDirty(net);
         }
 
-        Vector2 mousePosition = GetMouseWorldPosition();
+        Vector2 mousePosition = EditorUtils.GetMouseWorldPosition();
         DrawPaths(mousePosition);
         DrawNodes(mousePosition);
     }
@@ -239,20 +239,6 @@ public class PathNetworkEditor : Editor
             net.MoveNode(index, mousePosition);
             EditorUtility.SetDirty(net);
         }
-    }
-
-    /**
-     * Finds the position of the cursor in world space.
-     */
-    private static Vector2 GetMouseWorldPosition()
-    {
-        Vector3 worldPosition = Event.current.mousePosition;
-
-        Ray ray = HandleUtility.GUIPointToWorldRay(worldPosition);
-        Plane plane = new Plane(Vector3.forward, Vector3.zero);
-
-        plane.Raycast(ray, out float dist);
-        return ray.GetPoint(dist);
     }
 
     /**
