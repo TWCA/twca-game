@@ -17,15 +17,12 @@ public class AudioManager : MonoBehaviour
     public List<AudioClip> InventoryClick;
     public List<AudioClip> Notifications;
     private Vector3 previousPosition;
-    private RectTransform rect;
     private bool rainStarted = false;
-    [SerializeField] private GameObject admin;
     
 
     void Awake()
     {
         _instance = this;
-        rect = GetComponent<RectTransform>();
         playRain();
     }
 
@@ -34,12 +31,12 @@ public class AudioManager : MonoBehaviour
     {
         bool isFuture = TimeManager.Instance.IsFuture();
         
-        if (rect != null && rect.position != previousPosition && !stepSource.isPlaying)
+        if (transform.position != previousPosition && !stepSource.isPlaying)
         {
             playSteps(isFuture);
             // Debug.Log("Playing step");
         }
-        previousPosition = rect.position;
+        previousPosition = transform.position;
 
         if (isFuture && !rainStarted)
         {
