@@ -17,7 +17,6 @@ public class DialogManager : MonoBehaviour
     public GameObject DialogRoot;
     private System.Action onDialogFinished;
     public Behaviour[] disableWhileDialog;
-    [SerializeField] public VAManager vaManager;
 
 
     private void Awake()
@@ -47,7 +46,7 @@ public class DialogManager : MonoBehaviour
             Debug.LogError("DialogManager: inkJson is not assigned!");
             return;
         }
-        vaManager.startScene();
+        VAManager.Instance.startScene();
         onDialogFinished = onFinished;
         story = new Story(inkJson.text);
         if (!string.IsNullOrEmpty(knot))
@@ -94,12 +93,12 @@ public class DialogManager : MonoBehaviour
                 if (firstTag == "Robin")
                 {
                     isPlayer = true;
-                    vaManager.Enqueue(secondTag);
+                    VAManager.Instance.Enqueue(secondTag);
                     //break;
                 }
                 if (firstTag == "Friend")
                 {
-                    vaManager.Enqueue(secondTag);
+                    VAManager.Instance.Enqueue(secondTag);
                 }
 
                 //foreach (var tag in story.currentTags)
