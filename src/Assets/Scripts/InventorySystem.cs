@@ -107,7 +107,7 @@ public class InventorySystem : MonoBehaviour
 
             // Create UI object and set it to proper position
             Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);
-            UnityEditor.GameObjectUtility.SetParentAndAlign(newItemUIObject.gameObject, inventorySystem.inventoryUIObject.gameObject);
+            newItemUIObject.gameObject.transform.SetParent(inventorySystem.inventoryUIObject.gameObject.transform, false);
 
             InventoryItem newInventoryItem = newItemUIObject.GetComponent<InventoryItem>();
 
