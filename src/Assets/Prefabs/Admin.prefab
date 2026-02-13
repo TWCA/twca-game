@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2891518882324367103}
   - component: {fileID: 4425984495630937229}
   - component: {fileID: 6550940556160746529}
+  - component: {fileID: 875089806589822573}
   m_Layer: 0
   m_Name: Admin
   m_TagString: Untagged
@@ -94,6 +95,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   screenFadeObject: {fileID: 5501483572454794932}
+  FadeDelay: 2000
+  StartDelay: 1000
 --- !u!222 &6550940556160746529
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -102,6 +105,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2251703310826657736}
   m_CullTransparentMesh: 1
+--- !u!114 &875089806589822573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251703310826657736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 949ce9dd94e3e4a91bec9a6d211a2eb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathSegment: {fileID: 5217357667674723715, guid: ce9131d579b6b22b7af19600ddeae203, type: 3}
+  zDepth: 1
 --- !u!1 &5501483572454794932
 GameObject:
   m_ObjectHideFlags: 0
