@@ -382,6 +382,14 @@ PrefabInstance:
       propertyPath: chickadee
       value: 
       objectReference: {fileID: 1258118437}
+    - target: {fileID: 263184516214188042, guid: 7b4b524c3e088fe4f849de0a1c06dca6, type: 3}
+      propertyPath: owlsSource
+      value: 
+      objectReference: {fileID: 492276085}
+    - target: {fileID: 263184516214188042, guid: 7b4b524c3e088fe4f849de0a1c06dca6, type: 3}
+      propertyPath: chickadeeSource
+      value: 
+      objectReference: {fileID: 1258118437}
     - target: {fileID: 719165057658449790, guid: 7b4b524c3e088fe4f849de0a1c06dca6, type: 3}
       propertyPath: m_Name
       value: Player

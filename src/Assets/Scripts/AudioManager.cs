@@ -8,17 +8,21 @@ using Random = UnityEngine.Random;
 public class AudioManager : MonoBehaviour
 {
     private static AudioManager _instance;
-    public static AudioManager Instance { get { return _instance; } }
 
-    public AudioSource stepSource, insectSource, rainSource, thunderSource, owls, chickadee;
+    public static AudioManager Instance
+    {
+        get { return _instance; }
+    }
+
+    // oneShotSource shouldn't be messed with. Just leave it at full volume to play random ones-hot sounds.
+    public AudioSource oneShotSource, insectSource, rainSource, thunderSource, owlsSource, chickadeeSource;
     public List<AudioClip> steps;
     public List<AudioClip> stepsWet;
     public List<AudioClip> timeJump;
     public List<AudioClip> InventoryClick;
     public List<AudioClip> Notifications;
     private Vector3 previousPosition;
-    private bool rainStarted = false;
-    
+
 
     void Awake()
     {
@@ -26,43 +30,71 @@ public class AudioManager : MonoBehaviour
         playRain();
     }
 
+    void Start()
+    {
+        TimeManager.Instance.onTimeChanged += () =>
+        {
+            // the time just changed this frame
+            bool isFuture = TimeManager.Instance.IsFuture();
+            Debug.Log(isFuture);
+            if (isFuture)
+                playTimeForward();
+            else
+                playTimeBackward();
+        };
+    }
+
     // Update is called once per frame
     void Update()
     {
-        bool isFuture = TimeManager.Instance.IsFuture();
-        
-        if (transform.position != previousPosition && !stepSource.isPlaying)
-        {
-            playSteps(isFuture);
-            // Debug.Log("Playing step");
-        }
+        // check if we are moving at more than 1 pixel per second
+        bool movingAtSignificantSpeed = Vector2.Distance(transform.position, previousPosition) > Time.deltaTime;
+        if (movingAtSignificantSpeed)
+            playSteps();
         previousPosition = transform.position;
 
-        if (isFuture && !rainStarted)
+        float rainStrength = TimeManager.Instance.GetRainStrength();
+        if (rainStrength <= 0) // no rain
         {
-            playTimeForward();
             stopRain();
-            playThunder();
-            playOwls();
-            playInsects();
-            //stopChickadee();
-            rainStarted = true;
-        }
-        if (isFuture && rainStarted)
-        {
-            playTimeBackward();
             stopThunder();
-            stopOwls();
-            stopInsect();
+            playInsects();
+        }
+        else if (rainStrength > 0 && rainStrength <= 0.5) // light rain
+        {
             playRain();
-            
-            //playChickadee();
-            rainStarted = false;
+            stopThunder();
+            stopInsect();
+        }
+        else // if rainStrength > 0.5 // heavy rain
+        {
+            playRain();
+            playThunder();
+            stopInsect();
+        }
+        
+        float lighting = TimeManager.Instance.GetLightingTime();
+        if (lighting <= 0.2) // day
+        {
+            playChickadee();
+            stopOwls();
+        }
+        else if (lighting < 0.8) // dawn
+        {
+            playChickadee();
+            playOwls();
+        }
+        else // if rainStrength >= 0.8 // night
+        {
+            stopChickadee();
+            playOwls();
         }
     }
 
-    public void playSteps(bool isFuture)
+    public void playSteps()
     {
+        bool isFuture = TimeManager.Instance.IsFuture();
+
         AudioClip step;
         if (isFuture)
         {
@@ -71,25 +103,28 @@ public class AudioManager : MonoBehaviour
         else
         {
             step = steps[Random.Range(0, steps.Count)];
-            
         }
-        stepSource.PlayOneShot(step);
+
+        if (!oneShotSource.isPlaying)
+            oneShotSource.PlayOneShot(step);
     }
-    
+
     public void playInsects()
     {
         insectSource.loop = true;
-        //insectSource.PlayOneShot(insects);
-        insectSource.Play();
+        
+        if (!insectSource.isPlaying)
+            insectSource.Play();
+        
         insectSource.volume = 0.6f;
     }
-    
+
     public void playRain()
     {
         rainSource.loop = true;
-        //rainSource.PlayOneShot(rain);
-        rainSource.Play();
         
+        if (!rainSource.isPlaying)
+            rainSource.Play();
     }
 
     public void stopRain()
@@ -100,9 +135,9 @@ public class AudioManager : MonoBehaviour
     public void playThunder()
     {
         thunderSource.loop = true;
-        //rainSource.PlayOneShot(rain);
-        thunderSource.Play();
-
+        
+        if (!thunderSource.isPlaying)
+            thunderSource.Play();
     }
 
     public void stopThunder()
@@ -114,15 +149,17 @@ public class AudioManager : MonoBehaviour
     {
         insectSource.Pause();
     }
+
     public void playTimeForward()
     {
         AudioClip time = timeJump[0];
-        insectSource.PlayOneShot(time);
+        oneShotSource.PlayOneShot(time);
     }
+
     public void playTimeBackward()
     {
         AudioClip time = timeJump[1];
-        rainSource.PlayOneShot(time);
+        oneShotSource.PlayOneShot(time);
     }
 
     public void playInventory()
@@ -130,28 +167,38 @@ public class AudioManager : MonoBehaviour
         AudioClip inventory = InventoryClick[0];
         insectSource.PlayOneShot(inventory);
     }
+
     public void playOwls()
     {
-        owls.loop = true;
-        owls.Play();
+        // TODO: this plays over and over again annoyingly, it should have random gaps in between
+        owlsSource.loop = true;
+
+        if (!owlsSource.isPlaying)
+            owlsSource.Play();
     }
+
     public void stopOwls()
     {
-        owls.Pause();
+        owlsSource.Pause();
     }
 
     public void playChickadee()
     {
-        chickadee.loop = true;
-        chickadee.Play();
+        // TODO: this plays over and over again annoyingly, it should have random gaps in between
+        chickadeeSource.loop = true;
+        
+        if (!chickadeeSource.isPlaying)
+            chickadeeSource.Play();
     }
+
     public void stopChickadee()
     {
-        chickadee.Pause();
+        chickadeeSource.Pause();
     }
+
     public void playNotification()
     {
         AudioClip notif = Notifications[0];
-        stepSource.PlayOneShot(notif);
+        oneShotSource.PlayOneShot(notif);
     }
 }

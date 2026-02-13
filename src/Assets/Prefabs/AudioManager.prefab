@@ -84,12 +84,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 147fa4a160d9461409d0f9f683dd1732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stepSource: {fileID: 6825867173979630501}
+  oneShotSource: {fileID: 6825867173979630501}
   insectSource: {fileID: 4640294155071505475}
   rainSource: {fileID: 1625471478590732295}
   thunderSource: {fileID: 6270610532493137859}
-  owls: {fileID: 0}
-  chickadee: {fileID: 0}
+  owlsSource: {fileID: 0}
+  chickadeeSource: {fileID: 0}
   steps:
   - {fileID: 8300000, guid: a3db56a886ff7ff438b89f4673f1338f, type: 3}
   - {fileID: 8300000, guid: 98a33bdcdac3baf4ebce97678acdddf5, type: 3}
