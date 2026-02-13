@@ -3,7 +3,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
 {
-    public bool AllowControl = true;
     private PathFollower pathFollower;
     private Animator animator;
     private SpriteRenderer sprite;
@@ -53,7 +52,7 @@ public class PlayerControl : MonoBehaviour
      */
     private void PathfindToMouse(InputAction.CallbackContext context)
     {
-        if (!isActiveAndEnabled || !AllowControl) return;
+        if (!isActiveAndEnabled) return;
         Vector2 targetPosition = GetMouseWorldPosition();
         pathFollower.PathfindTo(targetPosition);
     }
