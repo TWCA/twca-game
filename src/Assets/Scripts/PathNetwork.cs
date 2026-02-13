@@ -13,6 +13,7 @@ public class PathNetwork : MonoBehaviour
 {
     [SerializeField] private List<PathNode> nodes;
     [SerializeField] private List<Path> paths;
+    private bool renderDirty = true; // remembers if the PathRenderer needs to be updated next frame
 
     public static PathNetwork Instance { get; private set; }
 
@@ -25,6 +26,15 @@ public class PathNetwork : MonoBehaviour
     private void Awake()
     {
         Instance = this;
+    }
+
+    private void Update()
+    {
+        if (renderDirty)
+        {
+            PathRenderer.Instance.DrawTraversablePaths();
+            renderDirty = false; 
+        }
     }
 
     /**
@@ -104,11 +114,13 @@ public class PathNetwork : MonoBehaviour
     public void MoveNode(int node, Vector2 position)
     {
         nodes[node].position = position;
+        renderDirty = true;
     }
 
     public int CreateNode(Vector2 position)
     {
         nodes.Add(new PathNode(position));
+        renderDirty = true;
         return nodes.Count - 1;
     }
 
@@ -125,6 +137,7 @@ public class PathNetwork : MonoBehaviour
             neighbours.Add(nodes.Count - 1);
         }
 
+        renderDirty = true;
         return nodes.Count - 1;
     }
 
@@ -256,6 +269,7 @@ public class PathNetwork : MonoBehaviour
             }
         }
 
+        renderDirty = true;
         return mergedNode;
     }
 
@@ -286,6 +300,7 @@ public class PathNetwork : MonoBehaviour
             }
         }
 
+        renderDirty = true;
         return nodesErased;
     }
     
@@ -328,6 +343,7 @@ public class PathNetwork : MonoBehaviour
             }
         }
 
+        renderDirty = true;
         nodes.RemoveAt(node);
     }
 
@@ -338,6 +354,7 @@ public class PathNetwork : MonoBehaviour
     public int BreakPath(int path)
     {
         Vector2 midpoint = (GetPathPositionA(path) + GetPathPositionB(path)) / 2;
+        
         return BreakPath(path, midpoint);
     }
 
@@ -366,6 +383,7 @@ public class PathNetwork : MonoBehaviour
         paths.Add(new Path(nodes.Count - 1, existingPath.nodeB));
         existingPath.nodeB = nodes.Count - 1;
 
+        renderDirty = true;
         return nodes.Count - 1;
     }
 
@@ -382,6 +400,7 @@ public class PathNetwork : MonoBehaviour
         foreach (List<int> neighbours in nodes[paths[path].nodeB].PastAndFutureNeighbourhoods)
             neighbours.Remove(paths[path].nodeA);
 
+        renderDirty = true;
         paths.RemoveAt(path);
     }
 

@@ -1,48 +1,72 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(LineRenderer))]
 public class PathRenderer : MonoBehaviour
 {
-    [Header("Appearance")]
-    [SerializeField] private Color pathColor = new Color(0.45f, 0.32f, 0.18f); // brown default
-    [SerializeField] private float pathWidth = 0.15f; // world units (~15 px)
+    [Header("Appearance")] [SerializeField]
+    private GameObject pathSegment;
 
-    [Header("Rendering Order")]
-    [SerializeField] private int sortingOrder = -10;
+    [Header("Rendering Order")] [SerializeField]
+    private int zDepth = 1;
 
-    private LineRenderer lineRenderer;
+    private List<GameObject> pathSegments = new List<GameObject>();
 
-    void Awake()
+    public static PathRenderer Instance { get; private set; }
+
+    private void Awake()
     {
-        lineRenderer = GetComponent<LineRenderer>();
-
-        lineRenderer.useWorldSpace = true;
-        lineRenderer.startWidth = pathWidth;
-        lineRenderer.endWidth = pathWidth;
-
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.startColor = pathColor;
-        lineRenderer.endColor = pathColor;
-
-        lineRenderer.sortingOrder = sortingOrder;
-        lineRenderer.positionCount = 0;
+        Instance = this;
     }
 
-    public void DrawPath(List<Vector3> points)
+    /**
+     * Draw all traversable paths from the path network. Clears any previously existing paths.
+     */
+    public void DrawTraversablePaths()
     {
-        if (points == null || points.Count < 2)
+        ClearPaths();
+
+        int count = PathNetwork.Instance.GetPathCount();
+        bool isFuture = TimeManager.Instance.IsFuture();
+
+        for (int i = 0; i < count; i++)
         {
-            lineRenderer.positionCount = 0;
-            return;
+            if (PathNetwork.Instance.IsPathTraversableAtTime(i, isFuture))
+            {
+                Vector2 pointA = PathNetwork.Instance.GetPathPositionA(i);
+                Vector2 pointB = PathNetwork.Instance.GetPathPositionB(i);
+
+                DrawPath(pointA, pointB);
+            }
+        }
+    }
+
+    /**
+     * Draw a single path as a GameObject with a LineRenderer.
+     */
+    private void DrawPath(Vector2 pointA, Vector2 pointB)
+    {
+        // instantiate as a child
+        pathSegment = Instantiate(pathSegment, transform);
+        pathSegments.Add(pathSegment);
+
+        LineRenderer line = pathSegment.GetComponent<LineRenderer>();
+        line.SetPositions(new Vector3[]
+        {
+            new Vector3(pointA.x, pointA.y, zDepth),
+            new Vector3(pointB.x, pointB.y, zDepth)
+        });
+    }
+
+    /**
+     * Destory all the path game objects.
+     */
+    public void ClearPaths()
+    {
+        foreach (GameObject segment in pathSegments)
+        {
+            Destroy(segment);
         }
 
-        lineRenderer.positionCount = points.Count;
-        lineRenderer.SetPositions(points.ToArray());
-    }
-
-    public void ClearPath()
-    {
-        lineRenderer.positionCount = 0;
+        pathSegments.Clear();
     }
 }

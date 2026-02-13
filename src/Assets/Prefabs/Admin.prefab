@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1393709265386289331}
   - component: {fileID: 3537925540223150068}
   - component: {fileID: 2891518882324367103}
+  - component: {fileID: 1373175044036862682}
   m_Layer: 0
   m_Name: Admin
   m_TagString: Untagged
@@ -74,3 +75,18 @@ MonoBehaviour:
   isFuture: 0
   futureRainStrength: 0
   futureLightingTime: 1
+--- !u!114 &1373175044036862682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251703310826657736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 949ce9dd94e3e4a91bec9a6d211a2eb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pathColor: {r: 0.45, g: 0.32, b: 0.18, a: 1}
+  pathWidth: 0.15
+  sortingOrder: -10
