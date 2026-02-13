@@ -31,9 +31,6 @@
 # Jetbrains Rider personal-layer settings
 *.DotSettings.user
 
-# VS Code
-.vscode/
-
 # Visual Studio cache directory
 .vs/
 
@@ -49,7 +46,6 @@ ExportedObj/
 *.csproj
 *.unityproj
 *.sln
-*.slnx
 *.suo
 *.tmp
 *.user
@@ -107,4 +103,3 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
 .vscode/
-/UIElementsSchema
