@@ -8,6 +8,9 @@ public class Dog : MonoBehaviour
         Wander,
         Wait
     }
+    private Vector2 wanderTarget;
+    private bool hasWanderTarget = false;
+
 
     public DogState currentState;
 
@@ -17,6 +20,28 @@ public class Dog : MonoBehaviour
     public float followDistance = 4f;
     public float wanderRadius = 5f;
     public float decisionInterval = 3f;
+
+
+    void Wander()
+{
+    if (pathFollower == null) return;
+
+    // If we don't currently have a wander target, pick one
+    if (!hasWanderTarget)
+    {
+        Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * wanderRadius;
+        wanderTarget = (Vector2)transform.position + randomOffset;
+
+        hasWanderTarget = pathFollower.PathfindTo(wanderTarget);
+    }
+
+    // If finished walking, reset so we pick a new target next time
+    if (!pathFollower.IsPathfinding())
+    {
+        hasWanderTarget = false;
+    }
+}
+
 
     private float decisionTimer;
 
@@ -39,6 +64,7 @@ void HandleState()
             break;
 
         case DogState.Wander:
+            Wander();
             break;
 
         case DogState.Wait:
