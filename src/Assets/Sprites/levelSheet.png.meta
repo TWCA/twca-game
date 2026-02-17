@@ -286,7 +286,7 @@ TextureImporter:
         width: 26
         height: 24
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -307,7 +307,7 @@ TextureImporter:
         width: 22
         height: 52
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -328,7 +328,7 @@ TextureImporter:
         width: 30
         height: 54
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -336,6 +336,90 @@ TextureImporter:
       bones: []
       spriteID: c1cb16f4840397f12bbc3824f9defcb4
       internalID: -1633399119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fence_piece_1
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 143
+        width: 13
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb135843ca915725d87a0ea12dcaec72
+      internalID: 1276767771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fence_piece_0
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 144
+        width: 10
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6417bda38c7b990c998be5fdc1734ad8
+      internalID: -1532374345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: time_portal_0
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 100
+        width: 21
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fa6341c621bee316c990a8b46ebca37e
+      internalID: -656951733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: time_portal_1
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 58
+        width: 21
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0e8365a23c026acb2ae1d77a01499269
+      internalID: 1653158321
       vertices: []
       indices: 
       edges: []
@@ -353,7 +437,11 @@ TextureImporter:
     nameFileIdTable:
       fallen_log_0: -1578237449
       fallen_log_1: -1633399119
+      fence_piece_0: -1532374345
+      fence_piece_1: 1276767771
       stump: -788654785
+      time_portal_0: -656951733
+      time_portal_1: 1653158321
       tree_0: 90876106
       tree_1: 1096906265
       tree_2: -1919823883
