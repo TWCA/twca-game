@@ -50,8 +50,21 @@ void Follow()
 {
     if (pathFollower == null || player == null) return;
 
-    pathFollower.PathfindTo(player.position);
+    float distance = Vector2.Distance(transform.position, player.position);
+
+    if (distance > followDistance)
+    {
+        if (!pathFollower.IsPathfinding())
+        {
+            pathFollower.PathfindTo(player.position);
+        }
+    }
+    else
+    {
+        pathFollower.StopPathfinding();
+    }
 }
+
 
 
 void MakeStateDecision()
