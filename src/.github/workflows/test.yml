@@ -1,0 +1,10 @@
+on:
+  push:
+    github-builds
+
+jobs:
+  test:
+    runs-on: unbuntu-latest
+    steps:
+      - name: run test message
+        run: echo "Testing..."
