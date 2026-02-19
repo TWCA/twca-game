@@ -4,6 +4,8 @@ name: Build A Hike Through Time
 
 on:
   pull_request:
+    branches:
+      - '**'
   push:
     branches:
       - 'main'
