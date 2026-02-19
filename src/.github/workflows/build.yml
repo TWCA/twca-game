@@ -8,8 +8,8 @@ on:
       - '**'
   push:
     branches:
-      - 'main'
-      - 'github-builds' # for testing
+      - main
+      - github-builds # for testing
 
 jobs:
   build:
