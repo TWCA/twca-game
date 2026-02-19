@@ -1,10 +1,11 @@
 on:
   push:
-    github-builds
+    branches:
+      - github-builds
 
 jobs:
   test:
-    runs-on: unbuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - name: run test message
         run: echo "Testing..."
