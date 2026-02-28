@@ -27,6 +27,14 @@ jobs:
         with:
           lfs: true
 
+      # Check
+      - name: Get
+        run: ls
+
+      # Check
+      - name: Get src
+        run: ls src
+
       # Cache
       - uses: actions/cache@v3
         with:
