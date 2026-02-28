@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
@@ -8,6 +9,7 @@ public class PlayerControl : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sprite;
 
+    private InputActionMap playerActionMap;
     private InputAction moveAction, clickAction, pointAction;
 
     public void Start()
@@ -16,9 +18,10 @@ public class PlayerControl : MonoBehaviour
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
 
-        moveAction = InputSystem.actions.FindAction("Move");
-        clickAction = InputSystem.actions.FindAction("Click");
-        pointAction = InputSystem.actions.FindAction("Point");
+        playerActionMap = InputSystem.actions.FindActionMap("Player");
+        moveAction = playerActionMap.FindAction("Move");
+        clickAction = playerActionMap.FindAction("Click");
+        pointAction = playerActionMap.FindAction("Point");
 
         // pathfind when the mouse is clicked
         clickAction.performed += PathfindToMouse;
@@ -28,6 +31,14 @@ public class PlayerControl : MonoBehaviour
     public void Update()
     {
         Vector2 inputDirection = Vector2.zero;
+        bool pointerOverUI = EventSystem.current.IsPointerOverGameObject();
+
+        if (pointerOverUI) {
+            clickAction.Disable();
+        } else {
+            clickAction.Enable();
+        }
+
         if (CanMove)
             inputDirection = moveAction.ReadValue<Vector2>();
 
