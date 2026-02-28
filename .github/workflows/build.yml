@@ -9,7 +9,6 @@ on:
   push:
     branches:
       - github-builds # for testing
-      - 142-programming-cicd-builds # for testing
   workflow_dispatch:
 
 jobs:
