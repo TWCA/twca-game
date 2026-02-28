@@ -12,6 +12,9 @@ on:
       - github-builds # for testing
       - 142-programming-cicd-builds # for testing
   workflow_dispatch:
+defaults:
+  run:
+    working-directory: src
 
 jobs:
   build:
@@ -28,7 +31,7 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: Library
-          key: Library-${{ hashFiles('src/Assets/**', 'src/Packages/**', 'src/ProjectSettings/**') }}
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
 
