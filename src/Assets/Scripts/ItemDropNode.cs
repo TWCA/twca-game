@@ -7,6 +7,7 @@ public class ItemDropNode : MonoBehaviour
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
     private SpriteRenderer spriteRenderer;
+    private PlayerDetector playerDetector;
 
     /*
     * Runs some logic that sets up the ItemDropNode
@@ -14,6 +15,9 @@ public class ItemDropNode : MonoBehaviour
     private void Initialize() {
         circleCollider = GetComponent<CircleCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        playerDetector = GetComponentInChildren<PlayerDetector>();
+
+        playerDetector.PlayerTouched += InteractedWith;
 
         InitializeSprite();
     }
@@ -74,9 +78,10 @@ public class ItemDropNode : MonoBehaviour
         }
     }
 
-    void OnMouseDown() {
+    void InteractedWith() {
         if (ActiveItem != null) {
-            inventorySystem.CreatePickupObject(ActiveItem);
+            // inventorySystem.CreatePickupObject(ActiveItem);
+            inventorySystem.AddItem(ActiveItem);
             ActiveItem = null;
 
             InitializeSprite();
