@@ -4,10 +4,13 @@ public class ItemDropNode : MonoBehaviour
 {
     public AllowDenyList AllowDeny;
     public GameObject ActiveItem;
+    public Material SelectedMaterial;
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
     private SpriteRenderer spriteRenderer;
     private PlayerDetector playerDetector;
+    private Material originalMaterial;
+    private Renderer renderer;
 
     /*
     * Runs some logic that sets up the ItemDropNode
@@ -18,8 +21,6 @@ public class ItemDropNode : MonoBehaviour
         playerDetector = GetComponentInChildren<PlayerDetector>();
 
         playerDetector.PlayerTouched += InteractedWith;
-
-        InitializeSprite();
     }
 
     /*
@@ -37,6 +38,11 @@ public class ItemDropNode : MonoBehaviour
     void Start()
     {
         Initialize();
+        InitializeSprite();
+
+        renderer = GetComponent<Renderer>();
+
+        originalMaterial = renderer.material;
 
         inventorySystem = InventorySystem.Instance;
     }
@@ -78,9 +84,8 @@ public class ItemDropNode : MonoBehaviour
         }
     }
 
-    void InteractedWith() {
+    public void InteractedWith() {
         if (ActiveItem != null) {
-            // inventorySystem.CreatePickupObject(ActiveItem);
             inventorySystem.AddItem(ActiveItem);
             ActiveItem = null;
 
@@ -88,5 +93,14 @@ public class ItemDropNode : MonoBehaviour
         } else {
             Debug.Log("No active item in this node");
         }
+    }
+
+    void OnMouseEnter() {
+        renderer.material = SelectedMaterial;
+    }
+
+    void OnMouseExit()
+    {
+        renderer.material = originalMaterial;
     }
 }
