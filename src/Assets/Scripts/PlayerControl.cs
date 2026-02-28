@@ -9,7 +9,7 @@ public class PlayerControl : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sprite;
 
-    private InputActionMap playerActionMap;
+    private InputActionMap playerActionMap, UIActionMap;
     private InputAction moveAction, clickAction, pointAction;
 
     public void Start()
@@ -19,9 +19,11 @@ public class PlayerControl : MonoBehaviour
         sprite = GetComponent<SpriteRenderer>();
 
         playerActionMap = InputSystem.actions.FindActionMap("Player");
+        UIActionMap = InputSystem.actions.FindActionMap("UI");
+
         moveAction = playerActionMap.FindAction("Move");
         clickAction = playerActionMap.FindAction("Click");
-        pointAction = playerActionMap.FindAction("Point");
+        pointAction = UIActionMap.FindAction("Point");
 
         // pathfind when the mouse is clicked
         clickAction.performed += PathfindToMouse;
