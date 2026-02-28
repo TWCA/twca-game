@@ -10,6 +10,7 @@ on:
     branches:
       - main
       - github-builds # for testing
+      - 142-programming-cicd-builds # for testing
   workflow_dispatch:
 
 jobs:
