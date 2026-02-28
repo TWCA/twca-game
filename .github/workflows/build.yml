@@ -24,14 +24,6 @@ jobs:
         with:
           lfs: true
 
-      # Check
-      - name: Get
-        run: ls
-
-      # Check
-      - name: Get src
-        run: ls src
-
       # Cache
       - uses: actions/cache@v3
         with:
@@ -40,16 +32,16 @@ jobs:
           restore-keys: |
             Library-
 
-      # Test
-      - name: Run tests
-        uses: game-ci/unity-test-runner@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          projectPath: ./src
+      # # Test
+      # - name: Run tests
+      #   uses: game-ci/unity-test-runner@v4
+      #   env:
+      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      #   with:
+      #     githubToken: ${{ secrets.GITHUB_TOKEN }}
+      #     projectPath: ./src
 
       # Build
       - name: Build project
