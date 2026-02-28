@@ -10,7 +10,7 @@ public class ItemDropNode : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private PlayerDetector playerDetector;
     private Material originalMaterial;
-    private Renderer renderer;
+    private Renderer materialRenderer;
 
     /*
     * Runs some logic that sets up the ItemDropNode
@@ -40,9 +40,9 @@ public class ItemDropNode : MonoBehaviour
         Initialize();
         InitializeSprite();
 
-        renderer = GetComponent<Renderer>();
+        materialRenderer = GetComponent<Renderer>();
 
-        originalMaterial = renderer.material;
+        originalMaterial = materialRenderer.material;
 
         inventorySystem = InventorySystem.Instance;
     }
@@ -96,11 +96,11 @@ public class ItemDropNode : MonoBehaviour
     }
 
     void OnMouseEnter() {
-        renderer.material = SelectedMaterial;
+        materialRenderer.material = SelectedMaterial;
     }
 
     void OnMouseExit()
     {
-        renderer.material = originalMaterial;
+        materialRenderer.material = originalMaterial;
     }
 }
