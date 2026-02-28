@@ -12,14 +12,16 @@ on:
       - github-builds # for testing
       - 142-programming-cicd-builds # for testing
   workflow_dispatch:
-defaults:
-  run:
-    working-directory: ./src
 
 jobs:
   build:
     name: WebGL Build
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        projectPath:
+          - src
     steps:
       # Checkout
       - name: Checkout repository
