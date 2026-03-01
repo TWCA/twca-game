@@ -54,8 +54,7 @@ public class PlayerControl : MonoBehaviour
             pathFollower.StopPathfinding();
 
             // Reset bringing an item to a location if the player overrides
-            inventorySystem.TargetDropNode = null;
-            inventorySystem.CarriedItem = null;
+            inventorySystem.Cancel();
         }
 
         Vector2 movementDirection;

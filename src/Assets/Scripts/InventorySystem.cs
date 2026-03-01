@@ -111,6 +111,14 @@ public class InventorySystem : MonoBehaviour
     }
 
     /*
+    * Cancels all actions for picking up / dropping items
+    */
+    public void Cancel() {
+        TargetDropNode = null;
+        CarriedItem = null;
+    }
+
+    /*
     * Object that represents an Item in the inventory and its UI elements
     * Used for properly insantiating items in the scene
     */
