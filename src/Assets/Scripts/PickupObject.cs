@@ -38,13 +38,9 @@ public class PickupObject : MonoBehaviour
         if (itemDropNode != null) {
             bool accepted = itemDropNode.ItemIncoming(PickupObjectPrefab);
 
-            if (accepted) {
-                // Make the player route there
-            } else {
+            if (!accepted) {
                 inventorySystem.AddItem(PickupObjectPrefab);
             }
-        } else {
-            inventorySystem.AddItem(PickupObjectPrefab);
         }
 
         inventorySystem.MouseItem = null;
