@@ -50,7 +50,13 @@ public class PlayerControl : MonoBehaviour
 
         // stop pathfinding path if manual input is entered
         if (!inputDirection.Equals(Vector2.zero))
+        {
             pathFollower.StopPathfinding();
+
+            // Reset bringing an item to a location if the player overrides
+            inventorySystem.TargetDropNode = null;
+            inventorySystem.CarriedItem = null;
+        }
 
         Vector2 movementDirection;
         if (pathFollower.IsPathfinding())
