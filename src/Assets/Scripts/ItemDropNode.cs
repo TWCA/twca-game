@@ -13,6 +13,10 @@ public class ItemDropNode : MonoBehaviour
     private Material originalMaterial;
     private Renderer materialRenderer;
 
+    // Events for level code (like the river system) to interact with
+    public event Action ItemPlaced;
+    public event Action ItemRemoved;
+
     /*
     * Runs some logic that sets up the ItemDropNode
     */
@@ -98,11 +102,12 @@ public class ItemDropNode : MonoBehaviour
     public void InteractedWith(PlayerControl player) {
         if (ActiveItem != null) {
             inventorySystem.AddItem(ActiveItem);
-            ActiveItem = null;
+            ClearActiveItem();
 
             player.StopInPlace();
         } else if (inventorySystem.CarriedItem && inventorySystem.TargetDropNode == this) {
-            ActiveItem = inventorySystem.CarriedItem;
+            SetActiveItem(inventorySystem.CarriedItem);
+
             inventorySystem.CarriedItem = null;
             inventorySystem.RemoveItem(ActiveItem);
 
@@ -110,6 +115,22 @@ public class ItemDropNode : MonoBehaviour
         }
 
         InitializeSprite();
+    }
+
+    /*
+    * Sets the active item
+    */
+    private void SetActiveItem(GameObject item) {
+        ActiveItem = item;
+        ItemPlaced.Invoke();
+    }
+
+    /*
+    * Clears the active item
+    */
+    private void ClearActiveItem() {
+        ActiveItem = null;
+        ItemRemoved.Invoke();
     }
 
     void OnMouseEnter() {
