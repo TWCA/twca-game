@@ -226,3 +226,4 @@ MonoBehaviour:
   ItemCount: 1
   CountText: {fileID: 2749063869497847624}
   PickupObjectPrefab: {fileID: 0}
+  SelectedColor: {r: 0, g: 0, b: 0, a: 0}

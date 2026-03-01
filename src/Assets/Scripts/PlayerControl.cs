@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
@@ -8,17 +9,24 @@ public class PlayerControl : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sprite;
 
+    private InputActionMap playerActionMap, UIActionMap;
     private InputAction moveAction, clickAction, pointAction;
+
+    private InventorySystem inventorySystem;
 
     public void Start()
     {
         pathFollower = GetComponent<PathFollower>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
+        inventorySystem = InventorySystem.Instance;
 
-        moveAction = InputSystem.actions.FindAction("Move");
-        clickAction = InputSystem.actions.FindAction("Click");
-        pointAction = InputSystem.actions.FindAction("Point");
+        playerActionMap = InputSystem.actions.FindActionMap("Player");
+        UIActionMap = InputSystem.actions.FindActionMap("UI");
+
+        moveAction = playerActionMap.FindAction("Move");
+        clickAction = playerActionMap.FindAction("Click");
+        pointAction = UIActionMap.FindAction("Point");
 
         // pathfind when the mouse is clicked
         clickAction.performed += PathfindToMouse;
@@ -28,12 +36,26 @@ public class PlayerControl : MonoBehaviour
     public void Update()
     {
         Vector2 inputDirection = Vector2.zero;
+        bool pointerOverUI = EventSystem.current.IsPointerOverGameObject();
+
+        // Toggle the player click action depending on the situation
+        if (pointerOverUI || inventorySystem.CarriedItem != null) {
+            clickAction.Disable();
+        } else {
+            clickAction.Enable();
+        }
+
         if (CanMove)
             inputDirection = moveAction.ReadValue<Vector2>();
 
         // stop pathfinding path if manual input is entered
         if (!inputDirection.Equals(Vector2.zero))
+        {
             pathFollower.StopPathfinding();
+
+            // Reset bringing an item to a location if the player overrides
+            inventorySystem.Cancel();
+        }
 
         Vector2 movementDirection;
         if (pathFollower.IsPathfinding())
@@ -75,5 +97,12 @@ public class PlayerControl : MonoBehaviour
 
         plane.Raycast(ray, out float dist);
         return ray.GetPoint(dist);
+    }
+
+    /*
+    * Stops all pathfinding and halts the player where they are
+    */
+    public void StopInPlace() {
+        pathFollower.StopPathfinding();
     }
 }

@@ -41,11 +41,9 @@ public class PickupObject : MonoBehaviour
             if (!accepted) {
                 inventorySystem.AddItem(PickupObjectPrefab);
             }
-        } else {
-            inventorySystem.AddItem(PickupObjectPrefab);
         }
 
-        inventorySystem.HeldItem = null;
+        inventorySystem.MouseItem = null;
         Destroy(gameObject);
     }
 
