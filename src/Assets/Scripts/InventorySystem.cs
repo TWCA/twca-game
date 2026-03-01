@@ -12,7 +12,8 @@ public class InventorySystem : MonoBehaviour
     public GameObject TemplateItem;
     private Transform inventoryUIObject;
     public static InventorySystem Instance { get; private set; }
-    public GameObject HeldItem;
+    public GameObject MouseItem; // The item that appears where the mouse is
+    public GameObject CarriedItem; // The item that the character is bringing to the node
     private List<Item> items;
 
     // Start is called before the first frame update
@@ -85,7 +86,7 @@ public class InventorySystem : MonoBehaviour
             newObject.name = prefab.name;
             newObject.GetComponent<PickupObject>().PickupObjectPrefab = prefab;
 
-            HeldItem = newObject.gameObject;
+            MouseItem = newObject.gameObject;
 
             return newObject.gameObject;
         }

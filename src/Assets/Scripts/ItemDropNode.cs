@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class ItemDropNode : MonoBehaviour
@@ -19,8 +20,6 @@ public class ItemDropNode : MonoBehaviour
         circleCollider = GetComponent<CircleCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         playerDetector = GetComponentInChildren<PlayerDetector>();
-
-        playerDetector.PlayerTouched += InteractedWith;
     }
 
     /*
@@ -40,11 +39,11 @@ public class ItemDropNode : MonoBehaviour
         Initialize();
         InitializeSprite();
 
+        inventorySystem = InventorySystem.Instance;
         materialRenderer = GetComponent<Renderer>();
-
         originalMaterial = materialRenderer.material;
 
-        inventorySystem = InventorySystem.Instance;
+        playerDetector.PlayerTouched += InteractedWith;
     }
 
     // Update is called once per frame
@@ -70,10 +69,8 @@ public class ItemDropNode : MonoBehaviour
                 // Call some abitrary function that runs when one item is dragged onto the other
                 ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
             } else {
-                ActiveItem = prefab;
-                inventorySystem.HeldItem = null;
-
-                InitializeSprite();
+                inventorySystem.CarriedItem = prefab;
+                inventorySystem.MouseItem = null;
             }
 
             return true;
@@ -85,14 +82,18 @@ public class ItemDropNode : MonoBehaviour
     }
 
     public void InteractedWith() {
+        Debug.Log("B");
         if (ActiveItem != null) {
+            Debug.Log("Active item");
             inventorySystem.AddItem(ActiveItem);
             ActiveItem = null;
-
-            InitializeSprite();
-        } else {
-            Debug.Log("No active item in this node");
+        } else if (inventorySystem.CarriedItem) {
+            Debug.Log("No active item");
+            ActiveItem = inventorySystem.CarriedItem;
+            inventorySystem.CarriedItem = null;
         }
+
+        InitializeSprite();
     }
 
     void OnMouseEnter() {
