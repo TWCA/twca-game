@@ -15,7 +15,6 @@ public class PlayerDetector : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other) {
         if (other.GetComponent<PlayerControl>() && !ignore) {
-            Debug.LogWarning("a");
             PlayerTouched.Invoke();
             ignore = true;
         }

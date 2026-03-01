@@ -82,13 +82,10 @@ public class ItemDropNode : MonoBehaviour
     }
 
     public void InteractedWith() {
-        Debug.Log("B");
-        if (ActiveItem != null) {
-            Debug.Log("Active item");
+        if (ActiveItem != null && inventorySystem.TargetDropNode == this) {
             inventorySystem.AddItem(ActiveItem);
             ActiveItem = null;
         } else if (inventorySystem.CarriedItem) {
-            Debug.Log("No active item");
             ActiveItem = inventorySystem.CarriedItem;
             inventorySystem.CarriedItem = null;
         }
@@ -103,5 +100,11 @@ public class ItemDropNode : MonoBehaviour
     void OnMouseExit()
     {
         materialRenderer.material = originalMaterial;
+    }
+
+    void OnMouseDown() {
+        if (ActiveItem) {
+            inventorySystem.TargetDropNode = this;
+        }
     }
 }

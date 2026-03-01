@@ -14,6 +14,7 @@ public class InventorySystem : MonoBehaviour
     public static InventorySystem Instance { get; private set; }
     public GameObject MouseItem; // The item that appears where the mouse is
     public GameObject CarriedItem; // The item that the character is bringing to the node
+    public ItemDropNode TargetDropNode;
     private List<Item> items;
 
     // Start is called before the first frame update
