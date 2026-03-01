@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1351,6 +1350,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 171ef775bb0de027bbe11ab4d4c36685, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &844472712 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6722954200676686287, guid: 7b4b524c3e088fe4f849de0a1c06dca6, type: 3}
+  m_PrefabInstance: {fileID: 280660429}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &911057076
 GameObject:
   m_ObjectHideFlags: 0
@@ -3682,6 +3686,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Camera
       objectReference: {fileID: 0}
+    - target: {fileID: 1205952532859487973, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: target
+      value: 
+      objectReference: {fileID: 844472712}
     - target: {fileID: 1882751870676019641, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_Color.b
       value: 0
@@ -3732,7 +3740,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.19730943
+      value: 0.196868
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
@@ -3740,7 +3748,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.6053812
+      value: 0.60402685
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
