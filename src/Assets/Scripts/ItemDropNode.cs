@@ -122,7 +122,7 @@ public class ItemDropNode : MonoBehaviour
     */
     private void SetActiveItem(GameObject item) {
         ActiveItem = item;
-        ItemPlaced.Invoke();
+        ItemPlaced?.Invoke();
     }
 
     /*
@@ -130,7 +130,7 @@ public class ItemDropNode : MonoBehaviour
     */
     private void ClearActiveItem() {
         ActiveItem = null;
-        ItemRemoved.Invoke();
+        ItemRemoved?.Invoke();
     }
 
     void OnMouseEnter() {
