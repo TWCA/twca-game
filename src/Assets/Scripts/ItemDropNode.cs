@@ -43,13 +43,19 @@ public class ItemDropNode : MonoBehaviour
         materialRenderer = GetComponent<Renderer>();
         originalMaterial = materialRenderer.material;
 
-        playerDetector.PlayerTouched += InteractedWith;
+        playerDetector.PlayerTouched += () => {
+            InteractedWith(playerDetector.TouchingPlayer);
+        };
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        // Handle when the player is still in the collider and picks up the item
+        // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
+        if (playerDetector.TouchingPlayer != null && inventorySystem.CarriedItem) {
+            InteractedWith(playerDetector.TouchingPlayer);
+        }
     }
 
     private void InitializeSprite() {
@@ -62,6 +68,9 @@ public class ItemDropNode : MonoBehaviour
         }
     }
 
+    /*
+    * Handles when an item is dragged and dropped over a node
+    */
     public bool ItemIncoming(GameObject prefab) {
         // Do we even allow this item in this node?
         if (AllowDeny.IsItemAllowed(prefab.name)) {
@@ -73,6 +82,8 @@ public class ItemDropNode : MonoBehaviour
                 inventorySystem.MouseItem = null;
             }
 
+            inventorySystem.TargetDropNode = this;
+
             return true;
         } else {
             Debug.Log("No, you cannot put that item there.");
@@ -81,13 +92,21 @@ public class ItemDropNode : MonoBehaviour
         }
     }
 
-    public void InteractedWith() {
-        if (ActiveItem != null && inventorySystem.TargetDropNode == this) {
+    /*
+    * Handles when the player enters the region where they can affect the item
+    */
+    public void InteractedWith(PlayerControl player) {
+        if (ActiveItem != null) {
             inventorySystem.AddItem(ActiveItem);
             ActiveItem = null;
-        } else if (inventorySystem.CarriedItem) {
+
+            player.StopInPlace();
+        } else if (inventorySystem.CarriedItem && inventorySystem.TargetDropNode == this) {
             ActiveItem = inventorySystem.CarriedItem;
             inventorySystem.CarriedItem = null;
+            inventorySystem.RemoveItem(ActiveItem);
+
+            player.StopInPlace();
         }
 
         InitializeSprite();
@@ -100,11 +119,5 @@ public class ItemDropNode : MonoBehaviour
     void OnMouseExit()
     {
         materialRenderer.material = originalMaterial;
-    }
-
-    void OnMouseDown() {
-        if (ActiveItem) {
-            inventorySystem.TargetDropNode = this;
-        }
     }
 }

@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /**
@@ -12,9 +14,9 @@ public class InventorySystem : MonoBehaviour
     public GameObject TemplateItem;
     private Transform inventoryUIObject;
     public static InventorySystem Instance { get; private set; }
-    public GameObject MouseItem; // The item that appears where the mouse is
-    public GameObject CarriedItem; // The item that the character is bringing to the node
-    public ItemDropNode TargetDropNode;
+    [NonSerialized] public GameObject MouseItem; // The item that appears where the mouse is
+    [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
+    [NonSerialized] public ItemDropNode TargetDropNode;
     private List<Item> items;
 
     // Start is called before the first frame update
@@ -75,6 +77,19 @@ public class InventorySystem : MonoBehaviour
         }
 
         return true;
+    }
+
+    /*
+    * Handles removing an item from the system
+    */
+    public void RemoveItem(GameObject prefab) {
+        Item existingItem = GetExistingItem(prefab.name);
+
+        if (existingItem != null)
+        {
+            InventoryItem inventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
+            inventoryItem.UpdateItemCount(inventoryItem.ItemCount - 1);
+        }
     }
 
     /*

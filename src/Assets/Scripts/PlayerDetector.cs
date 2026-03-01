@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerDetector : MonoBehaviour
 {
     public event Action PlayerTouched;
-    private bool ignore;
+    [NonSerialized] public PlayerControl TouchingPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -14,13 +14,14 @@ public class PlayerDetector : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if (other.GetComponent<PlayerControl>() && !ignore) {
+        PlayerControl playerControl = other.GetComponent<PlayerControl>();
+        if (playerControl && TouchingPlayer == null) {
+            TouchingPlayer = playerControl;
             PlayerTouched.Invoke();
-            ignore = true;
         }
     }
 
     void OnTriggerExit2D() {
-        ignore = false;
+        TouchingPlayer = null;
     }
 }

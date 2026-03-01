@@ -38,6 +38,7 @@ public class PlayerControl : MonoBehaviour
         Vector2 inputDirection = Vector2.zero;
         bool pointerOverUI = EventSystem.current.IsPointerOverGameObject();
 
+        // Toggle the player click action depending on the situation
         if (pointerOverUI || inventorySystem.CarriedItem != null) {
             clickAction.Disable();
         } else {
@@ -91,5 +92,12 @@ public class PlayerControl : MonoBehaviour
 
         plane.Raycast(ray, out float dist);
         return ray.GetPoint(dist);
+    }
+
+    /*
+    * Stops all pathfinding and halts the player where they are
+    */
+    public void StopInPlace() {
+        pathFollower.StopPathfinding();
     }
 }
