@@ -89,6 +89,7 @@ GameObject:
   - component: {fileID: 7042031468018522758}
   - component: {fileID: 860817972659402281}
   - component: {fileID: 4010410953793984147}
+  - component: {fileID: 1205952532859487973}
   m_Layer: 0
   m_Name: Camera
   m_TagString: MainCamera
@@ -266,3 +267,19 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &1205952532859487973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 494524319859804738}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b660aad3d7bcd4741bf610ca31181707, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  smoothSpeed: 8
+  minBounds: {x: -240, y: -135}
+  maxBounds: {x: 240, y: 135}
