@@ -100,18 +100,20 @@ public class ItemDropNode : MonoBehaviour
     * Handles when the player enters the region where they can affect the item
     */
     public void InteractedWith(PlayerControl player) {
-        if (ActiveItem != null) {
-            inventorySystem.AddItem(ActiveItem);
-            ClearActiveItem();
+        if (inventorySystem.TargetDropNode == this) {
+            if (ActiveItem != null) {
+                inventorySystem.AddItem(ActiveItem);
+                ClearActiveItem();
 
-            player.StopInPlace();
-        } else if (inventorySystem.CarriedItem && inventorySystem.TargetDropNode == this) {
-            SetActiveItem(inventorySystem.CarriedItem);
+                player.StopInPlace();
+            } else if (inventorySystem.CarriedItem) {
+                SetActiveItem(inventorySystem.CarriedItem);
 
-            inventorySystem.CarriedItem = null;
-            inventorySystem.RemoveItem(ActiveItem);
+                inventorySystem.CarriedItem = null;
+                inventorySystem.RemoveItem(ActiveItem);
 
-            player.StopInPlace();
+                player.StopInPlace();
+            }
         }
 
         InitializeSprite();
@@ -140,5 +142,9 @@ public class ItemDropNode : MonoBehaviour
     void OnMouseExit()
     {
         materialRenderer.material = originalMaterial;
+    }
+
+    void OnMouseUp() {
+        inventorySystem.TargetDropNode = this;
     }
 }
