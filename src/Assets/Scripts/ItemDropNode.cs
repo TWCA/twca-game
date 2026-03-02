@@ -109,12 +109,12 @@ public class ItemDropNode : MonoBehaviour
             } else if (inventorySystem.CarriedItem) {
                 SetActiveItem(inventorySystem.CarriedItem);
 
-                inventorySystem.CarriedItem = null;
-                inventorySystem.TargetDropNode = null;
                 inventorySystem.RemoveItem(ActiveItem);
 
                 player.StopInPlace();
             }
+
+            inventorySystem.Cancel();
         }
 
         InitializeSprite();
@@ -146,6 +146,8 @@ public class ItemDropNode : MonoBehaviour
     }
 
     void OnMouseUp() {
-        inventorySystem.TargetDropNode = this;
+        if (inventorySystem.TargetDropNode == null) {
+            inventorySystem.TargetDropNode = this;
+        }
     }
 }
