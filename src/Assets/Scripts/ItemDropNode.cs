@@ -110,6 +110,7 @@ public class ItemDropNode : MonoBehaviour
                 SetActiveItem(inventorySystem.CarriedItem);
 
                 inventorySystem.CarriedItem = null;
+                inventorySystem.TargetDropNode = null;
                 inventorySystem.RemoveItem(ActiveItem);
 
                 player.StopInPlace();
