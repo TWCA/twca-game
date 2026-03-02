@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI%20Toolkit/Introduction/introfade.uss?fileID=7433441132597879392&amp;guid=a93214ab37ae0a919af43d41d0977272&amp;type=3#introfade" />
+    <ui:VisualElement name="container" style="flex-grow: 1; background-color: rgb(0, 0, 0);">
+        <ui:VisualElement name="logo" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Sprites/twca-logo.png?fileID=2800000&amp;guid=7d6e3f4344d20e11a8f6f8f1dd802ba8&amp;type=3#twca-logo&quot;); -unity-background-scale-mode: scale-to-fit; margin-top: 20%; margin-bottom: 20%; margin-right: 20%; margin-left: 20%; transition-property: opacity; transition-duration: 2s; background-color: rgb(0, 0, 0);" />
+    </ui:VisualElement>
+</ui:UXML>
