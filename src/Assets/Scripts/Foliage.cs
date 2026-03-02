@@ -15,14 +15,14 @@ public class Foliage : MonoBehaviour
      */
     private void Awake()
     {
-        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
         if (sprites.Length > 0)
         {
             int restoringSeed = Random.Range(int.MinValue, int.MaxValue);
             
             Random.InitState(GetInstanceID());
             int index = Random.Range(0, sprites.Length);
-            renderer.sprite = sprites[index];
+            
+            GetComponent<SpriteRenderer>().sprite = sprites[index];
             
             Random.InitState(restoringSeed);
         }
