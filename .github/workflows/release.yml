@@ -10,7 +10,7 @@ on:
       name:
         description: 'The title of the release'
         required: true
-        default: '${{ github.event.inputs.tag_name }}'
+        default: '${{ tag_name }}'
       is_prerelease:
         description: 'Is this a pre-release?'
         required: true
