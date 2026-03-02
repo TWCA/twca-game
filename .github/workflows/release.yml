@@ -18,6 +18,7 @@ on:
         description: 'Is this a draft release?'
         required: true
         type: boolean
+  push:
 
 jobs:
   build-and-release:
