@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Version Tag'
+        required: true
+        default: 'v0.0.0'
+      name:
+        description: 'The title of the release'
+        required: true
+        default: '${{ github.event.inputs.tag_name }}'
+      is_prerelease:
+        description: 'Is this a pre-release?'
+        required: true
+        type: boolean
+      is_draft:
+        description: 'Is this a draft release?'
+        required: true
+        type: boolean
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # Cache
+      - uses: actions/cache@v3
+        with:
+          path: src/Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+
+      # Build
+      - name: Build project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: WebGL
+          projectPath: ./src
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Build
+          path: build
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag_name }}
+          name: Release ${{ github.event.inputs.tag_name }}
+          generate_release_notes: true 
+          prerelease: ${{ github.event.inputs.is_prerelease }}
+          draft: ${{ github.event.inputs.is_draft }}
+          files: build/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
