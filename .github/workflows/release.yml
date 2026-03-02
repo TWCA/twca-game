@@ -59,11 +59,11 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag_name }}
-          name: Release ${{ github.event.inputs.tag_name }}
+          tag_name: ${{ inputs.tag_name }}
+          name: Release ${{ inputs.tag_name }}
           generate_release_notes: true 
-          prerelease: ${{ github.event.inputs.is_prerelease }}
-          draft: ${{ github.event.inputs.is_draft }}
+          prerelease: ${{ inputs.is_prerelease }}
+          draft: ${{ inputs.is_draft }}
           files: build/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
