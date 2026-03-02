@@ -14,10 +14,12 @@ on:
         description: 'Is this a pre-release?'
         required: true
         type: boolean
+        default: true
       is_draft:
         description: 'Is this a draft release?'
         required: true
         type: boolean
+        default: true
   push:
 
 jobs:
