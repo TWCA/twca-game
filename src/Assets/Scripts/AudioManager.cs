@@ -207,7 +207,7 @@ public class AudioManager : MonoBehaviour
     {
         if (aud == chickadeeSource)
         {
-            Debug.Log("Queueing Chickadee");
+            // Debug.Log("Queueing Chickadee");
             playingChickadee = true;
             float rand = Random.Range(2f, 5);
             aud.PlayOneShot(Birds[0]);
@@ -215,7 +215,7 @@ public class AudioManager : MonoBehaviour
             playingChickadee = false;
         } else if (aud == owlsSource)
         {
-            Debug.Log("Queueing owls");
+            // Debug.Log("Queueing owls");
             playingOwls = true;
             float rand = Random.Range(9f, 15f);       
             aud.PlayOneShot(Birds[1]);
