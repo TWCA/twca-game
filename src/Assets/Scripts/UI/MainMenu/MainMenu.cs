@@ -30,6 +30,8 @@ public class MainMenu : SubMenu
     }
 
     private void SettingsClick() {
+        MenuController menuController = MenuController.Instance;
+
         menuController.ShowNext<Settings>();
     }
 

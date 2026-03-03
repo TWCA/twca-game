@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 public class SubMenu : MonoBehaviour
 {
     protected VisualElement visualElement;
-    protected MenuController menuController;
+    private MenuController menuController;
     private Dictionary<Button, Action> hooks;
 
     public SubMenu() {}
