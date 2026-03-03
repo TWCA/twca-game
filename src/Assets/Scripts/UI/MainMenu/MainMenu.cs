@@ -4,17 +4,13 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
-public class MainMenuController : MonoBehaviour
+public class MainMenu : SubMenu
 {
-    private VisualElement visualElement;
     private Button playButton, settingsButton, exitButton;
 
-    // Start is called before the first frame update
-    void Start()
+    protected override void OnEnable()
     {
-        UIDocument uiDocument = GetComponent<UIDocument>();
-
-        visualElement = uiDocument.rootVisualElement;
+        base.OnEnable();
 
         playButton = visualElement.Q<Button>("playbutton");
         settingsButton = visualElement.Q<Button>("optionsbutton");
@@ -24,9 +20,9 @@ public class MainMenuController : MonoBehaviour
     }
 
     private void HookButtons() {
-        playButton.clicked += PlayClick;
-        settingsButton.clicked += SettingsClick;
-        exitButton.clicked += ExitClick;
+        HookButton(playButton, PlayClick);
+        HookButton(settingsButton, SettingsClick);
+        HookButton(exitButton, ExitClick);
     }
 
     private void PlayClick() {
@@ -37,6 +33,8 @@ public class MainMenuController : MonoBehaviour
 
     private void SettingsClick() {
         Debug.Log("Settings clicked");
+
+        menuController.ShowNext<Settings>();
     }
 
     private void ExitClick() {
