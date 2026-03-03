@@ -17,6 +17,6 @@ public class Settings : SubMenu
     }
 
     private void HookButtons() {
-        HookButton(backButton, GoBack);
+        HookButton(backButton, menuController.GoBack);
     }
 }

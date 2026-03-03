@@ -12,6 +12,9 @@ public class SubMenu : MonoBehaviour
 
     public SubMenu() {}
 
+    /*
+    * Get our references when the menu is enabled
+    */
     protected virtual void OnEnable() {
         UIDocument uiDocument = GetComponent<UIDocument>();
 
@@ -32,16 +35,18 @@ public class SubMenu : MonoBehaviour
         gameObject.SetActive(visibility);
     }
 
-    protected void GoBack() {
-        menuController.GoBack();
-    }
-
+    /*
+    * Tracks a button event so we can clear them when we set inactive later
+    */
     protected void HookButton(Button button, Action listener) {
         button.clicked += listener;
 
         hooks.Add(button, listener);
     }
 
+    /*
+    * Removes all button event references
+    */
     private void UnhookAllButtons() {
         if (hooks != null) {
             foreach (KeyValuePair<Button, Action> pair in hooks) {

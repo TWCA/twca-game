@@ -27,9 +27,10 @@ public class MenuController : MonoBehaviour
         HideUnopened();
     }
 
+    /*
+    * Shows the subMenu specified next
+    */
     public void ShowNext(SubMenu subMenu) {
-        Debug.Log(subMenu);
-
         if (openSubmenus.Count > 0) {
             SubMenu current = openSubmenus.Peek();
             current.SetVisible(false);
@@ -39,6 +40,9 @@ public class MenuController : MonoBehaviour
         subMenu.SetVisible(true);
     }
 
+    /*
+    * Shows the first submenu of a type next
+    */
     public void ShowNext<T>(T def = default) {
         SubMenu requestedSubmenu = GetSubmenuTracked<T>();
 
@@ -47,18 +51,20 @@ public class MenuController : MonoBehaviour
         }
     }
 
+    /*
+    * Goes back to the last menu
+    */
     public void GoBack() {
         SubMenu current = openSubmenus.Pop();
         current.SetVisible(false);
 
-        Debug.Log(current);
-
         SubMenu next = openSubmenus.Peek();
         next.SetVisible(true);
-
-        Debug.Log(next);
     }
 
+    /*
+    * Horrific function that finds first menu of a type
+    */
     private SubMenu GetSubmenuTracked<T>() {
         foreach (SubMenu subMenu in trackedSubmenus) {
             if (subMenu is T specificSubMenu) {
@@ -69,6 +75,10 @@ public class MenuController : MonoBehaviour
         return null;
     }
 
+    /*
+    * Hides all menus except for the first one tracked
+    * For example, we want to show the main menu on startup but none of the others
+    */
     private void HideUnopened() {
         for (int i = 1; i < trackedSubmenus.Length; i++)
         {

@@ -26,20 +26,14 @@ public class MainMenu : SubMenu
     }
 
     private void PlayClick() {
-        Debug.Log("Play clicked");
-
         SceneManager.LoadScene("level1");
     }
 
     private void SettingsClick() {
-        Debug.Log("Settings clicked");
-
         menuController.ShowNext<Settings>();
     }
 
     private void ExitClick() {
-        Debug.Log("Exit clicked");
-
         // Source for unity editor exit https://gamedevbeginner.com/how-to-quit-the-game-in-unity/
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
