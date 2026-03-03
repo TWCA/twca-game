@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 /**
@@ -12,7 +14,9 @@ public class InventorySystem : MonoBehaviour
     public GameObject TemplateItem;
     private Transform inventoryUIObject;
     public static InventorySystem Instance { get; private set; }
-    public GameObject HeldItem;
+    [NonSerialized] public GameObject MouseItem; // The item that appears where the mouse is
+    [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
+    [NonSerialized] public ItemDropNode TargetDropNode;
     private List<Item> items;
 
     // Start is called before the first frame update
@@ -76,6 +80,19 @@ public class InventorySystem : MonoBehaviour
     }
 
     /*
+    * Handles removing an item from the system
+    */
+    public void RemoveItem(GameObject prefab) {
+        Item existingItem = GetExistingItem(prefab.name);
+
+        if (existingItem != null)
+        {
+            InventoryItem inventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
+            inventoryItem.UpdateItemCount(inventoryItem.ItemCount - 1);
+        }
+    }
+
+    /*
     * Creates a pickupobject (an object that you move around with your mouse from place to place)
     */
     public GameObject CreatePickupObject(GameObject prefab) {
@@ -85,12 +102,20 @@ public class InventorySystem : MonoBehaviour
             newObject.name = prefab.name;
             newObject.GetComponent<PickupObject>().PickupObjectPrefab = prefab;
 
-            HeldItem = newObject.gameObject;
+            MouseItem = newObject.gameObject;
 
             return newObject.gameObject;
         }
 
         return null;
+    }
+
+    /*
+    * Cancels all actions for picking up / dropping items
+    */
+    public void Cancel() {
+        TargetDropNode = null;
+        CarriedItem = null;
     }
 
     /*
