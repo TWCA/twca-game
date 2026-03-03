@@ -22,7 +22,8 @@ public class AudioManager : MonoBehaviour
     public List<AudioClip> InventoryClick;
     public List<AudioClip> Notifications;
     private Vector3 previousPosition;
-
+    public List<AudioClip> Birds;
+    private bool playingChickadee, playingOwls = false;
 
     void Awake()
     {
@@ -77,12 +78,14 @@ public class AudioManager : MonoBehaviour
         if (lighting <= 0.2) // day
         {
             playChickadee();
+            
             stopOwls();
         }
         else if (lighting < 0.8) // dawn
         {
             playChickadee();
             playOwls();
+            
         }
         else // if rainStrength >= 0.8 // night
         {
@@ -170,35 +173,54 @@ public class AudioManager : MonoBehaviour
 
     public void playOwls()
     {
-        // TODO: this plays over and over again annoyingly, it should have random gaps in between
-        owlsSource.loop = true;
+        owlsSource.mute = false;
 
-        if (!owlsSource.isPlaying)
-            owlsSource.Play();
+        if (!playingOwls)
+            StartCoroutine(PlayWithGap(owlsSource));
     }
 
     public void stopOwls()
     {
-        owlsSource.Pause();
+        owlsSource.mute = true;
     }
 
     public void playChickadee()
     {
-        // TODO: this plays over and over again annoyingly, it should have random gaps in between
-        chickadeeSource.loop = true;
-        
-        if (!chickadeeSource.isPlaying)
-            chickadeeSource.Play();
+        chickadeeSource.mute = false;
+
+        if (!playingChickadee)
+            StartCoroutine(PlayWithGap(chickadeeSource));
     }
 
     public void stopChickadee()
     {
-        chickadeeSource.Pause();
+        chickadeeSource.mute = true; 
     }
 
     public void playNotification()
     {
         AudioClip notif = Notifications[0];
         oneShotSource.PlayOneShot(notif);
+    }
+
+    private IEnumerator PlayWithGap(AudioSource aud)
+    {
+        if (aud == chickadeeSource)
+        {
+            // Debug.Log("Queueing Chickadee");
+            playingChickadee = true;
+            float rand = Random.Range(2f, 5);
+            aud.PlayOneShot(Birds[0]);
+            yield return new WaitForSeconds(rand);
+            playingChickadee = false;
+        } else if (aud == owlsSource)
+        {
+            // Debug.Log("Queueing owls");
+            playingOwls = true;
+            float rand = Random.Range(9f, 15f);       
+            aud.PlayOneShot(Birds[1]);
+            yield return new WaitForSeconds(rand);
+            playingOwls = false;
+        }
     }
 }

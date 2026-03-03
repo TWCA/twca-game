@@ -12,14 +12,11 @@ public class PlayerControl : MonoBehaviour
     private InputActionMap playerActionMap, UIActionMap;
     private InputAction moveAction, clickAction, pointAction;
 
-    private InventorySystem inventorySystem;
-
     public void Start()
     {
         pathFollower = GetComponent<PathFollower>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
-        inventorySystem = InventorySystem.Instance;
 
         playerActionMap = InputSystem.actions.FindActionMap("Player");
         UIActionMap = InputSystem.actions.FindActionMap("UI");
@@ -36,8 +33,9 @@ public class PlayerControl : MonoBehaviour
     public void Update()
     {
         Vector2 inputDirection = Vector2.zero;
-        bool pointerOverUI = EventSystem.current.IsPointerOverGameObject();
-
+        bool pointerOverUI = EventSystem.current.IsPointerOverGameObject(); 
+        InventorySystem inventorySystem = InventorySystem.Instance;
+        
         // Toggle the player click action depending on the situation
         if (pointerOverUI || inventorySystem.CarriedItem != null) {
             clickAction.Disable();
