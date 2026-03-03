@@ -766,7 +766,7 @@ GameObject:
   - component: {fileID: 521989645}
   m_Layer: 5
   m_Name: Inventory
-  m_TagString: Untagged
+  m_TagString: InventoryUIRoot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -864,7 +864,6 @@ GameObject:
   - component: {fileID: 894247138}
   - component: {fileID: 894247137}
   - component: {fileID: 894247136}
-  - component: {fileID: 894247140}
   m_Layer: 5
   m_Name: InventoryCanvas
   m_TagString: Untagged
@@ -955,22 +954,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &894247140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 894247135}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff91a7a52d5eb97b093f304be8bd5be0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ItemMax: 5
-  Padding: 1
-  TemplateItem: {fileID: 8508542180599918211, guid: 4318c9e16f2effe3cb46caa973a0d3d8, type: 3}
-  HeldItem: {fileID: 0}
 --- !u!1 &937619373
 GameObject:
   m_ObjectHideFlags: 0
@@ -1283,19 +1266,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.14444445
+      value: 0.002074689
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.14190981
+      value: 0.10162003
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.7111111
+      value: 0.9958507
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.7161804
+      value: 0.7952872
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1311,10 +1294,10 @@ Camera:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 342846003}
   - {fileID: 937619376}
   - {fileID: 894247139}
   - {fileID: 24853137}
   - {fileID: 198441878}
   - {fileID: 2111879118}
   - {fileID: 1332157852}
-  - {fileID: 342846003}

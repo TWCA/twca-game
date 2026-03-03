@@ -12,7 +12,7 @@ public class InventorySystem : MonoBehaviour
     public int ItemMax = 5;
     public int Padding = 1;
     public GameObject TemplateItem;
-    private Transform inventoryUIObject;
+    private GameObject inventoryUIObject;
     public static InventorySystem Instance { get; private set; }
     [NonSerialized] public GameObject MouseItem; // The item that appears where the mouse is
     [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
@@ -27,7 +27,7 @@ public class InventorySystem : MonoBehaviour
 
     private void Awake()
     {
-        inventoryUIObject = transform.GetChild(0);
+        inventoryUIObject = GameObject.FindGameObjectWithTag("InventoryUIRoot");
         Instance = this;
     }
 
@@ -53,7 +53,7 @@ public class InventorySystem : MonoBehaviour
     * returns true if it was a success (if stacking is prevented or not)
     */
     public bool AddItem(GameObject prefab) {
-        if (inventoryUIObject.childCount >= ItemMax) {
+        if (inventoryUIObject.transform.childCount >= ItemMax) {
             Debug.Log($"Inventory reached max size of {ItemMax}!");
         }
 
