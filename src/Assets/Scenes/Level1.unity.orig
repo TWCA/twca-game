@@ -269,7 +269,7 @@ SpriteRenderer:
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &258145517
->>>>>>> main
+>>>>>>> 3154048 (adding camera following and board setting)
 Transform:
   m_CorrespondingSourceObject: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
   m_PrefabInstance: {fileID: 569570491}
@@ -293,11 +293,6 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
   m_PrefabInstance: {fileID: 1910724267}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &140581789 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 494524319859804738, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-  m_PrefabInstance: {fileID: 8325998607508313678}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &181375742 stripped
 Transform:
@@ -431,6 +426,11 @@ Transform:
 Transform:
   m_CorrespondingSourceObject: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
   m_PrefabInstance: {fileID: 625930092}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &140581789 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 494524319859804738, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+  m_PrefabInstance: {fileID: 8325998607508313678}
   m_PrefabAsset: {fileID: 0}
 --- !u!114 &263305437 stripped
 MonoBehaviour:
@@ -2002,7 +2002,7 @@ SpriteRenderer:
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &911057078
->>>>>>> main
+>>>>>>> 3154048 (adding camera following and board setting)
 Transform:
   m_CorrespondingSourceObject: {fileID: 6722954200676686287, guid: 7b4b524c3e088fe4f849de0a1c06dca6, type: 3}
   m_PrefabInstance: {fileID: 280660429}
@@ -4761,7 +4761,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.height
+      value: 1
 <<<<<<< HEAD
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.x
       value: 0.23509933
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
@@ -4776,28 +4792,19 @@ PrefabInstance:
       propertyPath: m_NormalizedViewPortRect.height
       value: 0.62355655
 =======
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.width
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 1
->>>>>>> main
+>>>>>>> 3154048 (adding camera following and board setting)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
+<<<<<<< HEAD
+    m_AddedComponents: [{targetCorrespondingSourceObject: {fileID: 494524319859804738, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}, insertIndex: -1, addedObject: {fileID: 8325998607508313685}}]
+=======
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 494524319859804738, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8325998607508313685}
+>>>>>>> 3154048 (adding camera following and board setting)
   m_SourcePrefab: {fileID: 100100000, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
 --- !u!20 &8325998607508313679 stripped
 Camera:
