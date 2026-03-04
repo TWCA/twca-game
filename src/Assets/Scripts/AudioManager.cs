@@ -37,7 +37,6 @@ public class AudioManager : MonoBehaviour
         {
             // the time just changed this frame
             bool isFuture = TimeManager.Instance.IsFuture();
-            Debug.Log(isFuture);
             if (isFuture)
                 playTimeForward();
             else
@@ -194,7 +193,7 @@ public class AudioManager : MonoBehaviour
 
     public void stopChickadee()
     {
-        chickadeeSource.mute = true; 
+        chickadeeSource.mute = true;
     }
 
     public void playNotification()
@@ -207,7 +206,6 @@ public class AudioManager : MonoBehaviour
     {
         if (aud == chickadeeSource)
         {
-            // Debug.Log("Queueing Chickadee");
             playingChickadee = true;
             float rand = Random.Range(2f, 5);
             aud.PlayOneShot(Birds[0]);
@@ -215,9 +213,8 @@ public class AudioManager : MonoBehaviour
             playingChickadee = false;
         } else if (aud == owlsSource)
         {
-            // Debug.Log("Queueing owls");
             playingOwls = true;
-            float rand = Random.Range(9f, 15f);       
+            float rand = Random.Range(9f, 15f);
             aud.PlayOneShot(Birds[1]);
             yield return new WaitForSeconds(rand);
             playingOwls = false;

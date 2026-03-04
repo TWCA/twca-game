@@ -13,7 +13,7 @@ public class DialogManager : MonoBehaviour
     public Transform choicesRoot;
     public GameObject choiceButtonPrefab;
     private Story story;
-    //private bool isRunning;
+    private bool isRunning = false;
     public GameObject DialogRoot;
     private System.Action onDialogFinished;
     public Behaviour[] disableWhileDialog;
@@ -28,7 +28,17 @@ public class DialogManager : MonoBehaviour
 
         Instance = this;
     }
-
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && isRunning)
+        {
+            if (story.canContinue)
+            {
+                ContinueStory();
+            }
+            
+        }
+    }
     private void SetMovementEnabled(bool enabled)
     {
         if (disableWhileDialog == null) return;
@@ -46,12 +56,11 @@ public class DialogManager : MonoBehaviour
             Debug.LogError("DialogManager: inkJson is not assigned!");
             return;
         }
-        VAManager.Instance.startScene();
         onDialogFinished = onFinished;
         story = new Story(inkJson.text);
         if (!string.IsNullOrEmpty(knot))
             story.ChoosePathString(knot);
-        //isRunning = true;
+        isRunning = true;
         if (DialogRoot != null) DialogRoot.SetActive(true);
         onDialogFinished = onFinished;
         ClearChoices();
@@ -62,7 +71,7 @@ public class DialogManager : MonoBehaviour
 
     public void EndDialog()
     {
-        //isRunning = false;
+        isRunning = false;
         story = null;
         ClearChoices();
         if (DialogRoot != null) DialogRoot.SetActive(false);
@@ -77,10 +86,10 @@ public class DialogManager : MonoBehaviour
     {
         if (story == null) return;
         ClearChoices();
-        while (story.canContinue)
+        if (story.canContinue)
         {
             string line = story.Continue().Trim();
-            if (string.IsNullOrEmpty(line)) continue;
+            //if (string.IsNullOrEmpty(line)) continue;
             bool isPlayer = false;
             List<string> tags = story.currentTags;
 
@@ -94,26 +103,15 @@ public class DialogManager : MonoBehaviour
                 {
                     isPlayer = true;
                     VAManager.Instance.Enqueue(secondTag);
-                    //break;
+                    
                 }
                 if (firstTag == "Friend")
                 {
                     VAManager.Instance.Enqueue(secondTag);
                 }
-
-                //foreach (var tag in story.currentTags)
-                //{
-                //    if (tag == "Robin")
-                //    {
-                //        isPlayer = true;
-
-                //       break;
-                //   }
             }
-
-                AddMessage(line, isPlayer);
+            AddMessage(line, isPlayer);
         }
-
         RefreshChoices();
         Canvas.ForceUpdateCanvases();
         if (historyScrollRect != null)
@@ -139,7 +137,6 @@ public class DialogManager : MonoBehaviour
                 ContinueStory();
             });
         }
-
         if (choices.Count == 0 && !story.canContinue)
         {
             EndDialog();
