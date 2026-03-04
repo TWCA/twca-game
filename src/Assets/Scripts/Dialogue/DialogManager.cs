@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ink.Runtime;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class DialogManager : MonoBehaviour
 {
@@ -63,7 +65,15 @@ public class DialogManager : MonoBehaviour
 
         UpdateDisabledBehaviours();
 
-        ContinueStory();
+        if (story.canContinue)
+        {
+            ContinueStory();
+        }
+        else
+        {
+            Debug.LogError("Knot doesn't have any content");
+            EndDialog();
+        }
     }
 
     public void EndDialog()
@@ -79,30 +89,24 @@ public class DialogManager : MonoBehaviour
 
     private void ContinueStory()
     {
-        if (!story.canContinue)
-        {
-            if (story.currentChoices.Count == 0)
-                EndDialog();
-            else
-                RefreshChoices();
-
-            return;
-        }
-
         string line = story.Continue().Trim();
         List<string> tags = story.currentTags;
 
-        bool isPlayer = tags.Contains("Robin");
-        if (isPlayer)
+        bool isPlayer = false;
+
+        if (tags.Contains("Robin"))
         {
-            tags.Remove("Robin");
+            tags.RemoveAll((string s) => s == "Robin");
+            isPlayer = true;
+        }
+        else if (tags.Contains("Friend"))
+        {
+            tags.RemoveAll((string s) => s == "Friend");
+            // isPlayer = false;
         }
         else
         {
-            if (!tags.Contains("Friend"))
-                Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
-
-            tags.Remove("Friend");
+            Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
         }
 
         foreach (string tag in tags)
@@ -123,36 +127,38 @@ public class DialogManager : MonoBehaviour
 
         AddMessage(line, isPlayer);
 
-        // continue more
+        ClearChoices();
+        VAManager.Instance.OnQueueEmpty(() =>
+        {
+            if (story.canContinue)
+                ContinueStory();
+            else if (story.currentChoices.Count > 0)
+                RefreshChoices();
+            else
+                EndDialog();
+        });
     }
 
     private void RefreshChoices()
     {
-        ClearChoices();
-
-        List<Choice> choices = story.currentChoices;
-        if (choices.Count == 0 && !story.canContinue)
+        foreach (Choice choice in story.currentChoices)
         {
-            EndDialog();
-            return;
-        }
-
-        foreach (Choice choice in choices)
-        {
-            GameObject buttonObject = Instantiate(choiceButtonPrefab, choicesRoot);
-            Button button = buttonObject.GetComponent<Button>();
-            Text label = buttonObject.GetComponentInChildren<Text>();
-
-            label.text = choice.text;
-            button.onClick.AddListener(() =>
+            AddChoiceButton(choice.text, () =>
             {
                 story.ChooseChoiceIndex(choice.index);
                 ContinueStory();
             });
         }
+    }
 
-        Canvas.ForceUpdateCanvases();
-        historyScrollRect.verticalNormalizedPosition = 0f;
+    private void AddChoiceButton(string text, UnityAction callback)
+    {
+        GameObject buttonObject = Instantiate(choiceButtonPrefab, choicesRoot);
+        Button button = buttonObject.GetComponent<Button>();
+        Text label = buttonObject.GetComponentInChildren<Text>();
+
+        label.text = text;
+        button.onClick.AddListener(callback);
     }
 
 
@@ -164,6 +170,9 @@ public class DialogManager : MonoBehaviour
             bubble.SetMessage(text, isPlayer);
         else
             Debug.LogWarning("Message bubble prefab missing MessageBubble script.");
+
+        Canvas.ForceUpdateCanvases();
+        historyScrollRect.verticalNormalizedPosition = 0f;
     }
 
     private void ClearChoices()

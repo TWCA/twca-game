@@ -1,14 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class VAManager : MonoBehaviour
 {
-    [SerializeField] public AudioSource VA;
-    private List<AudioClip> queue = new List<AudioClip>();
-    private bool ignoringNextEnqueue;
-    
+    [FormerlySerializedAs("VA")] [SerializeField]
+    public AudioSource VAaudioSource;
 
+    private List<AudioClip> queue = new List<AudioClip>();
+    private bool ignoringNextEnqueue = false;
+    private List<UnityAction> queueEmptyActions = new List<UnityAction>();
 
     public static VAManager Instance { get; private set; }
 
@@ -20,14 +23,26 @@ public class VAManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Queue();
+        RunQueue();
     }
 
-    public void Queue()
+    public void RunQueue()
     {
-        if (queue.Count != 0 && !VA.isPlaying)
+        if (VAaudioSource.isPlaying) return;
+
+        if (queue.Count == 0)
         {
-            VA.PlayOneShot(queue[0]);
+            // copy so that current actions can't add more actions
+            List<UnityAction> remainingActions = queueEmptyActions;
+            queueEmptyActions = new List<UnityAction>();
+
+            // run actions
+            foreach (UnityAction remainingAction in remainingActions)
+                remainingAction();
+        }
+        else
+        {
+            VAaudioSource.PlayOneShot(queue[0]);
             queue.RemoveAt(0);
         }
     }
@@ -39,7 +54,7 @@ public class VAManager : MonoBehaviour
             ignoringNextEnqueue = false;
             return;
         }
-        
+
         AudioClip audioClip = Resources.Load<AudioClip>(filepath);
         if (audioClip == null)
             Debug.Log("Failed to load voice clip from path: " + filepath);
@@ -50,5 +65,10 @@ public class VAManager : MonoBehaviour
     public void IgnoreNextEnqueue()
     {
         ignoringNextEnqueue = true;
+    }
+
+    public void OnQueueEmpty(UnityAction callback)
+    {
+        queueEmptyActions.Add(callback);
     }
 }

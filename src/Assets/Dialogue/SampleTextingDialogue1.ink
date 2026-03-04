@@ -5,7 +5,7 @@ Hi Robin, just checking in on you, it's been a while since we last talked! #Frie
 
  * [...] #Robin
  -> checkup_end 
- * I've been okay. #Robin #Voice:VA/InterLevel/IveBeenOk
+ * I've been okay. #Robin #Voice:VA/InterLevel/IveBeenOkay
    Oh? Something happening? #Friend #Voice:VA/InterLevel/SomethingHappening
    * * Sam's gone missing, and I haven't found him yet. #Robin #Voice:VA/InterLevel/SamsGone
        Sorry to hear that Robin! Anything I can do? #Friend #Voice:VA/InterLevel/SorryToHear
@@ -20,7 +20,7 @@ Hi Robin, just checking in on you, it's been a while since we last talked! #Frie
    So, #Friend #Voice:VA/InterLevel/SoIKnow #IgnoreNextVoice -> checkup_end 
 
 == checkup_end ==
-I know you've been busy the last few times I tried to invite you out, but we'll hang out this time, okay? #Voice:VA/InterLevel/IKnow
+I know you've been busy the last few times I tried to invite you out, but we'll hang out this time, okay? #Friend #Voice:VA/InterLevel/IKnow
     -> END
  * Okay. #Robin #Voice:VA/InterLevel/Okay
     -> END
