@@ -14,7 +14,6 @@ public class MainMenu : SubMenu
         base.OnEnable();
 
         versionText.text = "Version " + Application.version;
-        Debug.Log(Application.version);
 
         HookButtons();
     }
