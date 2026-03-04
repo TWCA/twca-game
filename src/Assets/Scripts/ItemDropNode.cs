@@ -13,7 +13,6 @@ public class ItemDropNode : MonoBehaviour
     private PlayerDetector playerDetector;
     private Material originalMaterial;
     private Renderer materialRenderer;
-    private PlayerControl player;
 
     // Events for level code (like the river system) to interact with
     public event Action ItemPlaced;
@@ -46,7 +45,6 @@ public class ItemDropNode : MonoBehaviour
         InitializeSprite();
 
         inventorySystem = InventorySystem.Instance;
-        player = PlayerControl.Instance;
         materialRenderer = GetComponent<Renderer>();
         originalMaterial = materialRenderer.material;
 
@@ -83,7 +81,11 @@ public class ItemDropNode : MonoBehaviour
         if (AllowDeny.IsItemAllowed(prefab.name)) {
             if (ActiveItem != null) {
                 // Call some abitrary function that runs when one item is dragged onto the other
-                ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
+                // ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
+
+                // Disabled item mixing for vertical slice
+                // Its producing some issues that will be tackled for beta
+                return false;
             } else {
                 inventorySystem.CarriedItem = prefab;
                 inventorySystem.MouseItem = null;
@@ -103,6 +105,8 @@ public class ItemDropNode : MonoBehaviour
     * Handles when the player enters the region where they can affect the item
     */
     public void InteractedWith() {
+        PlayerControl player = PlayerControl.Instance;
+
         if (inventorySystem.TargetDropNode == this) {
             if (ActiveItem != null) {
                 StartCoroutine(TriggerInteractAnimation(() =>

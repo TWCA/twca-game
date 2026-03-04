@@ -31,10 +31,8 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
         inventorySystem.SelectedInventoryItemBoxChanged += SelectedBoxUpdated;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
+    void OnDestroy() {
+        inventorySystem.SelectedInventoryItemBoxChanged -= SelectedBoxUpdated;
     }
 
     void SelectedBoxUpdated() {
