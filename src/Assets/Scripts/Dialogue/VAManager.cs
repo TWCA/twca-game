@@ -5,16 +5,15 @@ using UnityEngine;
 public class VAManager : MonoBehaviour
 {
     [SerializeField] public AudioSource VA;
-    public List<AudioClip> Scene1;
     private List<AudioClip> queue = new List<AudioClip>();
-    private AudioClip lastQueue;
-
+    private bool ignoringNextEnqueue;
     
+
+
     public static VAManager Instance { get; private set; }
 
     void Awake()
     {
-        lastQueue = Scene1[0];
         Instance = this;
     }
 
@@ -26,32 +25,30 @@ public class VAManager : MonoBehaviour
 
     public void Queue()
     {
-        if (!(queue.Count == 0 ) && !VA.isPlaying)
-        { 
+        if (queue.Count != 0 && !VA.isPlaying)
+        {
             VA.PlayOneShot(queue[0]);
-            lastQueue = queue[0];
             queue.RemoveAt(0);
         }
     }
 
-    public void Enqueue(string tag)
+    public void Enqueue(string filepath)
     {
-        foreach (AudioClip clip in Scene1)
+        if (ignoringNextEnqueue)
         {
-            if (tag[^1].ToString() == "*")
-            {
-                if (clip.name == tag[..^1] && (lastQueue.name[^1].ToString() != "*"))
-                {
-                    queue.Add(clip);
-                }
-            }
-            else
-            {
-                if (clip.name == tag && (lastQueue.name[^1].ToString() != "*"))
-                {
-                    queue.Add(clip);
-                }
-            }               
+            ignoringNextEnqueue = false;
+            return;
         }
+        
+        AudioClip audioClip = Resources.Load<AudioClip>(filepath);
+        if (audioClip == null)
+            Debug.Log("Failed to load voice clip from path: " + filepath);
+        else
+            queue.Add(audioClip);
+    }
+
+    public void IgnoreNextEnqueue()
+    {
+        ignoringNextEnqueue = true;
     }
 }

@@ -27,27 +27,18 @@ public class DialogManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
         Instance = this;
-        
+
         if (inkJson == null)
             Debug.LogError("DialogManager: inkJson is not assigned!");
         else
             story = new Story(inkJson.text);
     }
-    
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && isRunning)
-        {
-            if (story.canContinue)
-                ContinueStory();
-        }
-    }
-    
+
     private void UpdateDisabledBehaviours()
     {
         foreach (var behaviour in disableWhileDialog)
         {
-            if (behaviour != null) 
+            if (behaviour != null)
                 behaviour.enabled = !isRunning;
         }
     }
@@ -59,19 +50,19 @@ public class DialogManager : MonoBehaviour
             Debug.LogError("DialogManager: inkJson is not assigned!");
             return;
         }
-        
+
         if (!string.IsNullOrEmpty(knot))
             story.ChoosePathString(knot);
         else
             Debug.LogError("No knot location passed");
-        
+
         isRunning = true;
         DialogRoot.SetActive(true);
-        
+
         onDialogFinished = onFinished;
-        
+
         UpdateDisabledBehaviours();
-        
+
         ContinueStory();
     }
 
@@ -79,71 +70,79 @@ public class DialogManager : MonoBehaviour
     {
         isRunning = false;
         DialogRoot.SetActive(false);
-        
+
         onDialogFinished?.Invoke();
         onDialogFinished = null;
-        
+
         UpdateDisabledBehaviours();
     }
 
     private void ContinueStory()
     {
-        ClearChoices();
-        
-        if (story.canContinue)
+        if (!story.canContinue)
         {
-            string line = story.Continue().Trim();
-            List<string> tags = story.currentTags;
-            
-            bool isPlayer = tags.Contains("Robin");
-            if (isPlayer)
-            {
-                tags.Remove("Robin");
-            }
+            if (story.currentChoices.Count == 0)
+                EndDialog();
             else
-            {
-                if (!tags.Contains("Friend"))
-                    Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
-                
-                tags.Remove("Friend");
-            }
+                RefreshChoices();
 
-            if (tags.Count > 0)
-            {
-                VAManager.Instance.Enqueue(tags[0]);
-                tags.RemoveAt(0);
-            }
-            else
-            {
-                Debug.LogWarning("Dialog line missing voice line tag");
-            }
-
-            if (tags.Count > 0)
-                Debug.LogWarning("Dialog line contains extra unused tag(s)");
-
-            AddMessage(line, isPlayer);
+            return;
         }
-        
-        RefreshChoices();
+
+        string line = story.Continue().Trim();
+        List<string> tags = story.currentTags;
+
+        bool isPlayer = tags.Contains("Robin");
+        if (isPlayer)
+        {
+            tags.Remove("Robin");
+        }
+        else
+        {
+            if (!tags.Contains("Friend"))
+                Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
+
+            tags.Remove("Friend");
+        }
+
+        foreach (string tag in tags)
+        {
+            if (tag.StartsWith("Voice:"))
+            {
+                VAManager.Instance.Enqueue(tag.Replace("Voice:", "").Trim());
+            }
+            else if (tag == "IgnoreNextVoice")
+            {
+                VAManager.Instance.IgnoreNextEnqueue();
+            }
+            else
+            {
+                Debug.LogWarning("Dialog line contains unknown tag: " + tag);
+            }
+        }
+
+        AddMessage(line, isPlayer);
+
+        // continue more
     }
 
     private void RefreshChoices()
     {
         ClearChoices();
-        
+
         List<Choice> choices = story.currentChoices;
         if (choices.Count == 0 && !story.canContinue)
         {
             EndDialog();
             return;
         }
-        
+
         foreach (Choice choice in choices)
         {
             GameObject buttonObject = Instantiate(choiceButtonPrefab, choicesRoot);
             Button button = buttonObject.GetComponent<Button>();
             Text label = buttonObject.GetComponentInChildren<Text>();
-            
+
             label.text = choice.text;
             button.onClick.AddListener(() =>
             {

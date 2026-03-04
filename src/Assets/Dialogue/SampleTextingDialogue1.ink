@@ -1,27 +1,26 @@
 -> checkup_text
 
 == checkup_text ==
-Hi Robin, just checking in on you, it's been a while since we last talked! #Friend #FriendLine1
+Hi Robin, just checking in on you, it's been a while since we last talked! #Friend #Voice:VA/InterLevel/HiJustChecking
 
- * [...] #Robin #R1A
+ * [...] #Robin
  -> checkup_end 
- * I've been okay. #Robin #RobinLine1
-   Oh? Something happening? #Friend #FriendLine2
-   * * Sam's gone missing, and I haven't found him yet. #Robin #RobinLine2A
-       Sorry to hear that Robin! Anything I can do? #Friend #FriendLine3A
-       No, I'm sure I'll find him soon, I'm okay. #Robin #RobinLine3A
-       Alright then, good luck! #Friend #FriendLine4A
-       Oh and, #Friend #FriendFinalLine-oh_and-ver* -> checkup_end 
-   * * It's just been a bit busy lately. #Robin #RobinLine2B
-       Fair enough. Anyways, just wanted to check in, make sure you're doing well! #Friend #FriendLine3B
+ * I've been okay. #Robin #Voice:VA/InterLevel/IveBeenOk
+   Oh? Something happening? #Friend #Voice:VA/InterLevel/SomethingHappening
+   * * Sam's gone missing, and I haven't found him yet. #Robin #Voice:VA/InterLevel/SamsGone
+       Sorry to hear that Robin! Anything I can do? #Friend #Voice:VA/InterLevel/SorryToHear
+       No, I'm sure I'll find him soon, I'm okay. #Robin #Voice:VA/InterLevel/IllFindHim
+       Alright then, good luck! #Friend #Voice:VA/InterLevel/GoodLuck
+       Oh and, #Friend #Voice:VA/InterLevel/OkIKnow #IgnoreNextVoice -> checkup_end 
+   * * It's just been a bit busy lately. #Robin #Voice:VA/InterLevel/ItsBeenBusy
+       Fair enough. Anyways, just wanted to check in, make sure you're doing well! #Friend #Voice:VA/InterLevel/FairEnough
        -> checkup_end
- * I've been good. #Robin #RobinLine1B
-   That's great to hear! #Friend #FriendLine2B
-   So, #Friend #FriendFinalLine-so-ver* -> checkup_end 
+ * I've been good. #Robin #Voice:VA/InterLevel/IveBeenGood
+   That's great to hear! #Friend #Voice:VA/InterLevel/GreatToHear
+   So, #Friend #Voice:VA/InterLevel/SoIKnow #IgnoreNextVoice -> checkup_end 
 
 == checkup_end ==
-I know you've been busy the last few times I tried to invite you out, but we'll hang out this time, okay? #Friend #FriendFinalLine
- * [...] #Robin #RF1
+I know you've been busy the last few times I tried to invite you out, but we'll hang out this time, okay? #Voice:VA/InterLevel/IKnow
     -> END
- * Okay. #Robin #RobinFinalLine
+ * Okay. #Robin #Voice:VA/InterLevel/Okay
     -> END
