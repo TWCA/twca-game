@@ -98,7 +98,7 @@ public class DialogManager : MonoBehaviour
             {
                 string firstTag = tags[0];
                 string secondTag = tags[1]; // This is your second tag
-                Debug.Log("Second tag: " + secondTag);
+                //Debug.Log("Second tag: " + secondTag);
                 if (firstTag == "Robin")
                 {
                     isPlayer = true;
