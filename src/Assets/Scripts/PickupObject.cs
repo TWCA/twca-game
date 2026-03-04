@@ -48,6 +48,7 @@ public class PickupObject : MonoBehaviour
         }
 
         inventorySystem.MouseItem = null;
+        inventorySystem.SetSelectedInventoryItemBox(null);
         Destroy(gameObject);
     }
 

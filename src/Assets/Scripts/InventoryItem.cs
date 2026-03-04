@@ -2,16 +2,19 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class InventoryItem : MonoBehaviour, IPointerDownHandler
 {
     public int ItemCount = 1; // Starts at 1 by default
     public GameObject CountText;
-    public GameObject PickupObjectPrefab;
-    public Color SelectedColor;
+    public Sprite NonSelectedItemBoxSprite;
+    public Sprite SelectedItemBoxSprite;
+    [NonSerialized] public GameObject PickupObjectPrefab;
+    public Image SpriteImage;
     private InventorySystem inventorySystem;
-    private Image image;
     private SpriteRenderer pickupObjectSpriteRenderer;
+    private Image backgroundImage;
     // private Outline selectedOutline;
 
     // Start is called before the first frame update
@@ -19,18 +22,27 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
     {
         inventorySystem = InventorySystem.Instance;
 
-        image = GetComponent<Image>();
         pickupObjectSpriteRenderer = PickupObjectPrefab.GetComponent<SpriteRenderer>();
-        // selectedOutline = GetComponentInChildren<Outline>();
+        backgroundImage = GetComponent<Image>();
 
-        image.sprite = pickupObjectSpriteRenderer.sprite;
-        image.color = pickupObjectSpriteRenderer.color;
+        SpriteImage.sprite = pickupObjectSpriteRenderer.sprite;
+        SpriteImage.color = pickupObjectSpriteRenderer.color;
+
+        inventorySystem.SelectedInventoryItemBoxChanged += SelectedBoxUpdated;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
+    }
+
+    void SelectedBoxUpdated() {
+        if (inventorySystem.GetSelectedInventoryBox() == this) {
+            backgroundImage.sprite = SelectedItemBoxSprite;
+        } else {
+            backgroundImage.sprite = NonSelectedItemBoxSprite;
+        }
     }
 
     /*
@@ -52,13 +64,13 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
     * Create an object when clicking on the inventory item.
     */
     public void OnPointerDown(PointerEventData eventData) {
+        backgroundImage.sprite = SelectedItemBoxSprite;
+
         GameObject newObject = inventorySystem.CreatePickupObject(PickupObjectPrefab);
 
-        // selectedOutline.effectColor = SelectedColor;
-
         if (newObject) {
-            // ItemCount--;
             UpdateText();
+            inventorySystem.SetSelectedInventoryItemBox(this);
         }
     }
 
