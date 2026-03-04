@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class ItemDropNode : MonoBehaviour
@@ -102,22 +103,44 @@ public class ItemDropNode : MonoBehaviour
     public void InteractedWith(PlayerControl player) {
         if (inventorySystem.TargetDropNode == this) {
             if (ActiveItem != null) {
-                inventorySystem.AddItem(ActiveItem);
-                ClearActiveItem();
+                StartCoroutine(TriggerInteractAnimation(() =>
+                    {
+                        inventorySystem.AddItem(ActiveItem);
+                        ClearActiveItem();
+                        InitializeSprite();
+                    }));
 
                 player.StopInPlace();
             } else if (inventorySystem.CarriedItem) {
                 SetActiveItem(inventorySystem.CarriedItem);
 
-                inventorySystem.RemoveItem(ActiveItem);
+                StartCoroutine(TriggerInteractAnimation(() =>
+                    {
+                        inventorySystem.RemoveItem(ActiveItem);
+                        
+                        InitializeSprite();
+                    }));
 
                 player.StopInPlace();
             }
 
             inventorySystem.Cancel();
         }
+    }
 
-        InitializeSprite();
+    /*
+     * Makes the player run the interact animation
+     */
+    public IEnumerator TriggerInteractAnimation(Action callback)
+    {
+        Animator animator = GameObject.FindWithTag("Player").GetComponent<Animator>();
+        
+        animator.SetBool("interacting", true);
+        
+        yield return new WaitForSeconds(0.8f);
+        
+        callback();
+        animator.SetBool("interacting", false);
     }
 
     /*
