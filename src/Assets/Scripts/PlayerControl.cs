@@ -12,8 +12,12 @@ public class PlayerControl : MonoBehaviour
     private InputActionMap playerActionMap, UIActionMap;
     private InputAction moveAction, clickAction, pointAction;
 
+    public static PlayerControl Instance { get; private set; }
+
     public void Start()
     {
+        Instance = this;
+
         pathFollower = GetComponent<PathFollower>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
@@ -37,13 +41,13 @@ public class PlayerControl : MonoBehaviour
         InventorySystem inventorySystem = InventorySystem.Instance;
         
         // Toggle the player click action depending on the situation
-        if (pointerOverUI || inventorySystem.CarriedItem != null) {
+        if (pointerOverUI || inventorySystem.CarriedItem != null || inventorySystem.MouseItem != null) {
             clickAction.Disable();
         } else {
             clickAction.Enable();
         }
 
-        if (CanMove)
+        if (IsMovementAllowed())
             inputDirection = moveAction.ReadValue<Vector2>();
 
         // stop pathfinding path if manual input is entered
@@ -75,9 +79,9 @@ public class PlayerControl : MonoBehaviour
      */
     private void PathfindToMouse(InputAction.CallbackContext context)
     {
-        if (!isActiveAndEnabled || !CanMove) return;
+        if (!isActiveAndEnabled || !IsMovementAllowed()) return;
         Vector2 targetPosition = GetMouseWorldPosition();
-        pathFollower.PathfindTo(targetPosition);
+        PathfindTo(targetPosition);
     }
 
     /**
@@ -97,10 +101,18 @@ public class PlayerControl : MonoBehaviour
         return ray.GetPoint(dist);
     }
 
+    private bool IsMovementAllowed() {
+        return CanMove && animator.GetBool("interacting") == false;
+    }
+
     /*
     * Stops all pathfinding and halts the player where they are
     */
     public void StopInPlace() {
         pathFollower.StopPathfinding();
+    }
+
+    public void PathfindTo(Vector2 location) {
+        pathFollower.PathfindTo(location);
     }
 }

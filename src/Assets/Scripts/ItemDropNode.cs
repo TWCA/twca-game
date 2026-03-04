@@ -13,6 +13,7 @@ public class ItemDropNode : MonoBehaviour
     private PlayerDetector playerDetector;
     private Material originalMaterial;
     private Renderer materialRenderer;
+    private PlayerControl player;
 
     // Events for level code (like the river system) to interact with
     public event Action ItemPlaced;
@@ -45,11 +46,12 @@ public class ItemDropNode : MonoBehaviour
         InitializeSprite();
 
         inventorySystem = InventorySystem.Instance;
+        player = PlayerControl.Instance;
         materialRenderer = GetComponent<Renderer>();
         originalMaterial = materialRenderer.material;
 
         playerDetector.PlayerTouched += () => {
-            InteractedWith(playerDetector.TouchingPlayer);
+            InteractedWith();
         };
     }
 
@@ -58,8 +60,8 @@ public class ItemDropNode : MonoBehaviour
     {
         // Handle when the player is still in the collider and picks up the item
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
-        if (playerDetector.TouchingPlayer != null && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
-            InteractedWith(playerDetector.TouchingPlayer);
+        if (playerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
+            InteractedWith();
         }
     }
 
@@ -100,7 +102,7 @@ public class ItemDropNode : MonoBehaviour
     /*
     * Handles when the player enters the region where they can affect the item
     */
-    public void InteractedWith(PlayerControl player) {
+    public void InteractedWith() {
         if (inventorySystem.TargetDropNode == this) {
             if (ActiveItem != null) {
                 StartCoroutine(TriggerInteractAnimation(() =>

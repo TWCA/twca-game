@@ -9,11 +9,13 @@ public class PickupObject : MonoBehaviour
     public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
     private InputAction clickAction;
+    private PlayerControl player;
 
     // Start is called before the first frame update
     void Start()
     {
         inventorySystem = InventorySystem.Instance;
+        player = PlayerControl.Instance;
 
         clickAction = InputSystem.actions.FindAction("Click");
 
@@ -40,6 +42,8 @@ public class PickupObject : MonoBehaviour
 
             if (!accepted) {
                 inventorySystem.AddItem(PickupObjectPrefab);
+            } else {
+                player.PathfindTo(itemDropNode.gameObject.transform.position);
             }
         }
 
