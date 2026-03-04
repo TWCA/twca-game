@@ -80,10 +80,10 @@ public class MenuController : MonoBehaviour
     * For example, we want to show the main menu on startup but none of the others
     */
     private void HideUnopened() {
-        for (int i = 1; i < trackedSubmenus.Length; i++)
+        for (int i = 0; i < trackedSubmenus.Length; i++)
         {
             SubMenu subMenu = trackedSubmenus[i];
-            subMenu.SetVisible(false);
+            subMenu.SetVisible(i == 0);
         }
     }
 }

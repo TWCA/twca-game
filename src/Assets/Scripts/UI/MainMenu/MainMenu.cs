@@ -2,19 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class MainMenu : SubMenu
 {
-    private Button playButton, settingsButton, exitButton;
+    public Button playButton, settingsButton, exitButton;
 
     protected override void OnEnable()
     {
         base.OnEnable();
-
-        playButton = visualElement.Q<Button>("playbutton");
-        settingsButton = visualElement.Q<Button>("optionsbutton");
-        exitButton = visualElement.Q<Button>("exitbutton");
 
         HookButtons();
     }

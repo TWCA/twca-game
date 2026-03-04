@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class SubMenu : MonoBehaviour
 {
-    protected VisualElement visualElement;
     private MenuController menuController;
-    private Dictionary<Button, Action> hooks;
+    private Dictionary<Button, UnityAction> hooks;
 
     public SubMenu() {}
 
@@ -16,11 +16,7 @@ public class SubMenu : MonoBehaviour
     * Get our references when the menu is enabled
     */
     protected virtual void OnEnable() {
-        UIDocument uiDocument = GetComponent<UIDocument>();
-
-        visualElement = uiDocument.rootVisualElement;
-
-        hooks = new Dictionary<Button, Action>();
+        hooks = new Dictionary<Button, UnityAction>();
     }
 
     protected virtual void OnDisable() {
@@ -38,8 +34,8 @@ public class SubMenu : MonoBehaviour
     /*
     * Tracks a button event so we can clear them when we set inactive later
     */
-    protected void HookButton(Button button, Action listener) {
-        button.clicked += listener;
+    protected void HookButton(Button button, UnityAction listener) {
+        button.onClick.AddListener(listener);
 
         hooks.Add(button, listener);
     }
@@ -49,8 +45,8 @@ public class SubMenu : MonoBehaviour
     */
     private void UnhookAllButtons() {
         if (hooks != null) {
-            foreach (KeyValuePair<Button, Action> pair in hooks) {
-                pair.Key.clicked -= pair.Value;
+            foreach (KeyValuePair<Button, UnityAction> pair in hooks) {
+                pair.Key.onClick.RemoveAllListeners();
             }
 
             hooks.Clear();

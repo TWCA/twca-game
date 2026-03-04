@@ -1,6 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/Introduction/introfade.uss?fileID=7433441132597879392&amp;guid=a93214ab37ae0a919af43d41d0977272&amp;type=3#introfade" />
-    <ui:VisualElement style="flex-grow: 1; align-self: auto; justify-content: center; align-items: center; background-color: rgb(0, 0, 0);">
-        <ui:Label tabindex="-1" text="Game Logo Goes Here" parse-escape-sequences="true" display-tooltip-when-elided="true" name="animatecomponent" style="align-self: auto; align-items: stretch; -unity-font-style: bold; font-size: 40px; color: rgb(255, 255, 255); transition-property: opacity; transition-duration: 1s;" />
-    </ui:VisualElement>
-</ui:UXML>

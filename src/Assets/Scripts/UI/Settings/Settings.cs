@@ -1,22 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class Settings : SubMenu
 {
     public string MasterVolumePrefKey = "MasterVolumePref";
-    private Button backButton;
-    private SliderInt masterVolume;
+    public Button backButton;
+    // private SliderInt masterVolume;
     protected override void OnEnable()
     {
         base.OnEnable();
 
-        backButton = visualElement.Q<Button>("backbutton");
-        masterVolume = visualElement.Q<SliderInt>("mastervolume");
-
         HookButtons();
-        HookSliders();
+        // HookSliders();
     }
 
     private void HookButtons() {
@@ -27,13 +24,13 @@ public class Settings : SubMenu
         HookButton(backButton, menuController.GoBack);
     }
 
-    private void HookSliders() {
-        masterVolume.RegisterCallback<ChangeEvent<int>>(OnMasterVolumeChanged);
-    }
+    // private void HookSliders() {
+    //     masterVolume.RegisterCallback<ChangeEvent<int>>(OnMasterVolumeChanged);
+    // }
 
-    private void OnMasterVolumeChanged(ChangeEvent<int> changeEvent) {
-        Debug.Log("new value");
-        Debug.Log(changeEvent.newValue);
-        PlayerPrefs.SetInt(MasterVolumePrefKey, changeEvent.newValue);
-    }
+    // private void OnMasterVolumeChanged(ChangeEvent<int> changeEvent) {
+    //     Debug.Log("new value");
+    //     Debug.Log(changeEvent.newValue);
+    //     PlayerPrefs.SetInt(MasterVolumePrefKey, changeEvent.newValue);
+    // }
 }

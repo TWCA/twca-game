@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 617a495484c905fb2986742d6c5a0501
+guid: be7a3c44c9bc97378aeecdc7a050ffd1
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,18 +122,18 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: twca-logo
+  - name: aHikeThroughTimeLogo
     originalName: 
-    pivot: {x: 0.5, y: 0}
+    pivot: {x: 0.5025125, y: 0}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 356
-      height: 100
-    spriteID: c46ae78507afdbd0cb6829cec0f65b4e
+      width: 199
+      height: 115
+    spriteID: 58e6b008d8e81195298e28ec72ff16ea
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -146,25 +146,25 @@ ScriptedImporter:
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 4017475511
+      value0: 469915663
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: twca-logo
+    name: aHikeThroughTimeLogo
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: twca-logo
+    - name: aHikeThroughTimeLogo
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
+        x: -1
         y: 0
-        width: 356
-        height: 100
-      spriteId: c46ae78507afdbd0cb6829cec0f65b4e
+        width: 199
+        height: 115
+      spriteId: 58e6b008d8e81195298e28ec72ff16ea
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -183,5 +183,5 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 356, y: 100}
-  previousTextureSize: {x: 512, y: 128}
+  canvasSize: {x: 198, y: 115}
+  previousTextureSize: {x: 256, y: 128}
