@@ -7,7 +7,7 @@ using System;
 public class InventoryItem : MonoBehaviour, IPointerDownHandler
 {
     public int ItemCount = 1; // Starts at 1 by default
-    public GameObject CountText;
+    public Text CountText;
     public Sprite NonSelectedItemBoxSprite;
     public Sprite SelectedItemBoxSprite;
     [NonSerialized] public GameObject PickupObjectPrefab;
@@ -51,11 +51,7 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
             Destroy(gameObject);
         }
 
-        if (CountText != null) {
-            TextMeshProUGUI countTextMesh = CountText.GetComponent<TextMeshProUGUI>();
-
-            countTextMesh.text = $"{ItemCount}";
-        }
+        CountText.text = $"{ItemCount}";
     }
 
     /*

@@ -245,7 +245,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ItemCount: 1
-  CountText: {fileID: 0}
+  CountText: {fileID: 566494117636494016}
   NonSelectedItemBoxSprite: {fileID: 609219198, guid: f9263af4f2134ed6593a24b2ab1937c4, type: 3}
   SelectedItemBoxSprite: {fileID: -1502704230, guid: f9263af4f2134ed6593a24b2ab1937c4, type: 3}
   SpriteImage: {fileID: 4322343820002786924}
