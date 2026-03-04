@@ -294,7 +294,7 @@ VideoPlayer:
   m_TargetMaterialProperty: <noninit>
   m_RenderMode: 1
   m_AspectRatio: 2
-  m_DataSource: 0
+  m_DataSource: 1
   m_TimeUpdateMode: 0
   m_PlaybackSpeed: 1
   m_AudioOutputMode: 2
@@ -622,10 +622,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.27710843
-    y: 0.17703348
-    width: 0.44485635
-    height: 0.645933
+    x: 0.24947809
+    y: 0.24860853
+    width: 0.50104386
+    height: 0.5009276
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60

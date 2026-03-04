@@ -19,6 +19,8 @@ public class IntroManager : MonoBehaviour
     {
         twcaSprite.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
         hikeSprite.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+
+        twcaVideoPlayer.url = System.IO.Path.Combine(Application.streamingAssetsPath, "twcaLogo.webm"); 
     }
 
     private void Update()
