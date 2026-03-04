@@ -52,28 +52,30 @@ public class DialogManager : MonoBehaviour
             Debug.LogError("DialogManager: inkJson is not assigned!");
             return;
         }
-
+        
         if (!string.IsNullOrEmpty(knot))
             story.ChoosePathString(knot);
         else
             Debug.LogError("No knot location passed");
 
+        if (!story.canContinue)
+        {
+            Debug.LogError("Knot doesn't have any content");
+            onFinished?.Invoke();
+            return;
+        }
+        
         isRunning = true;
         DialogRoot.SetActive(true);
 
         onDialogFinished = onFinished;
 
         UpdateDisabledBehaviours();
-
-        if (story.canContinue)
-        {
-            ContinueStory();
-        }
-        else
-        {
-            Debug.LogError("Knot doesn't have any content");
-            EndDialog();
-        }
+        
+        Canvas.ForceUpdateCanvases();
+        historyScrollRect.verticalNormalizedPosition = 0f;
+        
+        ContinueStory();
     }
 
     public void EndDialog()
