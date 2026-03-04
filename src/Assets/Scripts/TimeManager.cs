@@ -11,7 +11,7 @@ public class TimeManager : MonoBehaviour
 
     [SerializeField] public Material paletteSwapMaterial;
     [SerializeField] private bool isFuture = false;
-    [SerializeField] private float futureRainStrength = 0;
+    [SerializeField] private float futureRainStrength = 1;
     [SerializeField] private float futureLightingTime = 1;
     
     private LinkedList<TimeObject> timeObjects = new LinkedList<TimeObject>();

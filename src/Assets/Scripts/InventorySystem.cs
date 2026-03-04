@@ -17,6 +17,8 @@ public class InventorySystem : MonoBehaviour
     [NonSerialized] public GameObject MouseItem; // The item that appears where the mouse is
     [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
     [NonSerialized] public ItemDropNode TargetDropNode;
+    private InventoryItem selectedInventoryItemBox; // The InventoryItem UI element that is selected
+    public event Action SelectedInventoryItemBoxChanged;
     private List<Item> items;
 
     // Start is called before the first frame update
@@ -116,6 +118,16 @@ public class InventorySystem : MonoBehaviour
     public void Cancel() {
         TargetDropNode = null;
         CarriedItem = null;
+    }
+
+    public void SetSelectedInventoryItemBox(InventoryItem inventoryItem) {
+        selectedInventoryItemBox = inventoryItem;
+
+        SelectedInventoryItemBoxChanged.Invoke();
+    }
+
+    public InventoryItem GetSelectedInventoryBox() {
+        return selectedInventoryItemBox;
     }
 
     /*
