@@ -1,109 +1,74 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class VAManager : MonoBehaviour
 {
-    [SerializeField] public AudioSource VA;
-    public List<AudioClip> Scene1Robin;
-    public List<AudioClip> Scene1Friend;
-    private List<AudioClip> queue = new List<AudioClip>();
-    private AudioClip lastQueue;
+    [FormerlySerializedAs("VA")] [SerializeField]
+    public AudioSource VAaudioSource;
 
-    
+    private List<AudioClip> queue = new List<AudioClip>();
+    private bool ignoringNextEnqueue = false;
+    private List<UnityAction> queueEmptyActions = new List<UnityAction>();
+
     public static VAManager Instance { get; private set; }
 
     void Awake()
     {
         Instance = this;
     }
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        lastQueue = Scene1Friend[0];
-    }
 
     // Update is called once per frame
     void Update()
     {
-        Queue();
+        RunQueue();
     }
 
-    public void startScene()
+    public void RunQueue()
     {
-        VA.PlayOneShot(Scene1Friend[0]);
+        if (VAaudioSource.isPlaying) return;
 
-    }
-    public void Queue()
-    {
-        if (!(queue.Count == 0 ) && !VA.isPlaying)
+        if (queue.Count == 0)
         {
-            //lastQueue = Scene1Robin[0];
-            if ((lastQueue == Scene1Friend[6] || lastQueue == Scene1Friend[8]) && queue[0] == Scene1Friend[7])
-            {
-                queue.RemoveAt(0);
-                return;
-            }
-            VA.PlayOneShot(queue[0]);
-            lastQueue = queue[0];
+            // copy so that current actions can't add more actions
+            List<UnityAction> remainingActions = queueEmptyActions;
+            queueEmptyActions = new List<UnityAction>();
+
+            // run actions
+            foreach (UnityAction remainingAction in remainingActions)
+                remainingAction();
+        }
+        else
+        {
+            VAaudioSource.PlayOneShot(queue[0]);
             queue.RemoveAt(0);
-            
         }
     }
 
-    public void Enqueue(string tag)
+    public void Enqueue(string filepath)
     {
-        if (tag == "R1B")
+        if (ignoringNextEnqueue)
         {
-            queue.Add(Scene1Robin[0]);
-        } 
-        if (tag == "R1C")
-        {
-            queue.Add(Scene1Robin[1]);
+            ignoringNextEnqueue = false;
+            return;
         }
-        if (tag == "R2A")
-        {
-            queue.Add(Scene1Robin[2]);
-        }
-        if (tag == "R2B")
-        {
-            queue.Add(Scene1Robin[3]);
-        }
-        if (tag == "R3A")
-        {
-            queue.Add(Scene1Robin[4]);
-        }
-        if (tag == "RF2")
-        {
-            queue.Add(Scene1Robin[5]);
-        }
-        if (tag == "F2A")
-        {
-            queue.Add(Scene1Friend[1]);
-        }
-        if (tag == "F2B")
-        {
-            queue.Add(Scene1Friend[2]);
-            queue.Add(Scene1Friend[6]);
-        }
-        if (tag == "F3A")
-        {
-            queue.Add(Scene1Friend[3]);
-        }
-        if (tag == "F3B")
-        {
-            queue.Add(Scene1Friend[4]);
-        }
-        if (tag == "F4A")
-        {
-            queue.Add(Scene1Friend[5]);
-            queue.Add(Scene1Friend[8]);
-        }
-        
-        if (tag == "FF")
-        {
-            queue.Add(Scene1Friend[7]);
-        }
+
+        AudioClip audioClip = Resources.Load<AudioClip>(filepath);
+        if (audioClip == null)
+            Debug.Log("Failed to load voice clip from path: " + filepath);
+        else
+            queue.Add(audioClip);
+    }
+
+    public void IgnoreNextEnqueue()
+    {
+        ignoringNextEnqueue = true;
+    }
+
+    public void OnQueueEmpty(UnityAction callback)
+    {
+        queueEmptyActions.Add(callback);
     }
 }
