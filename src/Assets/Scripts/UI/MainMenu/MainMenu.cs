@@ -7,10 +7,13 @@ using UnityEngine.UI;
 public class MainMenu : SubMenu
 {
     public Button playButton, settingsButton, exitButton;
+    public Text versionText;
 
     protected override void OnEnable()
     {
         base.OnEnable();
+
+        versionText.text = $"Version {Application.version}";
 
         HookButtons();
     }
