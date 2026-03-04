@@ -1261,8 +1261,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   BackButton: {fileID: 1167431976632219287}
   SaveButton: {fileID: 1122430618955038158}
-  MasterVolumeSlider: {fileID: 0}
-  MasterVolumeText: {fileID: 0}
+  MasterVolumeSlider: {fileID: 620666996006912567}
+  MasterVolumeText: {fileID: 6573630509656889233}
 --- !u!1001 &81163717859476556
 PrefabInstance:
   m_ObjectHideFlags: 0
