@@ -58,7 +58,7 @@ public class ItemDropNode : MonoBehaviour
     {
         // Handle when the player is still in the collider and picks up the item
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
-        if (playerDetector.TouchingPlayer != null && inventorySystem.CarriedItem) {
+        if (playerDetector.TouchingPlayer != null && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
             InteractedWith(playerDetector.TouchingPlayer);
         }
     }
