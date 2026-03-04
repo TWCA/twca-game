@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: bf91e0b103f9f694e937edffcf36d9d9
+<<<<<<<< HEAD:src/Assets/Audio/Steps.meta
+guid: 69adad5ea8d3ef1bfbb5c54d8a0b23c2
+========
+guid: b3b4e6782d72ada4889e7c1a4e7765ed
+>>>>>>>> main:src/Assets/Audio/TimeJimp.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

@@ -64,7 +64,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 60
-  intersectionSize: 12
+  intersectionSize: 20
   maxPathError: 60
   pathLerpRate: 0.9
 --- !u!212 &8328945196773836036
@@ -129,7 +129,7 @@ Animator:
   m_GameObject: {fileID: 719165057658449790}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e4063211ebce122fdab9a26f95e0713b, type: 2}
+  m_Controller: {fileID: 9100000, guid: c83952f8f277b27719d0e88039d67cb0, type: 2}
   m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

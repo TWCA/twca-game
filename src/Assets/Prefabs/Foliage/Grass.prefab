@@ -46,7 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprites:
-  - {fileID: -788654785, guid: bbd924bc67ec9b339aea926a4aaac457, type: 3}
+  - {fileID: -1598216196, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
+  - {fileID: -1807362458, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
+  - {fileID: -500639129, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
 --- !u!212 &673236359185433408
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -88,12 +90,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -788654785, guid: bbd924bc67ec9b339aea926a4aaac457, type: 3}
+  m_Sprite: {fileID: -1807362458, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 46, y: 61}
+  m_Size: {x: 45, y: 60}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
