@@ -5,26 +5,20 @@ using UnityEngine.UI;
 
 public class Settings : SubMenu
 {
-    public string MasterVolumePrefKey = "MasterVolumePref";
     public Button BackButton, SaveButton;
     public Slider MasterVolumeSlider;
+    private SettingsLoader settingsLoader;
+    private SettingsLoader.Setting masterVolumeSetting;
     protected override void OnEnable()
     {
         base.OnEnable();
 
+        settingsLoader = SettingsLoader.Instance;
+        masterVolumeSetting = settingsLoader.GetSetting("MasterVolume");
+
+        MasterVolumeSlider.value = masterVolumeSetting.Get();
+
         HookButtons();
-    }
-
-    private void LoadMasterVolume() {
-        float MasterVolumeSetting;
-
-        if (PlayerPrefs.HasKey(MasterVolumePrefKey)) {
-            MasterVolumeSetting = PlayerPrefs.GetFloat(MasterVolumePrefKey);
-        } else {
-            MasterVolumeSetting = 50;
-        }
-
-        MasterVolumeSlider.value = MasterVolumeSetting;
     }
 
     private void HookButtons() {
@@ -35,6 +29,6 @@ public class Settings : SubMenu
     }
 
     private void SaveClick() {
-        PlayerPrefs.SetFloat(MasterVolumePrefKey, MasterVolumeSlider.value);
+        masterVolumeSetting.Set(MasterVolumeSlider.value);
     }
 }
