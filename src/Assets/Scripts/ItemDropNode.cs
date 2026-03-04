@@ -137,7 +137,7 @@ public class ItemDropNode : MonoBehaviour
         
         animator.SetBool("interacting", true);
         
-        yield return new WaitForSeconds(0.8);
+        yield return new WaitForSeconds(0.8f);
         
         callback();
         animator.SetBool("interacting", false);
