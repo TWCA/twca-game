@@ -49,7 +49,7 @@ public class ItemDropNode : MonoBehaviour
         originalMaterial = materialRenderer.material;
 
         playerDetector.PlayerTouched += () => {
-            InteractedWith(playerDetector.TouchingPlayer);
+            InteractedWith();
         };
     }
 
@@ -58,8 +58,8 @@ public class ItemDropNode : MonoBehaviour
     {
         // Handle when the player is still in the collider and picks up the item
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
-        if (playerDetector.TouchingPlayer != null && inventorySystem.CarriedItem) {
-            InteractedWith(playerDetector.TouchingPlayer);
+        if (playerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
+            InteractedWith();
         }
     }
 
@@ -81,7 +81,11 @@ public class ItemDropNode : MonoBehaviour
         if (AllowDeny.IsItemAllowed(prefab.name)) {
             if (ActiveItem != null) {
                 // Call some abitrary function that runs when one item is dragged onto the other
-                ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
+                // ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
+
+                // Disabled item mixing for vertical slice
+                // Its producing some issues that will be tackled for beta
+                return false;
             } else {
                 inventorySystem.CarriedItem = prefab;
                 inventorySystem.MouseItem = null;
@@ -100,7 +104,9 @@ public class ItemDropNode : MonoBehaviour
     /*
     * Handles when the player enters the region where they can affect the item
     */
-    public void InteractedWith(PlayerControl player) {
+    public void InteractedWith() {
+        PlayerControl player = PlayerControl.Instance;
+
         if (inventorySystem.TargetDropNode == this) {
             if (ActiveItem != null) {
                 StartCoroutine(TriggerInteractAnimation(() =>
