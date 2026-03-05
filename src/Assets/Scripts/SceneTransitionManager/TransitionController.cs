@@ -52,7 +52,7 @@ public class TransitionController : MonoBehaviour
         await Task.Delay((int)(FadeOutDelay * 1000));
 
         // Load desired scene
-        SceneManager.LoadSceneAsync(sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 
     // Creates a node in the path network corresponding to the position of the level portal & the exit node
