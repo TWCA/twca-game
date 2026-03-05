@@ -16,6 +16,7 @@ public class DialogManager : MonoBehaviour
     public GameObject notificationBubblePrefab;
     public Transform choicesRoot;
     public GameObject choiceButtonPrefab;
+    public Text timeText;
 
     public GameObject DialogRoot;
     public Behaviour[] disableWhileDialog;
@@ -76,6 +77,11 @@ public class DialogManager : MonoBehaviour
 
         UpdateDisabledBehaviours();
 
+        if (TimeManager.Instance.IsFuture())
+            timeText.text = "9:43pm";
+        else
+            timeText.text = "11:20am";
+
         ClearMessages();
         ContinueStory();
     }
@@ -97,19 +103,19 @@ public class DialogManager : MonoBehaviour
         List<string> tags = story.currentTags;
 
         string notificationTitle = GetNotificationTitle(tags);
-        
+
         if (notificationTitle == null)
         {
             bool isPlayer = IsTaggedPlayer(tags);
-            AddMessage(line, isPlayer);   
+            AddMessage(line, isPlayer);
         }
         else
         {
             AddNotification(notificationTitle, line);
         }
-        
+
         HandleVoiceTags(tags);
-        
+
         ClearChoices();
         VAManager.Instance.OnQueueEmpty(() =>
         {
@@ -153,7 +159,7 @@ public class DialogManager : MonoBehaviour
             }
         }
     }
-    
+
     private string GetNotificationTitle(List<string> tags)
     {
         foreach (string tag in tags)
@@ -205,7 +211,7 @@ public class DialogManager : MonoBehaviour
         GameObject obj = Instantiate(notificationBubblePrefab, historyContent);
         NotificationBubble bubble = obj.GetComponent<NotificationBubble>();
         bubble.SetMessage(title, body);
-        
+
         Canvas.ForceUpdateCanvases();
         historyScrollRect.verticalNormalizedPosition = 0f;
     }
@@ -218,7 +224,7 @@ public class DialogManager : MonoBehaviour
             Destroy(choicesRoot.GetChild(i).gameObject);
         }
     }
-    
+
     private void ClearMessages()
     {
         for (int i = historyContent.childCount - 1; i >= 0; i--)
