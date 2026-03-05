@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor.Animations;
 using UnityEngine;
 
@@ -29,7 +30,9 @@ public class RiverManager : MonoBehaviour
                 
                 NightAnimator.runtimeAnimatorController = RiverNightP2;
 
-                Destroy(FirstRiverBlock.gameObject);
+                TimeObject timeObject = FirstRiverBlock.AddComponent<TimeObject>();
+                timeObject.SetSituation(TimeObject.Situation.PastWithoutFuture);
+                
                 pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP2"), true);
 
                 break;
