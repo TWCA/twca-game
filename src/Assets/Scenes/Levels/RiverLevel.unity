@@ -1047,15 +1047,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3249833535172645494, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
       propertyPath: PortalPosition.x
-      value: 240
+      value: 254.9075
+      objectReference: {fileID: 0}
+    - target: {fileID: 3249833535172645494, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
+      propertyPath: PortalPosition.y
+      value: -34.989086
       objectReference: {fileID: 0}
     - target: {fileID: 4752622488921786976, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 203.9
+      value: 215.9
       objectReference: {fileID: 0}
     - target: {fileID: 4752622488921786976, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6.1
+      value: -35.4
       objectReference: {fileID: 0}
     - target: {fileID: 4752622488921786976, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1562,7 +1566,7 @@ PrefabInstance:
       objectReference: {fileID: -1096976583, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
     - target: {fileID: 1475751711233110218, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_Radius
-      value: 32
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1857437856240688635, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_Name
@@ -1578,11 +1582,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4267484377463088540, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 80.079956
+      value: 61.8
       objectReference: {fileID: 0}
     - target: {fileID: 4267484377463088540, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -38.147575
+      value: -35.3
       objectReference: {fileID: 0}
     - target: {fileID: 4267484377463088540, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1622,7 +1626,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8591946189529635029, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_Radius
-      value: 30
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3569,6 +3573,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   situation: 2
   futureVersion: {fileID: 0}
+--- !u!114 &1935557491 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5607203572572925108, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
+  m_PrefabInstance: {fileID: 723942943}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9155cf0ce89b2587d82812733644f182, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1996807895
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3805,11 +3820,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[16].name
-      value: 
+      value: nightP3-A
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[18].name
-      value: 
+      value: nightP3-B
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[1].nodeA
@@ -4853,7 +4868,7 @@ MonoBehaviour:
   RiverNightP3: {fileID: 4251880825972753411, guid: 5ed6307cd1ae997dfbb864ecd57354ea, type: 3}
   NightAnimator: {fileID: 102248093}
   FirstRiverBlock: {fileID: 429834873}
-  SecondRiverBlock: {fileID: 0}
+  SecondRiverBlock: {fileID: 1935557491}
 --- !u!1 &2142137071
 GameObject:
   m_ObjectHideFlags: 0

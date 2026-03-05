@@ -7,6 +7,7 @@ public class ItemDropNode : MonoBehaviour
     public AllowDenyList AllowDeny;
     public GameObject ActiveItem;
     public Material SelectedMaterial;
+    public SpriteRenderer HoverCircle;
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
     private SpriteRenderer spriteRenderer;
@@ -167,11 +168,13 @@ public class ItemDropNode : MonoBehaviour
 
     void OnMouseEnter() {
         materialRenderer.material = SelectedMaterial;
+        HoverCircle.gameObject.SetActive(true);
     }
 
     void OnMouseExit()
     {
         materialRenderer.material = originalMaterial;
+        HoverCircle.gameObject.SetActive(false);
     }
 
     void OnMouseUp() {

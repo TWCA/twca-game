@@ -43,6 +43,9 @@ public class RiverManager : MonoBehaviour
                 Destroy(SecondRiverBlock.gameObject);
                 pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP2"), false);
 
+                pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP3-A"), true);
+                pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP3-B"), true);
+
                 break;
         }
 
