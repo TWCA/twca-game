@@ -78,6 +78,8 @@ public class InventorySystem : MonoBehaviour
             items.Add(newItem);
         }
 
+        gameObject.SetActive(true);
+
         return true;
     }
 
@@ -91,6 +93,10 @@ public class InventorySystem : MonoBehaviour
         {
             InventoryItem inventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
             inventoryItem.UpdateItemCount(inventoryItem.ItemCount - 1);
+
+            if (items.Count == 0) {
+                gameObject.SetActive(false);
+            }
         }
     }
 
