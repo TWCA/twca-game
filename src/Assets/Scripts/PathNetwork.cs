@@ -33,7 +33,9 @@ public class PathNetwork : MonoBehaviour
     {
         if (renderDirty)
         {
-            PathRenderer.Instance.DrawTraversablePaths();
+            if (PathRenderer.Instance) {
+                PathRenderer.Instance.DrawTraversablePaths();
+            }
             UpdateNodeNeighbors();
             renderDirty = false; 
         }
