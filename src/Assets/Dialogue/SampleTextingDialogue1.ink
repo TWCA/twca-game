@@ -24,3 +24,7 @@ I know you've been busy the last few times I tried to invite you out, but we'll 
     -> END
  * Okay. #Robin #Voice:VA/InterLevel/Okay
     -> END
+
+== test_notification ==
+You're a bad person! #Notification:Readit #Voice:VA/Notifications/OhBoy
+-> END
