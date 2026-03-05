@@ -29,6 +29,6 @@ public class LevelPortal : MonoBehaviour
     private void DoFinalMove(PlayerControl playerControl, PathFollower pathFollower) {
         playerControl.CanMove = false;
         pathFollower.PathfindTo(PortalPosition);
-        pathFollower.DonePathing += () => transitionController.SwitchScenes(LevelToLoad);
+        pathFollower.DonePathing += () => StartCoroutine(transitionController.SwitchScenes(LevelToLoad));
     }
 }
