@@ -525,6 +525,16 @@ public class PathNetwork : MonoBehaviour
         return paths[path].name;
     }
 
+    public void SetPathPastTraversable(int path, bool traversable) {
+        paths[path].pastTraversable = traversable;
+        renderDirty = true;
+    }
+
+    public void SetPathFutureTraversable(int path, bool traversable) {
+        paths[path].futureTraversable = traversable;
+        renderDirty = true;
+    }
+
     private void UpdateNodeNeighbors()
     {
         foreach (PathNode node in nodes)
