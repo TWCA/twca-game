@@ -324,7 +324,7 @@ MonoBehaviour:
   hikeSprite: {fileID: 143519861}
   totalTwcaHoldTime: 0.5
   totalHikeHoldTime: 2
-  targetScene: Level1
+  targetScene: MainMenu
 --- !u!4 &580257609
 Transform:
   m_ObjectHideFlags: 0
@@ -707,10 +707,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.23715848
-    y: 0.2688356
-    width: 0.5245902
-    height: 0.46232876
+    x: 0.044979077
+    y: 0.49628252
+    width: 0.50209206
+    height: 0.5018587
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
