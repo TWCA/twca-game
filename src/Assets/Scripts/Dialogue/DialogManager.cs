@@ -76,9 +76,7 @@ public class DialogManager : MonoBehaviour
 
         UpdateDisabledBehaviours();
 
-        Canvas.ForceUpdateCanvases();
-        historyScrollRect.verticalNormalizedPosition = 0f;
-
+        ClearMessages();
         ContinueStory();
     }
 
@@ -218,6 +216,14 @@ public class DialogManager : MonoBehaviour
         for (int i = choicesRoot.childCount - 1; i >= 0; i--)
         {
             Destroy(choicesRoot.GetChild(i).gameObject);
+        }
+    }
+    
+    private void ClearMessages()
+    {
+        for (int i = historyContent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(historyContent.GetChild(i).gameObject);
         }
     }
 }
