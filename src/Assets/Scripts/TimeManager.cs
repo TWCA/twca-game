@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance { get; private set; }
     
-    public delegate void OnTimeChanged();
-    [HideInInspector] public OnTimeChanged onTimeChanged;
+    [HideInInspector] public UnityAction onTimeChanged;
 
     [SerializeField] public Material paletteSwapMaterial;
     [SerializeField] private bool isFuture = false;
