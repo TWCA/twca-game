@@ -423,7 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdd5eae0bf294aa46a5fa5603837afd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inkJson: {fileID: 4900000, guid: be4b5e8c910ffc54fbf2a27e630f56c3, type: 3}
+  inkJson: {fileID: 4900000, guid: 7db61c961108cc67293d254c33162867, type: 3}
   historyContent: {fileID: 2524496936366676522}
   historyScrollRect: {fileID: 1881344275447968118}
   messageBubblePrefab: {fileID: 5832807629750126268, guid: ec21cfab6eea010f3b7210760eceb2f6, type: 3}

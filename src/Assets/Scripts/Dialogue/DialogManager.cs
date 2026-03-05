@@ -102,16 +102,19 @@ public class DialogManager : MonoBehaviour
         string line = story.Continue().Trim();
         List<string> tags = story.currentTags;
 
-        string notificationTitle = GetNotificationTitle(tags);
+        if (line.Length > 0)
+        {
+            string notificationTitle = GetNotificationTitle(tags);
 
-        if (notificationTitle == null)
-        {
-            bool isPlayer = IsTaggedPlayer(tags);
-            AddMessage(line, isPlayer);
-        }
-        else
-        {
-            AddNotification(notificationTitle, line);
+            if (notificationTitle == null)
+            {
+                bool isPlayer = IsTaggedPlayer(tags);
+                AddMessage(line, isPlayer);
+            }
+            else
+            {
+                AddNotification(notificationTitle, line);
+            }
         }
 
         HandleVoiceTags(tags);
