@@ -7,9 +7,10 @@ public class ItemDropNode : MonoBehaviour
     public AllowDenyList AllowDeny;
     public GameObject ActiveItem;
     public Material SelectedMaterial;
+    public SpriteRenderer SpriteRenderer;
+    public SpriteRenderer HoverCircle;
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
-    private SpriteRenderer spriteRenderer;
     private PlayerDetector playerDetector;
     private Material originalMaterial;
     private Renderer materialRenderer;
@@ -23,7 +24,6 @@ public class ItemDropNode : MonoBehaviour
     */
     private void Initialize() {
         circleCollider = GetComponent<CircleCollider2D>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         playerDetector = GetComponentInChildren<PlayerDetector>();
     }
 
@@ -45,7 +45,7 @@ public class ItemDropNode : MonoBehaviour
         InitializeSprite();
 
         inventorySystem = InventorySystem.Instance;
-        materialRenderer = GetComponent<Renderer>();
+        materialRenderer = SpriteRenderer.GetComponent<Renderer>();
         originalMaterial = materialRenderer.material;
 
         playerDetector.PlayerTouched += () => {
@@ -61,15 +61,21 @@ public class ItemDropNode : MonoBehaviour
         if (playerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
             InteractedWith();
         }
+
+        if (inventorySystem.MouseItem != null) {
+            HoverCircle.gameObject.SetActive(true);
+        } else {
+            HoverCircle.gameObject.SetActive(false);
+        }
     }
 
     private void InitializeSprite() {
         if (ActiveItem != null) {
             SpriteRenderer activeItemSpriteRenderer = ActiveItem.GetComponent<SpriteRenderer>();
-            spriteRenderer.sprite = activeItemSpriteRenderer.sprite;
-            spriteRenderer.color = activeItemSpriteRenderer.color;
+            SpriteRenderer.sprite = activeItemSpriteRenderer.sprite;
+            SpriteRenderer.color = activeItemSpriteRenderer.color;
         } else {
-            spriteRenderer.sprite = null;
+            SpriteRenderer.sprite = null;
         }
     }
 
