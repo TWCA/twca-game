@@ -14,10 +14,19 @@ public class PlayerControl : MonoBehaviour
 
     public static PlayerControl Instance { get; private set; }
 
+    public void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
+
     public void Start()
     {
-        Instance = this;
-
         pathFollower = GetComponent<PathFollower>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
@@ -32,6 +41,15 @@ public class PlayerControl : MonoBehaviour
         // pathfind when the mouse is clicked
         clickAction.performed += PathfindToMouse;
         clickAction.Enable();
+    }
+    
+    private void OnDestroy()
+    {
+        clickAction.performed -= PathfindToMouse;
+        if (Instance == this)
+        {
+            Instance = null;
+        }
     }
 
     public void Update()

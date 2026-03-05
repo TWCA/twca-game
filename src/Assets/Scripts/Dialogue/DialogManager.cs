@@ -19,7 +19,6 @@ public class DialogManager : MonoBehaviour
     public Text timeText;
 
     public GameObject DialogRoot;
-    public Behaviour[] disableWhileDialog;
 
     private Story story;
     private bool isRunning = false;
@@ -43,11 +42,8 @@ public class DialogManager : MonoBehaviour
 
     private void UpdateDisabledBehaviours()
     {
-        foreach (var behaviour in disableWhileDialog)
-        {
-            if (behaviour != null)
-                behaviour.enabled = !isRunning;
-        }
+        GameObject player = GameObject.FindWithTag("Player");
+        player.GetComponent<PlayerControl>().enabled = !isRunning;
     }
 
     public void StartDialog(string knot, System.Action onFinished = null)
