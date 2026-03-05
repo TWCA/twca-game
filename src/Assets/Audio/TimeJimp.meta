@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:src/Assets/Audio/TimeJimp.meta
 guid: b3b4e6782d72ada4889e7c1a4e7765ed
-========
-guid: 48767510fb0bf26468bc8b49787f4d3d
->>>>>>>> main:src/Assets/Audio/VA-Normalized-to-20LUFS.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
