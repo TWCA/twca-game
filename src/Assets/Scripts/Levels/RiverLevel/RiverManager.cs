@@ -28,7 +28,6 @@ public class RiverManager : MonoBehaviour
 
                 TimeObject timeObject = FirstRiverBlock.AddComponent<TimeObject>();
                 timeObject.SetSituation(TimeObject.Situation.PastWithoutFuture);
-
                 pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP2"), true);
 
                 break;

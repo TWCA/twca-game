@@ -83,7 +83,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paletteSwapMaterial: {fileID: 2100000, guid: 68479e80bdff35931b4e36267d9ac23c, type: 2}
   isFuture: 0
-  futureRainStrength: 0
+  futureRainStrength: 1
   futureLightingTime: 1
 --- !u!114 &4425984495630937229
 MonoBehaviour:
