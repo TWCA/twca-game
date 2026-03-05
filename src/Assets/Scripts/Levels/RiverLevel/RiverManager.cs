@@ -1,15 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Unity.VisualScripting;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public class RiverManager : MonoBehaviour
 {
     public static RiverManager Instance { get; private set; }
-    public AnimatorController RiverNightP1, RiverNightP2, RiverNightP3;
+    public RuntimeAnimatorController RiverNightP1, RiverNightP2, RiverNightP3;
     public Animator NightAnimator;
     public ItemDropNode FirstRiverBlock;
     public ItemDropNode SecondRiverBlock;
@@ -32,7 +28,7 @@ public class RiverManager : MonoBehaviour
 
                 TimeObject timeObject = FirstRiverBlock.AddComponent<TimeObject>();
                 timeObject.SetSituation(TimeObject.Situation.PastWithoutFuture);
-                
+
                 pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP2"), true);
 
                 break;
