@@ -6,8 +6,8 @@ using UnityEngine.Serialization;
 
 public class VAManager : MonoBehaviour
 {
-    [FormerlySerializedAs("VA")] [SerializeField]
-    public AudioSource VAaudioSource;
+    [FormerlySerializedAs("VAaudioSource")] [FormerlySerializedAs("VA")] [SerializeField]
+    public AudioSource vaAudioSource;
 
     private List<AudioClip> queue = new List<AudioClip>();
     private bool ignoringNextEnqueue = false;
@@ -28,7 +28,7 @@ public class VAManager : MonoBehaviour
 
     public void RunQueue()
     {
-        if (VAaudioSource.isPlaying) return;
+        if (vaAudioSource.isPlaying) return;
 
         if (queue.Count == 0)
         {
@@ -42,7 +42,7 @@ public class VAManager : MonoBehaviour
         }
         else
         {
-            VAaudioSource.PlayOneShot(queue[0]);
+            vaAudioSource.PlayOneShot(queue[0]);
             queue.RemoveAt(0);
         }
     }

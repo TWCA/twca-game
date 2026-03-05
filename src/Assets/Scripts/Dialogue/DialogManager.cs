@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ink.Runtime;
+using JetBrains.Annotations;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 
@@ -12,13 +13,16 @@ public class DialogManager : MonoBehaviour
     public Transform historyContent;
     public ScrollRect historyScrollRect;
     public GameObject messageBubblePrefab;
+    public GameObject notificationBubblePrefab;
     public Transform choicesRoot;
     public GameObject choiceButtonPrefab;
+
+    public GameObject DialogRoot;
+    public Behaviour[] disableWhileDialog;
+
     private Story story;
     private bool isRunning = false;
-    public GameObject DialogRoot;
     private System.Action onDialogFinished;
-    public Behaviour[] disableWhileDialog;
 
 
     private void Awake()
@@ -52,7 +56,7 @@ public class DialogManager : MonoBehaviour
             Debug.LogError("DialogManager: inkJson is not assigned!");
             return;
         }
-        
+
         if (!string.IsNullOrEmpty(knot))
             story.ChoosePathString(knot);
         else
@@ -64,17 +68,15 @@ public class DialogManager : MonoBehaviour
             onFinished?.Invoke();
             return;
         }
-        
+
         isRunning = true;
         DialogRoot.SetActive(true);
 
         onDialogFinished = onFinished;
 
         UpdateDisabledBehaviours();
-        
-        Canvas.ForceUpdateCanvases();
-        historyScrollRect.verticalNormalizedPosition = 0f;
-        
+
+        ClearMessages();
         ContinueStory();
     }
 
@@ -94,23 +96,51 @@ public class DialogManager : MonoBehaviour
         string line = story.Continue().Trim();
         List<string> tags = story.currentTags;
 
-        bool isPlayer = false;
+        string notificationTitle = GetNotificationTitle(tags);
+        
+        if (notificationTitle == null)
+        {
+            bool isPlayer = IsTaggedPlayer(tags);
+            AddMessage(line, isPlayer);   
+        }
+        else
+        {
+            AddNotification(notificationTitle, line);
+        }
+        
+        HandleVoiceTags(tags);
+        
+        ClearChoices();
+        VAManager.Instance.OnQueueEmpty(() =>
+        {
+            if (story.canContinue)
+                ContinueStory();
+            else if (story.currentChoices.Count > 0)
+                RefreshChoices();
+            else
+                AddChoiceButton("(Put Down Phone)", EndDialog);
+        });
+    }
 
+    private bool IsTaggedPlayer(List<string> tags)
+    {
         if (tags.Contains("Robin"))
         {
-            tags.RemoveAll((string s) => s == "Robin");
-            isPlayer = true;
+            return true;
         }
         else if (tags.Contains("Friend"))
         {
-            tags.RemoveAll((string s) => s == "Friend");
-            // isPlayer = false;
+            return false;
         }
         else
         {
             Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
+            return false;
         }
+    }
 
+    private void HandleVoiceTags(List<string> tags)
+    {
         foreach (string tag in tags)
         {
             if (tag.StartsWith("Voice:"))
@@ -121,24 +151,20 @@ public class DialogManager : MonoBehaviour
             {
                 VAManager.Instance.IgnoreNextEnqueue();
             }
-            else
+        }
+    }
+    
+    private string GetNotificationTitle(List<string> tags)
+    {
+        foreach (string tag in tags)
+        {
+            if (tag.StartsWith("Notification:"))
             {
-                Debug.LogWarning("Dialog line contains unknown tag: " + tag);
+                return tag.Replace("Notification:", "").Trim();
             }
         }
 
-        AddMessage(line, isPlayer);
-
-        ClearChoices();
-        VAManager.Instance.OnQueueEmpty(() =>
-        {
-            if (story.canContinue)
-                ContinueStory();
-            else if (story.currentChoices.Count > 0)
-                RefreshChoices();
-            else
-                EndDialog();
-        });
+        return null;
     }
 
     private void RefreshChoices()
@@ -167,21 +193,37 @@ public class DialogManager : MonoBehaviour
     private void AddMessage(string text, bool isPlayer)
     {
         GameObject obj = Instantiate(messageBubblePrefab, historyContent);
-        var bubble = obj.GetComponent<MessageBubble>();
-        if (bubble != null)
-            bubble.SetMessage(text, isPlayer);
-        else
-            Debug.LogWarning("Message bubble prefab missing MessageBubble script.");
+        MessageBubble bubble = obj.GetComponent<MessageBubble>();
+        bubble.SetMessage(text, isPlayer);
 
         Canvas.ForceUpdateCanvases();
         historyScrollRect.verticalNormalizedPosition = 0f;
     }
+
+    private void AddNotification(string title, string body)
+    {
+        GameObject obj = Instantiate(notificationBubblePrefab, historyContent);
+        NotificationBubble bubble = obj.GetComponent<NotificationBubble>();
+        bubble.SetMessage(title, body);
+        
+        Canvas.ForceUpdateCanvases();
+        historyScrollRect.verticalNormalizedPosition = 0f;
+    }
+
 
     private void ClearChoices()
     {
         for (int i = choicesRoot.childCount - 1; i >= 0; i--)
         {
             Destroy(choicesRoot.GetChild(i).gameObject);
+        }
+    }
+    
+    private void ClearMessages()
+    {
+        for (int i = historyContent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(historyContent.GetChild(i).gameObject);
         }
     }
 }
