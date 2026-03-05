@@ -45,11 +45,11 @@ public class TransitionController : MonoBehaviour
         }
     }
 
-    public async void SwitchScenes(string sceneName)
+    public void SwitchScenes(string sceneName)
     {
         FadeOut();
 
-        await Task.Delay((int)(FadeOutDelay * 1000));
+        // await Task.Delay((int)(FadeOutDelay * 1000));
 
         // Load desired scene
         SceneManager.LoadScene(sceneName);
