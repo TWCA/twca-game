@@ -1246,7 +1246,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3249833535172645494, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
       propertyPath: LevelToLoad
-      value: Level1
+      value: DialogLevel1
       objectReference: {fileID: 0}
     - target: {fileID: 3249833535172645494, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
       propertyPath: PortalPosition.x
