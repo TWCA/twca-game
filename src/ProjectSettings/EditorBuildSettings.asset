@@ -17,5 +17,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/DialogLevel1.unity
     guid: 27157f5f666ca5c6bb8dfc9d16b19175
+  - enabled: 1
+    path: Assets/Scenes/Levels/RiverLevel.unity
+    guid: 5430d5b318de9aca4b5f4fb5f26d781b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 883cafa8d3f4c0d95b6ebf6bab249339, type: 3}
