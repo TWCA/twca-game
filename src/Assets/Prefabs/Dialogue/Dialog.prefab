@@ -426,6 +426,7 @@ MonoBehaviour:
   historyContent: {fileID: 2524496936366676522}
   historyScrollRect: {fileID: 1881344275447968118}
   messageBubblePrefab: {fileID: 5832807629750126268, guid: ec21cfab6eea010f3b7210760eceb2f6, type: 3}
+  notificationBubblePrefab: {fileID: 5832807629750126268, guid: 8015f5027ef431b25be8d1dfe515afcb, type: 3}
   choicesRoot: {fileID: 5440588336162526642}
   choiceButtonPrefab: {fileID: 7965663957685251200, guid: e0a2fdf5e2d3b74438f32217595ff1e3, type: 3}
   DialogRoot: {fileID: 1325194795318638107}
