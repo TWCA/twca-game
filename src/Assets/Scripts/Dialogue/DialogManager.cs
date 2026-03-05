@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -40,10 +41,23 @@ public class DialogManager : MonoBehaviour
             story = new Story(inkJson.text);
     }
 
+    private void LateUpdate()
+    {
+        if (isRunning)
+        {
+            MoveToCamera();
+        }
+    }
+
     private void UpdateDisabledBehaviours()
     {
         GameObject player = GameObject.FindWithTag("Player");
-        player.GetComponent<PlayerControl>().enabled = !isRunning;
+        PlayerControl playerControl = player.GetComponent<PlayerControl>();
+
+        playerControl.enabled = !isRunning;
+
+        if (isRunning)
+            playerControl.StopInPlace();
     }
 
     public void StartDialog(string knot, System.Action onFinished = null)
@@ -230,5 +244,13 @@ public class DialogManager : MonoBehaviour
         {
             Destroy(historyContent.GetChild(i).gameObject);
         }
+    }
+
+    private void MoveToCamera()
+    {
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+        Vector3 position = camera.transform.position;
+        position.z = DialogRoot.transform.position.z;
+        DialogRoot.transform.position = position;
     }
 }
