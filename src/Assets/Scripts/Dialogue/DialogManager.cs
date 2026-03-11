@@ -143,7 +143,9 @@ public class DialogManager : MonoBehaviour
             else if (DialogRoot.activeSelf)
                 AddChoiceButton("(Put Down Phone)", EndDialog);
             else
+            {
                 EndDialog();
+            }
         });
     }
 
@@ -153,7 +155,7 @@ public class DialogManager : MonoBehaviour
      */
     private void DisplayDialogLine(string line,  List<string> tags)
     {
-        if (line.Length > 0)
+        if (line.Length > 0 && DialogRoot.activeSelf)
         {
             string appTitle = GetNotificationAppTitle(tags);
 
@@ -192,7 +194,8 @@ public class DialogManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
+            if (DialogRoot.activeSelf)
+                Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
             return false;
         }
     }
