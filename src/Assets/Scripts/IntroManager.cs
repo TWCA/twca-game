@@ -44,7 +44,7 @@ public class IntroManager : MonoBehaviour
                 break;
             case 2:
                 twcaSprite.color = new Color(1.0f, 1.0f, 1.0f,
-                    Mathf.MoveTowards(twcaSprite.color.a, 0, Time.deltaTime));
+                    Mathf.MoveTowards(twcaSprite.color.a, 0, Time.deltaTime * 0.8f));
 
                 if (twcaSprite.color.a <= 0)
                     progress = 3;
@@ -52,7 +52,7 @@ public class IntroManager : MonoBehaviour
                 break;
             case 3:
                 hikeSprite.color = new Color(1.0f, 1.0f, 1.0f,
-                    Mathf.MoveTowards(hikeSprite.color.a, 1, Time.deltaTime));
+                    Mathf.MoveTowards(hikeSprite.color.a, 1, Time.deltaTime* 0.8f));
 
                 if (hikeSprite.color.a >= 1)
                     progress = 4;
@@ -66,7 +66,7 @@ public class IntroManager : MonoBehaviour
                 break;
             case 5:
                 hikeSprite.color = new Color(1.0f, 1.0f, 1.0f,
-                    Mathf.MoveTowards(hikeSprite.color.a, 0, Time.deltaTime));
+                    Mathf.MoveTowards(hikeSprite.color.a, 0, Time.deltaTime* 0.8f));
 
                 if (hikeSprite.color.a <= 0)
                     SceneManager.LoadScene(targetScene);

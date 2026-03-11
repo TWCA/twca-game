@@ -11,19 +11,31 @@ public class RiverManager : MonoBehaviour
     public ItemDropNode SecondRiverBlock;
     private int CurrentNightPhase = 0;
 
-    void Awake() {
+    void Awake()
+    {
         Instance = this;
     }
 
-    public bool IncrementNightPhase() {
+    void Start()
+    {
+        TimeManager.Instance.onTimeChanged += () =>
+        {
+            IncrementNightPhase();
+        };
+    }
+
+    public bool IncrementNightPhase()
+    {
         PathNetwork pathNetwork = PathNetwork.Instance;
 
-        switch (CurrentNightPhase) {
+        switch (CurrentNightPhase)
+        {
             case 0:
-                if (FirstRiverBlock.ActiveItem == null) {
+                if (FirstRiverBlock.ActiveItem == null)
+                {
                     return false;
                 }
-                
+
                 NightAnimator.runtimeAnimatorController = RiverNightP2;
 
                 TimeObject timeObject = FirstRiverBlock.AddComponent<TimeObject>();
@@ -32,7 +44,8 @@ public class RiverManager : MonoBehaviour
 
                 break;
             case 1:
-                if (SecondRiverBlock.ActiveItem == null) {
+                if (SecondRiverBlock.ActiveItem == null)
+                {
                     return false;
                 }
 
