@@ -35,7 +35,6 @@ public class DialogManager : MonoBehaviour
 
         Instance = this;
 
-        // load ink script on start up
         if (inkJson == null)
             Debug.LogError("DialogManager: inkJson is not assigned!");
         else
@@ -52,9 +51,41 @@ public class DialogManager : MonoBehaviour
 
     /**
      * Opens the story to knot and opens the UI.
+     * If you want to play dialog without the UI, call StartDialogHeadless()
      */
     public void StartDialog(string knot, System.Action onFinished = null)
     {
+        OpenToKnot(knot, onFinished);
+        
+        DialogRoot.SetActive(true);
+        UpdateDisabledBehaviours();
+
+        if (TimeManager.Instance.IsFuture())
+            timeText.text = "9:43pm";
+        else
+            timeText.text = "11:20am";
+
+        ClearMessages();
+        
+        ContinueStory();
+    }
+
+    /**
+     * Opens the story to knot *without* opening the UI.
+     * If you want to play dialog in the UI, call StartDialog()
+     */
+    public void StartDialogHeadless(string knot, System.Action onFinished = null)
+    {
+        OpenToKnot(knot, onFinished);
+        ContinueStory();
+    }
+
+    /**
+     * Opens the story to a knot, handling the onFinished callback.
+     */
+    private void OpenToKnot(string knot, System.Action onFinished)
+    {
+        // stop old running story knot to open this one
         if (isRunning)
             EndDialog();
         
@@ -78,18 +109,6 @@ public class DialogManager : MonoBehaviour
 
         isRunning = true;
         onDialogFinished = onFinished;
-        
-        DialogRoot.SetActive(true);
-        UpdateDisabledBehaviours();
-
-        if (TimeManager.Instance.IsFuture())
-            timeText.text = "9:43pm";
-        else
-            timeText.text = "11:20am";
-
-        ClearMessages();
-        
-        ContinueStory();
     }
 
     public void EndDialog()
