@@ -10,40 +10,35 @@ public class Dog : MonoBehaviour
     }
     private Vector2 wanderTarget;
     private bool hasWanderTarget = false;
-
-
-    public DogState currentState;
-
     private PathFollower pathFollower;
     private Transform player;
+    private float decisionTimer;
 
+    public DogState currentState;
     public float followDistance = 4f;
     public float wanderRadius = 5f;
     public float decisionInterval = 3f;
 
 
     void Wander()
-{
-    if (pathFollower == null) return;
-
-    // If we don't currently have a wander target, pick one
-    if (!hasWanderTarget)
     {
-        Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * wanderRadius;
-        wanderTarget = (Vector2)transform.position + randomOffset;
+        if (pathFollower == null) return;
 
-        hasWanderTarget = pathFollower.PathfindTo(wanderTarget);
+        // If we don't currently have a wander target, pick one
+        if (!hasWanderTarget)
+        {
+            Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * wanderRadius;
+            wanderTarget = (Vector2)transform.position + randomOffset;
+
+            hasWanderTarget = pathFollower.PathfindTo(wanderTarget);
+        }
+
+        // If finished walking, reset so we pick a new target next time
+        if (!pathFollower.IsPathfinding())
+        {
+            hasWanderTarget = false;
+        }
     }
-
-    // If finished walking, reset so we pick a new target next time
-    if (!pathFollower.IsPathfinding())
-    {
-        hasWanderTarget = false;
-    }
-}
-
-
-    private float decisionTimer;
 
     void Start()
     {
@@ -53,66 +48,61 @@ public class Dog : MonoBehaviour
         currentState = DogState.Follow;
     }
 
-
-
-void HandleState()
-{
-    switch (currentState)
+    void HandleState()
     {
-        case DogState.Follow:
-            Follow();
-            break;
-
-        case DogState.Wander:
-            Wander();
-            break;
-
-        case DogState.Wait:
-            pathFollower.StopPathfinding();
-            break;
-    }
-}
-void Follow()
-{
-    if (pathFollower == null || player == null) return;
-
-    float distance = Vector2.Distance(transform.position, player.position);
-
-    if (distance > followDistance)
-    {
-        if (!pathFollower.IsPathfinding())
+        switch (currentState)
         {
-            pathFollower.PathfindTo(player.position);
+            case DogState.Follow:
+                Follow();
+                break;
+
+            case DogState.Wander:
+                Wander();
+                break;
+
+            case DogState.Wait:
+                pathFollower.StopPathfinding();
+                break;
         }
     }
-    else
+
+    void Follow()
     {
-        pathFollower.StopPathfinding();
+        if (pathFollower == null || player == null) return;
+
+        float distance = Vector2.Distance(transform.position, player.position);
+
+        if (distance > followDistance)
+        {
+            if (!pathFollower.IsPathfinding())
+            {
+                pathFollower.PathfindTo(player.position);
+            }
+        }
+        else
+        {
+            pathFollower.StopPathfinding();
+        }
     }
-}
 
-
-
-void MakeStateDecision()
-{
-    float distance = Vector2.Distance(transform.position, player.position);
-
-    if (distance > followDistance)
+    void MakeStateDecision()
     {
-        currentState = DogState.Follow;
-        return;
+        float distance = Vector2.Distance(transform.position, player.position);
+
+        if (distance > followDistance)
+        {
+            currentState = DogState.Follow;
+            return;
+        }
+
+        // For now just randomly pick between Wait and Wander
+        int randomChoice = Random.Range(0, 2);
+
+        if (randomChoice == 0)
+            currentState = DogState.Wander;
+        else
+            currentState = DogState.Wait;
     }
-
-    // For now just randomly pick between Wait and Wander
-    int randomChoice = Random.Range(0, 2);
-
-    if (randomChoice == 0)
-        currentState = DogState.Wander;
-    else
-        currentState = DogState.Wait;
-}
-
-
 
     void Update()
     {
