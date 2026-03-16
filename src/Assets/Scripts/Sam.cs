@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Dog : MonoBehaviour
+public class Dog : PathFollower
 {
     public enum DogState
     {
@@ -10,32 +10,31 @@ public class Dog : MonoBehaviour
         BeingPet
     }
     private Vector2 wanderTarget = Vector2.zero;
-    private PathFollower pathFollower;
     private PlayerControl player;
     private float decisionTimer;
     private float petTimer;
 
     public DogState currentState;
-    public float followDistance = 100f;
+    public float walkSpeed = 40f;
+    public float runSpeed = 80f;
+    public float followDistance = 40f;
+    public float followRunFactor = 1.5f;
     public float decisionInterval = 1f;
     public float petCooldown = 2f;
 
     void Wander()
     {
-        if (pathFollower == null) return;
-
         // If we don't currently have a wander target, set one
         if (wanderTarget.Equals(Vector2.zero))
         {
             wanderTarget = new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1));;
         } else {
-            pathFollower.WalkTowards(wanderTarget, Time.deltaTime);
+            WalkTowards(wanderTarget, Time.deltaTime);
         }
     }
 
     void Start()
     {
-        pathFollower = GetComponent<PathFollower>();
         player = PlayerControl.Instance;
 
         currentState = DogState.Follow;
@@ -44,6 +43,7 @@ public class Dog : MonoBehaviour
     void HandleState()
     {
         // Override if the player starts moving
+        // if (player.IsMoving() || (TooFarFromPlayer() && currentState != DogState.Wander)) {
         if (player.IsMoving()) {
             currentState = DogState.Follow;
         }
@@ -59,34 +59,45 @@ public class Dog : MonoBehaviour
                 break;
 
             case DogState.Wait:
-                pathFollower.StopPathfinding();
+                StopPathfinding();
                 WaitAnimation();
                 break;
 
             case DogState.BeingPet:
-                pathFollower.StopPathfinding();
+                StopPathfinding();
                 PetAnimation();
                 break;
         }
     }
 
-    void Follow()
-    {
-        if (pathFollower == null || player == null) return;
-
+    bool TooFarFromPlayer(float factor = 1) {
         Vector2 playerPosition = player.gameObject.transform.position;
         float distance = Vector2.Distance(transform.position, playerPosition);
 
-        if (distance > followDistance)
+        return distance > (followDistance * factor);
+    }
+
+    void Follow()
+    {
+        if (player == null) return;
+
+        if (TooFarFromPlayer())
         {
-            if (!pathFollower.IsPathfinding())
+            if (TooFarFromPlayer(followRunFactor)) {
+                speed = runSpeed;
+            } else {
+                speed = walkSpeed;
+            }
+
+            if (!IsPathfinding())
             {
-                pathFollower.PathfindTo(playerPosition);
+                Vector2 playerPosition = player.gameObject.transform.position;
+                PathfindTo(playerPosition);
             }
         }
         else
         {
-            pathFollower.StopPathfinding();
+            StopPathfinding();
         }
     }
 
@@ -95,8 +106,7 @@ public class Dog : MonoBehaviour
         decisionTimer = 0f;
         wanderTarget = Vector2.zero;
 
-        // Don't do anything else if the dog is being pet
-        if (currentState == DogState.BeingPet || player.IsMoving()) return;
+        if (currentState == DogState.BeingPet || player.IsMoving() || TooFarFromPlayer()) return;
 
         // For now just randomly pick between Wait and Wander
         int randomChoice = Random.Range(0, 2);
@@ -107,8 +117,10 @@ public class Dog : MonoBehaviour
             currentState = DogState.Wait;
     }
 
-    void Update()
+    public override void Update()
     {
+        base.Update();
+
         decisionTimer += Time.deltaTime;
         petTimer += Time.deltaTime;
 

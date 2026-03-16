@@ -43,7 +43,7 @@ public class PathFollower : MonoBehaviour
                 StopPathfinding();
     }
 
-    public void Update()
+    public virtual void Update()
     {
         if (!IsPathfinding()) return;
 
