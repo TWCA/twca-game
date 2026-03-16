@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -45,14 +46,14 @@ public class TransitionController : MonoBehaviour
         }
     }
 
-    public async void SwitchScenes(string sceneName)
+    public IEnumerator SwitchScenes(string sceneName)
     {
         FadeOut();
-
-        await Task.Delay((int)(FadeOutDelay * 1000));
+        
+        yield return new WaitForSeconds(FadeOutDelay);
 
         // Load desired scene
-        SceneManager.LoadSceneAsync(sceneName);
+        SceneManager.LoadScene(sceneName);
     }
 
     // Creates a node in the path network corresponding to the position of the level portal & the exit node

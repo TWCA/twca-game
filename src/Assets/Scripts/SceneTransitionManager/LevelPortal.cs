@@ -9,7 +9,8 @@ public class LevelPortal : MonoBehaviour
     void Start()
     {
         transitionController = TransitionController.Instance;
-        transitionController.RegisterLevelPortal(transform.position, PortalPosition);
+        Vector3 position = transform.position + (Vector3)GetComponent<BoxCollider2D>().offset;
+        transitionController.RegisterLevelPortal(position, PortalPosition);
     }
 
     // Handle when the player reaches the level portal trigger
@@ -28,6 +29,6 @@ public class LevelPortal : MonoBehaviour
     private void DoFinalMove(PlayerControl playerControl, PathFollower pathFollower) {
         playerControl.CanMove = false;
         pathFollower.PathfindTo(PortalPosition);
-        pathFollower.DonePathing += () => transitionController.SwitchScenes(LevelToLoad);
+        pathFollower.DonePathing += () => StartCoroutine(transitionController.SwitchScenes(LevelToLoad));
     }
 }

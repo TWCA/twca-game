@@ -14,6 +14,9 @@ GameObject:
   - component: {fileID: 4425984495630937229}
   - component: {fileID: 6550940556160746529}
   - component: {fileID: 875089806589822573}
+  - component: {fileID: 8994976561473860106}
+  - component: {fileID: 5837276980324914059}
+  - component: {fileID: 5815377275426892432}
   m_Layer: 0
   m_Name: Admin
   m_TagString: Untagged
@@ -80,7 +83,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   paletteSwapMaterial: {fileID: 2100000, guid: 68479e80bdff35931b4e36267d9ac23c, type: 2}
   isFuture: 0
-  futureRainStrength: 0
+  futureRainStrength: 1
   futureLightingTime: 1
 --- !u!114 &4425984495630937229
 MonoBehaviour:
@@ -94,9 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 930ff6d9aae67858585c982655c78448, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenFadeObject: {fileID: 5501483572454794932}
-  FadeDelay: 2000
-  StartDelay: 1000
+  FadeOutDelay: 2
+  FadeInDelay: 1
 --- !u!222 &6550940556160746529
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -119,6 +121,48 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathSegment: {fileID: 5217357667674723715, guid: ce9131d579b6b22b7af19600ddeae203, type: 3}
   zDepth: 1
+--- !u!114 &8994976561473860106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251703310826657736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff91a7a52d5eb97b093f304be8bd5be0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemMax: 5
+  Padding: 1
+  TemplateItem: {fileID: 8508542180599918211, guid: 4318c9e16f2effe3cb46caa973a0d3d8, type: 3}
+--- !u!114 &5837276980324914059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251703310826657736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ee819b65d771f8bcb59c81057dd2db6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  settings:
+  - Name: MasterVolume
+    DefaultValue: 50
+--- !u!114 &5815377275426892432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251703310826657736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a3642022eb2f9c1c9516ac6a2a9c900, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &5501483572454794932
 GameObject:
   m_ObjectHideFlags: 0

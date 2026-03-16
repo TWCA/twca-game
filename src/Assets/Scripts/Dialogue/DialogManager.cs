@@ -1,7 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ink.Runtime;
+using JetBrains.Annotations;
+using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 public class DialogManager : MonoBehaviour
 {
@@ -10,13 +14,16 @@ public class DialogManager : MonoBehaviour
     public Transform historyContent;
     public ScrollRect historyScrollRect;
     public GameObject messageBubblePrefab;
+    public GameObject notificationBubblePrefab;
     public Transform choicesRoot;
     public GameObject choiceButtonPrefab;
-    private Story story;
-    //private bool isRunning;
+    public Text timeText;
+
     public GameObject DialogRoot;
+
+    private Story story;
+    private bool isRunning = false;
     private System.Action onDialogFinished;
-    public Behaviour[] disableWhileDialog;
 
 
     private void Awake()
@@ -27,135 +34,201 @@ public class DialogManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
         Instance = this;
+
+        if (inkJson == null)
+            Debug.LogError("DialogManager: inkJson is not assigned!");
+        else
+            story = new Story(inkJson.text);
     }
 
-    private void SetMovementEnabled(bool enabled)
+    private void LateUpdate()
     {
-        if (disableWhileDialog == null) return;
-        foreach (var b in disableWhileDialog)
+        if (isRunning)
         {
-            if (b != null) b.enabled = enabled;
+            MoveToCamera();
         }
     }
 
-    public void StartDialog(string knot = "checkup_text", System.Action onFinished = null)
+    private void UpdateDisabledBehaviours()
     {
-        Debug.Log("StartDialog called!");
+        GameObject player = GameObject.FindWithTag("Player");
+        PlayerControl playerControl = player.GetComponent<PlayerControl>();
+
+        playerControl.enabled = !isRunning;
+
+        if (isRunning)
+            playerControl.StopInPlace();
+    }
+
+    public void StartDialog(string knot, System.Action onFinished = null)
+    {
         if (inkJson == null)
         {
             Debug.LogError("DialogManager: inkJson is not assigned!");
             return;
         }
-        VAManager.Instance.startScene();
-        onDialogFinished = onFinished;
-        story = new Story(inkJson.text);
+
         if (!string.IsNullOrEmpty(knot))
             story.ChoosePathString(knot);
-        //isRunning = true;
-        if (DialogRoot != null) DialogRoot.SetActive(true);
+        else
+            Debug.LogError("No knot location passed");
+
+        if (!story.canContinue)
+        {
+            Debug.LogError("Knot doesn't have any content");
+            onFinished?.Invoke();
+            return;
+        }
+
+        isRunning = true;
+        DialogRoot.SetActive(true);
+
         onDialogFinished = onFinished;
-        ClearChoices();
+
+        UpdateDisabledBehaviours();
+
+        if (TimeManager.Instance.IsFuture())
+            timeText.text = "9:43pm";
+        else
+            timeText.text = "11:20am";
+
+        ClearMessages();
         ContinueStory();
-        if (DialogRoot != null) DialogRoot.SetActive(true);
-        SetMovementEnabled(false);
     }
 
     public void EndDialog()
     {
-        //isRunning = false;
-        story = null;
-        ClearChoices();
-        if (DialogRoot != null) DialogRoot.SetActive(false);
-        var cb = onDialogFinished;
+        isRunning = false;
+        DialogRoot.SetActive(false);
+
+        onDialogFinished?.Invoke();
         onDialogFinished = null;
-        cb?.Invoke();
-        if (DialogRoot != null) DialogRoot.SetActive(false);
-        SetMovementEnabled(true);
+
+        UpdateDisabledBehaviours();
     }
 
     private void ContinueStory()
     {
-        if (story == null) return;
-        ClearChoices();
-        while (story.canContinue)
+        string line = story.Continue().Trim();
+        List<string> tags = story.currentTags;
+
+        if (line.Length > 0)
         {
-            string line = story.Continue().Trim();
-            if (string.IsNullOrEmpty(line)) continue;
-            bool isPlayer = false;
-            List<string> tags = story.currentTags;
+            string notificationTitle = GetNotificationTitle(tags);
 
-            // Check if there are at least two tags
-            if (tags.Count >= 2)
+            if (notificationTitle == null)
             {
-                string firstTag = tags[0];
-                string secondTag = tags[1]; // This is your second tag
-                Debug.Log("Second tag: " + secondTag);
-                if (firstTag == "Robin")
-                {
-                    isPlayer = true;
-                    VAManager.Instance.Enqueue(secondTag);
-                    //break;
-                }
-                if (firstTag == "Friend")
-                {
-                    VAManager.Instance.Enqueue(secondTag);
-                }
-
-                //foreach (var tag in story.currentTags)
-                //{
-                //    if (tag == "Robin")
-                //    {
-                //        isPlayer = true;
-
-                //       break;
-                //   }
-            }
-
+                bool isPlayer = IsTaggedPlayer(tags);
                 AddMessage(line, isPlayer);
+            }
+            else
+            {
+                AddNotification(notificationTitle, line);
+            }
         }
 
-        RefreshChoices();
-        Canvas.ForceUpdateCanvases();
-        if (historyScrollRect != null)
-            historyScrollRect.verticalNormalizedPosition = 0f;
+        HandleVoiceTags(tags);
+
+        ClearChoices();
+        VAManager.Instance.OnQueueEmpty(() =>
+        {
+            if (story.canContinue)
+                ContinueStory();
+            else if (story.currentChoices.Count > 0)
+                RefreshChoices();
+            else
+                AddChoiceButton("(Put Down Phone)", EndDialog);
+        });
+    }
+
+    private bool IsTaggedPlayer(List<string> tags)
+    {
+        if (tags.Contains("Robin"))
+        {
+            return true;
+        }
+        else if (tags.Contains("Friend"))
+        {
+            return false;
+        }
+        else
+        {
+            Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
+            return false;
+        }
+    }
+
+    private void HandleVoiceTags(List<string> tags)
+    {
+        foreach (string tag in tags)
+        {
+            if (tag.StartsWith("Voice:"))
+            {
+                VAManager.Instance.Enqueue(tag.Replace("Voice:", "").Trim());
+            }
+            else if (tag == "IgnoreNextVoice")
+            {
+                VAManager.Instance.IgnoreNextEnqueue();
+            }
+        }
+    }
+
+    private string GetNotificationTitle(List<string> tags)
+    {
+        foreach (string tag in tags)
+        {
+            if (tag.StartsWith("Notification:"))
+            {
+                return tag.Replace("Notification:", "").Trim();
+            }
+        }
+
+        return null;
     }
 
     private void RefreshChoices()
     {
-        ClearChoices();
-        List<Choice> choices = story.currentChoices;
-        int count = Mathf.Min(4, choices.Count);
-        for (int i = 0; i < count; i++)
+        foreach (Choice choice in story.currentChoices)
         {
-            Choice choice = choices[i];
-            int choiceIndex = i;
-            GameObject btnObj = Instantiate(choiceButtonPrefab, choicesRoot);
-            Button btn = btnObj.GetComponent<Button>();
-            Text label = btnObj.GetComponentInChildren<Text>();
-            if (label != null) label.text = choice.text;
-            btn.onClick.AddListener(() =>
+            AddChoiceButton(choice.text, () =>
             {
                 story.ChooseChoiceIndex(choice.index);
                 ContinueStory();
             });
         }
+    }
 
-        if (choices.Count == 0 && !story.canContinue)
-        {
-            EndDialog();
-        }
+    private void AddChoiceButton(string text, UnityAction callback)
+    {
+        GameObject buttonObject = Instantiate(choiceButtonPrefab, choicesRoot);
+        Button button = buttonObject.GetComponent<Button>();
+        Text label = buttonObject.GetComponentInChildren<Text>();
+
+        label.text = text;
+        button.onClick.AddListener(callback);
     }
 
 
     private void AddMessage(string text, bool isPlayer)
     {
         GameObject obj = Instantiate(messageBubblePrefab, historyContent);
-        var bubble = obj.GetComponent<MessageBubble>();
-        if (bubble != null)
-            bubble.SetMessage(text, isPlayer);
-        else
-            Debug.LogWarning("Message bubble prefab missing MessageBubble script.");
+        MessageBubble bubble = obj.GetComponent<MessageBubble>();
+        bubble.SetMessage(text, isPlayer);
+
+        Canvas.ForceUpdateCanvases();
+        historyScrollRect.verticalNormalizedPosition = 0f;
     }
+
+    private void AddNotification(string title, string body)
+    {
+        GameObject obj = Instantiate(notificationBubblePrefab, historyContent);
+        NotificationBubble bubble = obj.GetComponent<NotificationBubble>();
+        bubble.SetMessage(title, body);
+
+        Canvas.ForceUpdateCanvases();
+        historyScrollRect.verticalNormalizedPosition = 0f;
+    }
+
 
     private void ClearChoices()
     {
@@ -163,5 +236,21 @@ public class DialogManager : MonoBehaviour
         {
             Destroy(choicesRoot.GetChild(i).gameObject);
         }
+    }
+
+    private void ClearMessages()
+    {
+        for (int i = historyContent.childCount - 1; i >= 0; i--)
+        {
+            Destroy(historyContent.GetChild(i).gameObject);
+        }
+    }
+
+    private void MoveToCamera()
+    {
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+        Vector3 position = camera.transform.position;
+        position.z = DialogRoot.transform.position.z;
+        DialogRoot.transform.position = position;
     }
 }

@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class PlayerControl : MonoBehaviour
@@ -8,7 +9,21 @@ public class PlayerControl : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sprite;
 
+    private InputActionMap playerActionMap, UIActionMap;
     private InputAction moveAction, clickAction, pointAction;
+
+    public static PlayerControl Instance { get; private set; }
+
+    public void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+    }
 
     public void Start()
     {
@@ -16,24 +31,51 @@ public class PlayerControl : MonoBehaviour
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
 
-        moveAction = InputSystem.actions.FindAction("Move");
-        clickAction = InputSystem.actions.FindAction("Click");
-        pointAction = InputSystem.actions.FindAction("Point");
+        playerActionMap = InputSystem.actions.FindActionMap("Player");
+        UIActionMap = InputSystem.actions.FindActionMap("UI");
+
+        moveAction = playerActionMap.FindAction("Move");
+        clickAction = playerActionMap.FindAction("Click");
+        pointAction = UIActionMap.FindAction("Point");
 
         // pathfind when the mouse is clicked
         clickAction.performed += PathfindToMouse;
         clickAction.Enable();
     }
+    
+    private void OnDestroy()
+    {
+        clickAction.performed -= PathfindToMouse;
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
 
     public void Update()
     {
         Vector2 inputDirection = Vector2.zero;
-        if (CanMove)
+        bool pointerOverUI = EventSystem.current.IsPointerOverGameObject(); 
+        InventorySystem inventorySystem = InventorySystem.Instance;
+        
+        // Toggle the player click action depending on the situation
+        if (pointerOverUI || inventorySystem.CarriedItem != null || inventorySystem.MouseItem != null) {
+            clickAction.Disable();
+        } else {
+            clickAction.Enable();
+        }
+
+        if (IsMovementAllowed())
             inputDirection = moveAction.ReadValue<Vector2>();
 
         // stop pathfinding path if manual input is entered
         if (!inputDirection.Equals(Vector2.zero))
+        {
             pathFollower.StopPathfinding();
+
+            // Reset bringing an item to a location if the player overrides
+            inventorySystem.Cancel();
+        }
 
         Vector2 movementDirection;
         if (pathFollower.IsPathfinding())
@@ -55,9 +97,9 @@ public class PlayerControl : MonoBehaviour
      */
     private void PathfindToMouse(InputAction.CallbackContext context)
     {
-        if (!isActiveAndEnabled || !CanMove) return;
+        if (!isActiveAndEnabled || !IsMovementAllowed()) return;
         Vector2 targetPosition = GetMouseWorldPosition();
-        pathFollower.PathfindTo(targetPosition);
+        PathfindTo(targetPosition);
     }
 
     /**
@@ -75,5 +117,20 @@ public class PlayerControl : MonoBehaviour
 
         plane.Raycast(ray, out float dist);
         return ray.GetPoint(dist);
+    }
+
+    private bool IsMovementAllowed() {
+        return CanMove && animator.GetBool("interacting") == false;
+    }
+
+    /*
+    * Stops all pathfinding and halts the player where they are
+    */
+    public void StopInPlace() {
+        pathFollower.StopPathfinding();
+    }
+
+    public void PathfindTo(Vector2 location) {
+        pathFollower.PathfindTo(location);
     }
 }

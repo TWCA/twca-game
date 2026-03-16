@@ -9,11 +9,13 @@ public class PickupObject : MonoBehaviour
     public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
     private InputAction clickAction;
+    private PlayerControl player;
 
     // Start is called before the first frame update
     void Start()
     {
         inventorySystem = InventorySystem.Instance;
+        player = PlayerControl.Instance;
 
         clickAction = InputSystem.actions.FindAction("Click");
 
@@ -35,17 +37,18 @@ public class PickupObject : MonoBehaviour
     */
     void ItemRelease() {
         ItemDropNode itemDropNode = RaycastManager.IsComponentBelowMouse<ItemDropNode>();
-        if (itemDropNode != null) {
+        if (itemDropNode != null && inventorySystem.CarriedItem == null) {
             bool accepted = itemDropNode.ItemIncoming(PickupObjectPrefab);
 
             if (!accepted) {
                 inventorySystem.AddItem(PickupObjectPrefab);
+            } else {
+                player.PathfindTo(itemDropNode.gameObject.transform.position);
             }
-        } else {
-            inventorySystem.AddItem(PickupObjectPrefab);
         }
 
-        inventorySystem.HeldItem = null;
+        inventorySystem.MouseItem = null;
+        inventorySystem.SetSelectedInventoryItemBox(null);
         Destroy(gameObject);
     }
 

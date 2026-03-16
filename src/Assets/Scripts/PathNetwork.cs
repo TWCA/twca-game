@@ -33,7 +33,11 @@ public class PathNetwork : MonoBehaviour
     {
         if (renderDirty)
         {
-            PathRenderer.Instance.DrawTraversablePaths();
+            if (PathRenderer.Instance != null)
+            {
+                PathRenderer.Instance.DrawTraversablePaths();
+            }
+
             UpdateNodeNeighbors();
             renderDirty = false; 
         }
@@ -521,6 +525,16 @@ public class PathNetwork : MonoBehaviour
     public string GetPathName(int path)
     {
         return paths[path].name;
+    }
+
+    public void SetPathPastTraversable(int path, bool traversable) {
+        paths[path].pastTraversable = traversable;
+        renderDirty = true;
+    }
+
+    public void SetPathFutureTraversable(int path, bool traversable) {
+        paths[path].futureTraversable = traversable;
+        renderDirty = true;
     }
 
     private void UpdateNodeNeighbors()
