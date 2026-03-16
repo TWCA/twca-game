@@ -9,36 +9,27 @@ public class Dog : MonoBehaviour
         Wait,
         BeingPet
     }
-    private Vector2 wanderTarget;
-    private bool hasWanderTarget = false;
+    private Vector2 wanderTarget = Vector2.zero;
     private PathFollower pathFollower;
     private PlayerControl player;
     private float decisionTimer;
     private float petTimer;
 
     public DogState currentState;
-    public float followDistance = 4f;
-    public float wanderRadius = 5f;
-    public float decisionInterval = 3f;
+    public float followDistance = 100f;
+    public float decisionInterval = 1f;
     public float petCooldown = 2f;
 
     void Wander()
     {
         if (pathFollower == null) return;
 
-        // If we don't currently have a wander target, pick one
-        if (!hasWanderTarget)
+        // If we don't currently have a wander target, set one
+        if (wanderTarget.Equals(Vector2.zero))
         {
-            Vector2 randomOffset = UnityEngine.Random.insideUnitCircle * wanderRadius;
-            wanderTarget = (Vector2)transform.position + randomOffset;
-
-            hasWanderTarget = pathFollower.PathfindTo(wanderTarget);
-        }
-
-        // If finished walking, reset so we pick a new target next time
-        if (!pathFollower.IsPathfinding())
-        {
-            hasWanderTarget = false;
+            wanderTarget = new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1));;
+        } else {
+            pathFollower.WalkTowards(wanderTarget, Time.deltaTime);
         }
     }
 
@@ -52,6 +43,11 @@ public class Dog : MonoBehaviour
 
     void HandleState()
     {
+        // Override if the player starts moving
+        if (player.IsMoving()) {
+            currentState = DogState.Follow;
+        }
+
         switch (currentState)
         {
             case DogState.Follow:
@@ -96,17 +92,11 @@ public class Dog : MonoBehaviour
 
     void MakeStateDecision()
     {
+        decisionTimer = 0f;
+        wanderTarget = Vector2.zero;
+
         // Don't do anything else if the dog is being pet
-        if (currentState == DogState.BeingPet) return;
-
-        Vector2 playerPosition = player.gameObject.transform.position;
-        float distance = Vector2.Distance(transform.position, playerPosition);
-
-        if (distance > followDistance)
-        {
-            currentState = DogState.Follow;
-            return;
-        }
+        if (currentState == DogState.BeingPet || player.IsMoving()) return;
 
         // For now just randomly pick between Wait and Wander
         int randomChoice = Random.Range(0, 2);
@@ -125,7 +115,6 @@ public class Dog : MonoBehaviour
         if (decisionTimer >= decisionInterval)
         {
             MakeStateDecision();
-            decisionTimer = 0f;
         }
 
         HandleState();

@@ -133,4 +133,8 @@ public class PlayerControl : MonoBehaviour
     public void PathfindTo(Vector2 location) {
         pathFollower.PathfindTo(location);
     }
+
+    public bool IsMoving() {
+        return animator.GetBool("moving");
+    }
 }
