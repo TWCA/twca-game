@@ -13,8 +13,6 @@ GameObject:
   - component: {fileID: 5182192927411619632}
   - component: {fileID: 5762236453178697866}
   - component: {fileID: 6248194391349859984}
-  - component: {fileID: 4352666686941215220}
-  - component: {fileID: 3658008525667241985}
   m_Layer: 0
   m_Name: Sam
   m_TagString: Untagged
@@ -30,9 +28,9 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6054132484571790322}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0.004201302, w: 0.9999912}
+  m_LocalRotation: {x: 0, y: 0, z: -0.004197462, w: 0.9999912}
   m_LocalPosition: {x: -39.1, y: 1.1, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 10, y: 10, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -101,10 +99,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3c21fca3599432381b2c146aa90724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 40
+  intersectionSize: 12
+  maxPathError: 60
+  pathLerpRate: 0.9
   currentState: 0
-  followDistance: 4
-  wanderRadius: 5
-  decisionInterval: 3
+  walkSpeed: 40
+  runSpeed: 80
+  followDistance: 40
+  followRunFactor: 1.5
+  decisionInterval: 1
+  petCooldown: 2
 --- !u!61 &5762236453178697866
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -177,31 +182,3 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &4352666686941215220
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6054132484571790322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90f8a929ed345b87284cae2e24fa8be3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  speed: 40
-  intersectionSize: 12
-  maxPathError: 60
-  pathLerpRate: 0.9
---- !u!114 &3658008525667241985
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6054132484571790322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d5864eb8e50c946eaab923b8025c6c32, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
