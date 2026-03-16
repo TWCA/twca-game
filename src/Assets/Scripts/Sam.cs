@@ -6,19 +6,21 @@ public class Dog : MonoBehaviour
     {
         Follow,
         Wander,
-        Wait
+        Wait,
+        BeingPet
     }
     private Vector2 wanderTarget;
     private bool hasWanderTarget = false;
     private PathFollower pathFollower;
-    private Transform player;
+    private PlayerControl player;
     private float decisionTimer;
+    private float petTimer;
 
     public DogState currentState;
     public float followDistance = 4f;
     public float wanderRadius = 5f;
     public float decisionInterval = 3f;
-
+    public float petCooldown = 2f;
 
     void Wander()
     {
@@ -43,7 +45,7 @@ public class Dog : MonoBehaviour
     void Start()
     {
         pathFollower = GetComponent<PathFollower>();
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        player = PlayerControl.Instance;
 
         currentState = DogState.Follow;
     }
@@ -62,6 +64,12 @@ public class Dog : MonoBehaviour
 
             case DogState.Wait:
                 pathFollower.StopPathfinding();
+                WaitAnimation();
+                break;
+
+            case DogState.BeingPet:
+                pathFollower.StopPathfinding();
+                PetAnimation();
                 break;
         }
     }
@@ -70,13 +78,14 @@ public class Dog : MonoBehaviour
     {
         if (pathFollower == null || player == null) return;
 
-        float distance = Vector2.Distance(transform.position, player.position);
+        Vector2 playerPosition = player.gameObject.transform.position;
+        float distance = Vector2.Distance(transform.position, playerPosition);
 
         if (distance > followDistance)
         {
             if (!pathFollower.IsPathfinding())
             {
-                pathFollower.PathfindTo(player.position);
+                pathFollower.PathfindTo(playerPosition);
             }
         }
         else
@@ -87,7 +96,11 @@ public class Dog : MonoBehaviour
 
     void MakeStateDecision()
     {
-        float distance = Vector2.Distance(transform.position, player.position);
+        // Don't do anything else if the dog is being pet
+        if (currentState == DogState.BeingPet) return;
+
+        Vector2 playerPosition = player.gameObject.transform.position;
+        float distance = Vector2.Distance(transform.position, playerPosition);
 
         if (distance > followDistance)
         {
@@ -107,6 +120,7 @@ public class Dog : MonoBehaviour
     void Update()
     {
         decisionTimer += Time.deltaTime;
+        petTimer += Time.deltaTime;
 
         if (decisionTimer >= decisionInterval)
         {
@@ -115,5 +129,29 @@ public class Dog : MonoBehaviour
         }
 
         HandleState();
+    }
+
+    void OnMouseUp() {
+        if (petTimer >= petCooldown) {
+            Debug.Log("Pet sam");
+            player.PathfindTo(transform.position);
+            currentState = DogState.BeingPet;
+
+            // Reset timer
+            petTimer = 0f;
+
+            // Do animation stuff and then set the currentState to something else to reset
+            // Maybe call animation logic in HandleState() under the BeingPet case?
+            // Something like that idk, whatever works
+            // - adam
+        }
+    }
+
+    void WaitAnimation() {
+        // Do wait animation
+    }
+
+    void PetAnimation() {
+        // Do animation when being pet
     }
 }
