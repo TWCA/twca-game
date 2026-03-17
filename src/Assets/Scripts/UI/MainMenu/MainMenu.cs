@@ -8,6 +8,7 @@ public class MainMenu : SubMenu
 {
     public Button playButton, settingsButton, exitButton;
     public Text versionText;
+    public string targetScene;
 
     protected override void OnEnable()
     {
@@ -25,7 +26,7 @@ public class MainMenu : SubMenu
     }
 
     private void PlayClick() {
-        SceneManager.LoadScene("level1");
+        SceneManager.LoadScene(targetScene);
     }
 
     private void SettingsClick() {

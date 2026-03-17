@@ -274,6 +274,7 @@ MonoBehaviour:
   settingsButton: {fileID: 4938359963281063458}
   exitButton: {fileID: 8708050393368833135}
   versionText: {fileID: 3029469365918160008}
+  targetScene: Cabin
 --- !u!1 &8487968767837739146
 GameObject:
   m_ObjectHideFlags: 0
