@@ -12,13 +12,37 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenu.unity
     guid: 0065f74e8f70e127d917c632577b31c6
   - enabled: 1
+    path: Assets/Scenes/Levels/Cabin.unity
+    guid: 2eb9fcbf29752159384bd1e2b72e5550
+  - enabled: 1
+    path: Assets/Scenes/Levels/OutsideCabin.unity
+    guid: 5fa684578383465a6bada0b7a216263e
+  - enabled: 1
     path: Assets/Scenes/Levels/Level1.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
-    path: Assets/Scenes/Levels/DialogLevel1.unity
-    guid: 27157f5f666ca5c6bb8dfc9d16b19175
+    path: Assets/Scenes/Levels/Level2.unity
+    guid: 02b108a002d9cea2ca47080786024409
   - enabled: 1
-    path: Assets/Scenes/Levels/RiverLevel.unity
+    path: Assets/Scenes/Levels/Level3.unity
+    guid: b50771a94abfc54d790da07ae73ecf61
+  - enabled: 1
+    path: Assets/Scenes/Levels/Descent.unity
+    guid: 8b972c285b00b6587b5011644b17dfce
+  - enabled: 1
+    path: Assets/Scenes/Levels/Level4.unity
+    guid: 25cd84734c08af404a66585f97c83940
+  - enabled: 1
+    path: Assets/Scenes/Levels/Level5.unity
     guid: 5430d5b318de9aca4b5f4fb5f26d781b
+  - enabled: 1
+    path: Assets/Scenes/Levels/Reunited.unity
+    guid: 87a75c40fdf019202b6707c8e9c3c882
+  - enabled: 1
+    path: Assets/Scenes/Levels/Return.unity
+    guid: 170ab45d817ea6159ae5e9c71ab050c8
+  - enabled: 1
+    path: Assets/Scenes/Levels/Ending.unity
+    guid: a2ad36d7b9310d0ab82862e6aae21596
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 883cafa8d3f4c0d95b6ebf6bab249339, type: 3}

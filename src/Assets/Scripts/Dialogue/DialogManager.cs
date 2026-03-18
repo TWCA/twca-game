@@ -343,7 +343,7 @@ public class DialogManager : MonoBehaviour
             Destroy(historyContent.GetChild(i).gameObject);
         }
     }
-
+    
     /**
      * Move the dialog UI to th main camera's position.
      */
