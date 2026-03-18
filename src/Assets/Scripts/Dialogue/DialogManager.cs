@@ -49,17 +49,6 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    private void UpdateDisabledBehaviours()
-    {
-        GameObject player = GameObject.FindWithTag("Player");
-        PlayerControl playerControl = player.GetComponent<PlayerControl>();
-
-        playerControl.enabled = !isRunning;
-
-        if (isRunning)
-            playerControl.StopInPlace();
-    }
-
     /**
      * Opens the story to knot and opens the UI.
      * If you want to play dialog without the UI, call StartDialogHeadless()
