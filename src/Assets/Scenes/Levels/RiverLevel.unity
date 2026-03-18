@@ -5483,19 +5483,19 @@ PrefabInstance:
       objectReference: {fileID: 1196801423}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.030845772
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0.2111293
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.9375346
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      value: 0.57723
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7219,7 +7219,7 @@ PrefabInstance:
     - target: {fileID: 1053169700985561612, guid: da9570fc746478784bfbad4451106a46, type: 3}
       propertyPath: Birds.Array.data[1]
       value: 
-      objectReference: {fileID: 8300000, guid: 984e6616c74db0649851c78c3dfd273f, type: 3}
+      objectReference: {fileID: 8300000, guid: 5990eba8c877e634aaa00832bb2423b8, type: 3}
     - target: {fileID: 1053169700985561612, guid: da9570fc746478784bfbad4451106a46, type: 3}
       propertyPath: steps.Array.data[0]
       value: 

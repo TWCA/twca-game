@@ -28,7 +28,9 @@ public class AudioManager : MonoBehaviour
     void Awake()
     {
         _instance = this;
+        FullAll();
         playRain();
+        insectSource.volume = 0.6f;
     }
 
     void Start()
@@ -140,7 +142,7 @@ public class AudioManager : MonoBehaviour
         if (!insectSource.isPlaying)
             insectSource.Play();
         
-        insectSource.volume = 0.6f;
+        //insectSource.volume = 0.6f;
     }
 
     public void playRain()
@@ -248,7 +250,7 @@ public class AudioManager : MonoBehaviour
         if (aud == chickadeeSource)
         {
             playingChickadee = true;
-            float rand = Random.Range(2f, 5);
+            float rand = Random.Range(3f, 30);
             aud.PlayOneShot(Birds[0]);
             yield return new WaitForSeconds(rand);
             playingChickadee = false;
@@ -260,5 +262,35 @@ public class AudioManager : MonoBehaviour
             yield return new WaitForSeconds(rand);
             playingOwls = false;
         }
+    }
+
+    private void halfVolume(AudioSource aud)
+    {
+        aud.volume = 0.4f;
+    }
+
+    private void fullVolume(AudioSource aud)
+    {
+        aud.volume = 0.8f;
+    }
+    public void HalfAll()
+    {
+        insectSource.volume = 0.3f;
+        halfVolume(rainSource);
+        halfVolume(thunderSource);
+        halfVolume(owlsSource);
+        halfVolume(chickadeeSource);
+        halfVolume(RiverSourcePast);
+        halfVolume(RiverSourceFuture);
+    }
+    public void FullAll()
+    {
+        insectSource.volume = 0.6f;
+        fullVolume(rainSource);
+        fullVolume(thunderSource);
+        fullVolume(owlsSource);
+        fullVolume(chickadeeSource);
+        fullVolume(RiverSourcePast);
+        fullVolume(RiverSourceFuture);
     }
 }

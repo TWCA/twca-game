@@ -69,7 +69,10 @@ public class DialogManager : MonoBehaviour
         }
 
         if (!string.IsNullOrEmpty(knot))
+        {
             story.ChoosePathString(knot);
+            AudioManager.Instance.HalfAll();
+        }
         else
             Debug.LogError("No knot location passed");
 
@@ -100,7 +103,7 @@ public class DialogManager : MonoBehaviour
     {
         isRunning = false;
         DialogRoot.SetActive(false);
-
+        AudioManager.Instance.FullAll();
         onDialogFinished?.Invoke();
         onDialogFinished = null;
 

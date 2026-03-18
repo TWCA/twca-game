@@ -1671,19 +1671,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.030845772
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0.45469522
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.9375346
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      value: 0.090815485
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 1205952532859487973, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
@@ -4536,6 +4536,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 207d6f5c1b5e6679c94fa4b0a455c021, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  musicSource: {fileID: 1825514305}
 --- !u!82 &1825514305
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4547,10 +4548,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 8442d9b5cdfdd6d42978c69150b0381a, type: 3}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0

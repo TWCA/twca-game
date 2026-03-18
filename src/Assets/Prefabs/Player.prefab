@@ -210,6 +210,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 6722954200676686287}
     m_Modifications:
+    - target: {fileID: 1053169700985561612, guid: da9570fc746478784bfbad4451106a46, type: 3}
+      propertyPath: Birds.Array.data[1]
+      value: 
+      objectReference: {fileID: 8300000, guid: 5990eba8c877e634aaa00832bb2423b8, type: 3}
     - target: {fileID: 4979518067529121263, guid: da9570fc746478784bfbad4451106a46, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
