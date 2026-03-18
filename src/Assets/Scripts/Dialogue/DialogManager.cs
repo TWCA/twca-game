@@ -43,10 +43,21 @@ public class DialogManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (DialogRoot.activeSelf)
+        if (isRunning)
         {
             MoveToCamera();
         }
+    }
+
+    private void UpdateDisabledBehaviours()
+    {
+        GameObject player = GameObject.FindWithTag("Player");
+        PlayerControl playerControl = player.GetComponent<PlayerControl>();
+
+        playerControl.enabled = !isRunning;
+
+        if (isRunning)
+            playerControl.StopInPlace();
     }
 
     /**
@@ -343,10 +354,7 @@ public class DialogManager : MonoBehaviour
             Destroy(historyContent.GetChild(i).gameObject);
         }
     }
-    
-    /**
-     * Move the dialog UI to th main camera's position.
-     */
+
     private void MoveToCamera()
     {
         GameObject camera = GameObject.FindWithTag("MainCamera");
