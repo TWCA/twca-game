@@ -1,6 +1,12 @@
 1
 +[choice 1]->start
 
+=== headless_test ===
+...Just a few more minutes Sam... #Voice:VA/IntroScene/IntroRobin1
+New Telus World of Science exhibit unveiled! #Voice:VA/Notifications/TelusWorldOfScience
+I've been okay. #Voice:VA/InterLevel/IveBeenOkay
+-> END
+
 === start ===
 NPC: What u doing here？
 
