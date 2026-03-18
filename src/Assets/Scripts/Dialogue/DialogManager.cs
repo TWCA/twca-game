@@ -43,7 +43,7 @@ public class DialogManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (isRunning)
+        if (DialogRoot.activeSelf)
         {
             MoveToCamera();
         }
@@ -344,6 +344,9 @@ public class DialogManager : MonoBehaviour
         }
     }
 
+    /**
+     * Move the dialog UI to th main camera's position.
+     */
     private void MoveToCamera()
     {
         GameObject camera = GameObject.FindWithTag("MainCamera");
