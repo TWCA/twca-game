@@ -10,27 +10,27 @@ public class NotificationBubble : MonoBehaviour
     [SerializeField] private Text bodyText;
     [SerializeField] private Image iconImage;
 
-    public void SetMessage(string title, string body)
+    public void SetMessage(string appTitle, string body)
     {
-        if (title == "Readit")
+        if (appTitle == "Readit")
         {
             iconImage.sprite = icons[0];
         }
-        else if (title == "Instancegram")
+        else if (appTitle == "Instancegram")
         {
             iconImage.sprite = icons[1];
         }
-        else if (title == "News")
+        else if (appTitle == "News")
         {
             iconImage.sprite = icons[2];
         }
         else
         {
-            Debug.LogWarning("Can't find app icon: " + title);
+            Debug.LogWarning("Can't find app icon: " + appTitle);
         }
 
 
-        titleText.text = title;
+        titleText.text = appTitle;
         bodyText.text = body;
 
         LayoutRebuilder.ForceRebuildLayoutImmediate((RectTransform)transform);
