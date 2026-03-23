@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Settings : SubMenu
 {
-    public Button BackButton, SaveButton;
+    public Button BackButton;
     public Slider MasterVolumeSlider;
     public Text MasterVolumeText;
     private SettingsLoader settingsLoader;
@@ -38,14 +38,10 @@ public class Settings : SubMenu
         MenuController menuController = MenuController.Instance;
 
         HookButton(BackButton, menuController.GoBack);
-        HookButton(SaveButton, SaveClick);
-    }
-
-    private void SaveClick() {
-        masterVolumeSetting.Set(MasterVolumeSlider.value);
     }
 
     private void MasterVolumeAdjusted() {
         MasterVolumeText.text = $"{MasterVolumeSlider.value}%";
+        masterVolumeSetting.Set(MasterVolumeSlider.value);
     }
 }
