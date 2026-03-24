@@ -39,7 +39,7 @@ public class PathFollower : MonoBehaviour
     private float currentSpeed;
     private bool movedLastFrame;
     private Vector2 jumpStart, jumpEnd;
-    private bool jumping = false;
+    private bool isJumping = false;
     private float jumpDistanceTraveled;
 
     private List<int> plannedPath;
@@ -91,7 +91,7 @@ public class PathFollower : MonoBehaviour
             }
         }
 
-        if (jumping)
+        if (isJumping)
             MoveDuringJump();
 
         if (movedLastFrame)
@@ -105,6 +105,11 @@ public class PathFollower : MonoBehaviour
     public float GetCurrentSpeed()
     {
         return currentSpeed;
+    }
+
+    public bool IsJumping()
+    {
+        return isJumping;
     }
 
     /**
@@ -247,7 +252,7 @@ public class PathFollower : MonoBehaviour
      */
     private void MoveAndHandleJumps(Vector2 targetPosition)
     {
-        if (jumping)
+        if (isJumping)
             return;
 
         Vector2 nextPosition = Vector2.MoveTowards(transform.position, targetPosition, currentSpeed * Time.deltaTime);
@@ -263,7 +268,7 @@ public class PathFollower : MonoBehaviour
                 // jump
                 Vector2 direction = targetPosition - (Vector2)transform.position;
                 (jumpStart, jumpEnd) = net.PathPointsGoingDirection(nearestPath, direction);
-                jumping = true;
+                isJumping = true;
                 jumpDistanceTraveled = 0;
             }
             else
@@ -288,7 +293,7 @@ public class PathFollower : MonoBehaviour
 
         float jumpGap = Vector2.Distance(jumpStart, jumpEnd);
         if (jumpDistanceTraveled >= jumpGap)
-            jumping = false;
+            isJumping = false;
 
         float halfGap = jumpGap * 0.5f;
         float jumpHeight = Squared(halfGap * gravity) - Squared((jumpDistanceTraveled - halfGap) * gravity);
