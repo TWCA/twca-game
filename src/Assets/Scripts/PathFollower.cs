@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PathFollower : MonoBehaviour
@@ -9,8 +7,18 @@ public class PathFollower : MonoBehaviour
     /** Pixels per second. */
     public float speed = 40f;
     
+    /** How far ahead of the player do we pathfind to when walking with WASD */
     [Range(5.0f, 100f)] public float walkingLookAheadLength = 25f;
-
+    
+    /** How much the WASD system should help us to turn when it is detected. Between zero and one.*/
+    [Range(0.0f, 1.0f)] public float turnAssistStrength = 0.5f;
+    
+    /** How close we have to be to turning before the WASD system helps us turn easier. Between zero and one. */
+    [Range(0.0f, 1.0f)] public float turnAssistThreshold = 0.1f;
+    
+    /** How close we have to be to walking perpendicular to the path with WASD before we just stop moving. Between zero and one. */
+    [Range(0.0f, 1.0f)] public float perpendicularMovementThreshold = 0.1f;
+    
     public event Action DonePathing;
 
     private List<int> plannedPath;
@@ -116,15 +124,20 @@ public class PathFollower : MonoBehaviour
         Vector2 goalPosition = GetWalkingGoal(targetDirection);
         float stepSize = speed * delta;
 
-        Vector2 pointTowardsGoal = GetNextPointTowardsGoal(goalPosition, stepSize);
+        Vector2 nextPointTowardsGoal = GetNextPointTowardsGoal(goalPosition, stepSize);
 
+        // Draw line from player to goal position
         //Debug.DrawLine(transform.position, goalPosition, Color.green);
 
-        transform.position = Vector2.MoveTowards(transform.position, pointTowardsGoal, stepSize);
+        transform.position = Vector2.MoveTowards(transform.position, nextPointTowardsGoal, stepSize);
 
-        return (pointTowardsGoal - (Vector2)transform.position).normalized;
+        return (nextPointTowardsGoal - (Vector2)transform.position).normalized;
     }
 
+    /**
+     * Does pathfinding and calculates the next point that needs to be pathfound to.
+     * Indented to be used for WASD control.
+     */
     public Vector2 GetNextPointTowardsGoal(Vector2 goalPosition, float stepSize)
     {
         PathNetwork net = PathNetwork.Instance;
@@ -142,6 +155,11 @@ public class PathFollower : MonoBehaviour
             return walkEndPosition;
     }
 
+    /**
+     * Finds an ideal goal location when walking with WASD.
+     * This location is a small distance in-front of the player defined by "walkingLookAheadLength".
+     * The location is adjusted near turns to make them easier to take.
+     */
     public Vector2 GetWalkingGoal(Vector2 targetDirection)
     {
         PathNetwork net = PathNetwork.Instance;
@@ -151,10 +169,13 @@ public class PathFollower : MonoBehaviour
         (Vector2 start, Vector2 end) = net.PathPointsGoingDirection(nearestPath, targetDirection);
         Vector2 pathDirection = (end-start).normalized;
 
+        // measure how close our targetDirection is to walking down the path
+        // 1.0 -> path perfectly matches target
+        // 0.0 -> path is perpendicular to target
         float alignment = Vector2.Dot(pathDirection, targetDirection);
         
         // if we are trying to walk perpendicular to the path, don't move
-        if (alignment < 0.1) 
+        if (alignment < perpendicularMovementThreshold) 
             return transform.position;
 
         float distanceFromStartOfPath = Vector2.Distance(transform.position, start);
@@ -162,14 +183,14 @@ public class PathFollower : MonoBehaviour
         if (distanceFromStartOfPath > walkingLookAheadLength)
         {
             // try to turn when not satisfied if we haven't turned in a while
-            if (alignment < 0.9)
-                targetDirection -= pathDirection * (alignment * 0.5f);
+            if (alignment < 1.0f - turnAssistThreshold)
+                targetDirection -= pathDirection * (alignment * turnAssistStrength);
         }
         else
         {
-            // try to stay straight when not satisfied if we just turned
-            if (alignment < 0.9)
-                targetDirection += pathDirection * (alignment * 0.5f);
+            // try to keep going if we just turned
+            if (alignment < 1.0f - turnAssistThreshold)
+                targetDirection += pathDirection * (alignment * turnAssistStrength);
         }
         
         Vector2 goalPosition = (Vector2)transform.position + targetDirection.normalized * walkingLookAheadLength;
