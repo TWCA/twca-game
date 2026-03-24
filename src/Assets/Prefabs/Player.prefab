@@ -63,10 +63,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f8a929ed345b87284cae2e24fa8be3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeed: 60
-  maxSpeed: 130
+  minSpeed: 50
+  maxSpeed: 120
+  minJumpSpeed: 110
   acceleration: 50
   deceleration: 500
+  gravity: 0.14
   walkingLookAheadLength: 25
   turnAssistStrength: 0.5
   turnAssistThreshold: 0.1
