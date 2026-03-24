@@ -23,7 +23,7 @@ public class RiverManager : MonoBehaviour
         {
             IncrementNightPhase();
         };
-        MusicPlayer.Instance.PlayOnce("Music/RiverTrack 1");
+        //MusicPlayer.Instance.PlayOnce("Music/RiverTrack 1");
     }
 
     public bool IncrementNightPhase()

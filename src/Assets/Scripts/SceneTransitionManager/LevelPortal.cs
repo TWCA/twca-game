@@ -20,7 +20,7 @@ public class LevelPortal : MonoBehaviour
         if (collisionObject != null && collision.gameObject.GetComponent<PlayerControl>()) {
             PlayerControl playerControl = collisionObject.GetComponent<PlayerControl>();
             PathFollower pathFollower = collisionObject.GetComponent<PathFollower>();
-
+            AudioManager.Instance.EndofLevel();
             DoFinalMove(playerControl, pathFollower);
         }
     }
