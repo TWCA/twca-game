@@ -2605,6 +2605,10 @@ PrefabInstance:
       value: LevelPortal
       objectReference: {fileID: 0}
     - target: {fileID: 7895326277109577458, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
+      propertyPath: m_Offset.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 7895326277109577458, guid: 1fce5eccd8a62fc94ab632648fb4a151, type: 3}
       propertyPath: m_Offset.y
       value: -40
       objectReference: {fileID: 0}
@@ -5487,11 +5491,7 @@ PrefabInstance:
       objectReference: {fileID: 1196801423}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
-      value: 0.029850747
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.x
-      value: 0
+      value: 0.023162134
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
@@ -5499,11 +5499,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.94107246
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.width
-      value: 1
+      value: 0.9542352
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
