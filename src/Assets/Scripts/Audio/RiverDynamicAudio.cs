@@ -5,7 +5,7 @@ using UnityEngine;
 public class RiverDynamicAudio : MonoBehaviour
 {
     [SerializeField] private AudioSource CalmRiver, intenseRiver;
-    [SerializeField] private GameObject player;
+    private GameObject player;
     private Vector2 pos;
     private float maxVol = 1;
     private bool started = false;
@@ -14,6 +14,7 @@ public class RiverDynamicAudio : MonoBehaviour
     void Start()
     {
         pos = gameObject.transform.position;
+        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     // Update is called once per frame
