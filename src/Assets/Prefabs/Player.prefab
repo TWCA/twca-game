@@ -63,10 +63,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f8a929ed345b87284cae2e24fa8be3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 60
-  intersectionSize: 20
-  maxPathError: 60
-  pathLerpRate: 0.9
+  minSpeed: 60
+  maxSpeed: 130
+  acceleration: 50
+  deceleration: 500
+  walkingLookAheadLength: 25
+  turnAssistStrength: 0.5
+  turnAssistThreshold: 0.1
+  perpendicularMovementThreshold: 0.1
 --- !u!212 &8328945196773836036
 SpriteRenderer:
   m_ObjectHideFlags: 0
