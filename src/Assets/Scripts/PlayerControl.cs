@@ -125,6 +125,21 @@ public class PlayerControl : MonoBehaviour
         return CanMove && animator.GetBool("interacting") == false;
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject != null && collision.gameObject.CompareTag("Sam"))
+        {
+            animator.SetBool("petting", true);
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision) {
+        if (collision.gameObject != null && collision.gameObject.CompareTag("Sam"))
+        {
+            animator.SetBool("petting", false);
+        }
+    }
+
     /*
     * Stops all pathfinding and halts the player where they are
     */

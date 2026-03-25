@@ -201,7 +201,22 @@ public class Dog : PathFollower
         return base.PathfindTo(target);
     }
 
-    void OnMouseUp() {
-        HandlePet();
+    // void OnMouseUp() {
+    //     HandlePet();
+    // }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject != null && collision.gameObject.CompareTag("Player"))
+        {
+            animator.SetBool("pet", true);
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision) {
+        if (collision.gameObject != null && collision.gameObject.CompareTag("Player"))
+        {
+            animator.SetBool("pet", false);
+        }
     }
 }
