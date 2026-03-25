@@ -21,6 +21,7 @@ public class Dog : PathFollower
     public float followRunDistance = 60f;
     public float decisionInterval = 1f;
     public float petCooldown = 2f;
+    public int wanderOdds = 5; // For example "1 in (this value) chance of happening"
 
     /**
     * Handles / redirects the logic for each state that Sam can be in
@@ -116,14 +117,19 @@ public class Dog : PathFollower
     */
     void HandlePet() {
         if (petTimer >= petCooldown) {
-            // I am thinking its ok to just pathfind the player to the dog instead of both since it wouldn't really make sense for both of them to 
-            player.PathfindTo(transform.position);
-            currentState = DogState.BeingPet;
+            if (currentState == DogState.BeingPet) {
+                animator.SetBool("pet", false);
+
+                currentState = DogState.Wait;
+            } else {
+                player.PathfindTo(transform.position);
+                currentState = DogState.BeingPet;
+
+                animator.SetBool("pet", true);
+            }
 
             // Reset timer
             petTimer = 0f;
-
-            animator.SetBool("pet", true);
         }
     }
 
@@ -135,13 +141,14 @@ public class Dog : PathFollower
         decisionTimer = 0f;
         wanderTarget = Vector2.zero;
 
-        // For now just randomly pick between Wait and Wander
-        int randomChoice = Random.Range(0, 2);
+        if (currentState != DogState.BeingPet) {
+            int randomChoice = Random.Range(0, wanderOdds);
 
-        if (randomChoice == 0)
-            currentState = DogState.Wander;
-        else
-            currentState = DogState.Wait;
+            if (randomChoice == 0)
+                currentState = DogState.Wander;
+            else
+                currentState = DogState.Wait;
+        }
     }
 
     void IncrementTimers() {

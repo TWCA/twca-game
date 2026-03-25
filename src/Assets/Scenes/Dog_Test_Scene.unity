@@ -618,7 +618,7 @@ PrefabInstance:
       objectReference: {fileID: 3460251886446740815, guid: 98620dddf731d172abd9385030771b54, type: 3}
     - target: {fileID: 5182192927411619632, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
       propertyPath: decisionInterval
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5762236453178697866, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
       propertyPath: m_Size.x
