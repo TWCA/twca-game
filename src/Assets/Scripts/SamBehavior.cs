@@ -19,13 +19,5 @@ public class SamBehavior : StateMachineBehaviour
             animator.speed = 1;
         else
             animator.speed = 1;
-
-        // if (animator.GetBool("walk")) {
-        //     animator.SetBool("idle", false);
-        // }
-
-        // if (animator.GetBool("idle")) {
-        //     animator.SetBool("walk", false);
-        // }
     }
 }

@@ -68,7 +68,7 @@ public class Dog : PathFollower
     */
     void Follow()
     {
-        if (player == null) return;
+        Vector2 playerPosition = player.gameObject.transform.position;
 
         if (IsTooFarFromPlayer(followWalkDistance))
         {
@@ -82,7 +82,6 @@ public class Dog : PathFollower
 
             if (!IsPathfinding())
             {
-                Vector2 playerPosition = player.gameObject.transform.position;
                 PathfindTo(playerPosition);
             }
         }
@@ -92,6 +91,7 @@ public class Dog : PathFollower
         }
 
         animator.SetBool("walk", true);
+        FlipSprite(playerPosition);
     }
 
     /*
@@ -194,16 +194,6 @@ public class Dog : PathFollower
         FlipSprite(targetDirection);
         return base.WalkTowards(targetDirection, delta);
     }
-
-    public override bool PathfindTo(Vector2 target)
-    {
-        FlipSprite(target);
-        return base.PathfindTo(target);
-    }
-
-    // void OnMouseUp() {
-    //     HandlePet();
-    // }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
