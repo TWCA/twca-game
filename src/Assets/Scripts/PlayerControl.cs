@@ -41,6 +41,8 @@ public class PlayerControl : MonoBehaviour
         // pathfind when the mouse is clicked
         clickAction.performed += PathfindToMouse;
         clickAction.Enable();
+
+        pathFollower.DonePathing += OnPathfindingEnded;
     }
     
     private void OnDestroy()
@@ -73,6 +75,9 @@ public class PlayerControl : MonoBehaviour
         {
             pathFollower.StopPathfinding();
 
+            // Stop going to pet sam
+            animator.SetBool("walkingToSam", false);
+
             // Reset bringing an item to a location if the player overrides
             inventorySystem.Cancel();
         }
@@ -89,6 +94,11 @@ public class PlayerControl : MonoBehaviour
         animator.SetBool("moving", moving);
         animator.SetFloat("movingSpeed", pathFollower.GetCurrentSpeed() / 100f);
         animator.SetBool("jumping", pathFollower.IsJumping());
+
+        // Stop the petting animation if we move and the movement is not going to sam
+        if (moving && !animator.GetBool("walkingToSam")) {
+            animator.SetBool("petting", false);
+        }
 
         if (moving) // only update while moving
             sprite.flipX = movementDirection.x > 0;
@@ -125,6 +135,13 @@ public class PlayerControl : MonoBehaviour
         return CanMove && animator.GetBool("interacting") == false;
     }
 
+    private void OnPathfindingEnded() {
+        if (animator.GetBool("walkingToSam")) {
+            animator.SetBool("petting", true);
+            animator.SetBool("walkingToSam", false);
+        }
+    }
+
     /*
     * Stops all pathfinding and halts the player where they are
     */
@@ -138,5 +155,10 @@ public class PlayerControl : MonoBehaviour
 
     public bool IsMoving() {
         return animator.GetBool("moving");
+    }
+
+    public void PetSam(Vector2 samPosition) {
+        PathfindTo(samPosition);
+        animator.SetBool("walkingToSam", true);
     }
 }

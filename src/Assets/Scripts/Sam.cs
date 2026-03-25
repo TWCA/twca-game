@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Dog : PathFollower
 {
@@ -12,7 +13,6 @@ public class Dog : PathFollower
     private Vector2 wanderTarget = Vector2.zero;
     private PlayerControl player;
     private float decisionTimer;
-    private float petTimer;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
 
@@ -20,7 +20,6 @@ public class Dog : PathFollower
     public float followWalkDistance = 40f;
     public float followRunDistance = 60f;
     public float decisionInterval = 1f;
-    public float petCooldown = 2f;
     public int wanderOdds = 5; // For example "1 in (this value) chance of happening"
 
     /**
@@ -29,8 +28,9 @@ public class Dog : PathFollower
     void HandleState()
     {
         // Override if the player starts moving
-        if (player.IsMoving()) {
+        if (player.IsMoving() && currentState != DogState.BeingPet) {
             currentState = DogState.Follow;
+            animator.SetBool("pet", false);
         }
 
         switch (currentState)
@@ -44,10 +44,6 @@ public class Dog : PathFollower
                 break;
 
             case DogState.Wait:
-                StopPathfinding();
-                break;
-
-            case DogState.BeingPet:
                 StopPathfinding();
                 break;
         }
@@ -104,7 +100,6 @@ public class Dog : PathFollower
         if (wanderTarget.Equals(Vector2.zero))
         {
             wanderTarget = new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
-            Debug.Log(wanderTarget);
         } else {
             WalkTowards(wanderTarget, Time.deltaTime);
         }
@@ -116,21 +111,12 @@ public class Dog : PathFollower
     * Logic for when Sam is pet by the player
     */
     void HandlePet() {
-        if (petTimer >= petCooldown) {
-            if (currentState == DogState.BeingPet) {
-                animator.SetBool("pet", false);
+        currentState = DogState.BeingPet;
 
-                currentState = DogState.Wait;
-            } else {
-                player.PathfindTo(transform.position);
-                currentState = DogState.BeingPet;
+        player.PetSam(transform.position);
 
-                animator.SetBool("pet", true);
-            }
-
-            // Reset timer
-            petTimer = 0f;
-        }
+        animator.SetBool("pet", true);
+        // animator.SetBool("")
     }
 
     /*
@@ -153,7 +139,6 @@ public class Dog : PathFollower
 
     void IncrementTimers() {
         decisionTimer += Time.deltaTime;
-        petTimer += Time.deltaTime;
     }
 
     void FlipSprite(Vector2 direction) {
@@ -175,8 +160,10 @@ public class Dog : PathFollower
 
         IncrementTimers();
 
-        if (decisionTimer >= decisionInterval && currentState != DogState.BeingPet && !player.IsMoving())
-        {
+        Mouse mouse = Mouse.current;
+        if (mouse.leftButton.wasPressedThisFrame && RaycastManager.IsGameObjectBelowMouse(gameObject)) {
+            HandlePet();
+        } else if (decisionTimer >= decisionInterval && currentState != DogState.BeingPet && !player.IsMoving()) {
             MakeStateDecision();
         }
 
@@ -199,9 +186,5 @@ public class Dog : PathFollower
     {
         FlipSprite(target);
         return base.PathfindTo(target);
-    }
-
-    void OnMouseUp() {
-        HandlePet();
     }
 }

@@ -13,12 +13,14 @@ public class idleBehavior : StateMachineBehaviour
             animator.GetBool("moving") ||
             animator.GetBool("interacting") ||
             animator.GetBool("jumping") ||
-            animator.GetBool("petting")));
+            animator.GetBool("petting") ||
+            animator.GetBool("walkingToSam")));
 
         if (animator.GetBool("moving") && !(
                 animator.GetBool("interacting") ||
                 animator.GetBool("jumping") ||
-                animator.GetBool("petting")))
+                animator.GetBool("petting") ||
+                animator.GetBool("walkingToSam")))
             animator.speed = animator.GetFloat("movingSpeed");
         else
             animator.speed = 1;
