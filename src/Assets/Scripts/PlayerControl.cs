@@ -87,6 +87,8 @@ public class PlayerControl : MonoBehaviour
 
         bool moving = !movementDirection.Equals(Vector2.zero);
         animator.SetBool("moving", moving);
+        animator.SetFloat("movingSpeed", pathFollower.GetCurrentSpeed() / 100f);
+        animator.SetBool("jumping", pathFollower.IsJumping());
 
         if (moving) // only update while moving
             sprite.flipX = movementDirection.x > 0;

@@ -43,25 +43,52 @@ public class DialogManager : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (isRunning)
+        if (DialogRoot.activeSelf)
         {
             MoveToCamera();
         }
     }
 
-    private void UpdateDisabledBehaviours()
-    {
-        GameObject player = GameObject.FindWithTag("Player");
-        PlayerControl playerControl = player.GetComponent<PlayerControl>();
-
-        playerControl.enabled = !isRunning;
-
-        if (isRunning)
-            playerControl.StopInPlace();
-    }
-
+    /**
+     * Opens the story to knot and opens the UI.
+     * If you want to play dialog without the UI, call StartDialogHeadless()
+     */
     public void StartDialog(string knot, System.Action onFinished = null)
     {
+        OpenToKnot(knot, onFinished);
+        
+        DialogRoot.SetActive(true);
+        UpdateDisabledBehaviours();
+
+        if (TimeManager.Instance.IsFuture())
+            timeText.text = "9:43pm";
+        else
+            timeText.text = "11:20am";
+
+        ClearMessages();
+        
+        ContinueStory();
+    }
+
+    /**
+     * Opens the story to knot *without* opening the UI.
+     * If you want to play dialog in the UI, call StartDialog()
+     */
+    public void StartDialogHeadless(string knot, System.Action onFinished = null)
+    {
+        OpenToKnot(knot, onFinished);
+        ContinueStory();
+    }
+
+    /**
+     * Opens the story to a knot, handling the onFinished callback.
+     */
+    private void OpenToKnot(string knot, System.Action onFinished)
+    {
+        // stop old running story knot to open this one
+        if (isRunning)
+            EndDialog();
+        
         if (inkJson == null)
         {
             Debug.LogError("DialogManager: inkJson is not assigned!");
@@ -81,19 +108,7 @@ public class DialogManager : MonoBehaviour
         }
 
         isRunning = true;
-        DialogRoot.SetActive(true);
-
         onDialogFinished = onFinished;
-
-        UpdateDisabledBehaviours();
-
-        if (TimeManager.Instance.IsFuture())
-            timeText.text = "9:43pm";
-        else
-            timeText.text = "11:20am";
-
-        ClearMessages();
-        ContinueStory();
     }
 
     public void EndDialog()
@@ -107,42 +122,68 @@ public class DialogManager : MonoBehaviour
         UpdateDisabledBehaviours();
     }
 
+    /**
+     * Displays any remaining dialog lines, and the displays a choice.
+     */
     private void ContinueStory()
     {
         string line = story.Continue().Trim();
         List<string> tags = story.currentTags;
+        DisplayDialogLine(line, tags);
 
-        if (line.Length > 0)
+        ClearChoices();
+        
+        // Wait for the VA line to stop playing
+        VAManager.Instance.OnQueueEmpty(() =>
         {
-            string notificationTitle = GetNotificationTitle(tags);
+            if (story.canContinue)
+                ContinueStory(); // There are more lines to get...
+            else if (story.currentChoices.Count > 0)
+                RefreshChoices();
+            else if (DialogRoot.activeSelf)
+                AddChoiceButton("(Put Down Phone)", EndDialog);
+            else
+            {
+                EndDialog();
+            }
+        });
+    }
 
-            if (notificationTitle == null)
+    /**
+     * Displays a dialog as a message or notification.
+     * Also triggers voice acting lines to play.
+     */
+    private void DisplayDialogLine(string line,  List<string> tags)
+    {
+        if (line.Length > 0 && DialogRoot.activeSelf)
+        {
+            string appTitle = GetNotificationAppTitle(tags);
+
+            if (appTitle == null)
             {
                 bool isPlayer = IsTaggedPlayer(tags);
                 AddMessage(line, isPlayer);
             }
             else
             {
-                AddNotification(notificationTitle, line);
+                AddNotification(appTitle, line);
             }
         }
 
         HandleVoiceTags(tags);
-
-        ClearChoices();
-        VAManager.Instance.OnQueueEmpty(() =>
-        {
-            if (story.canContinue)
-                ContinueStory();
-            else if (story.currentChoices.Count > 0)
-                RefreshChoices();
-            else
-                AddChoiceButton("(Put Down Phone)", EndDialog);
-        });
     }
 
+    /**
+     * Checks if the dialog line is tagged as coming from the player.
+     * If so it should be displayed as so in the messaging UI.
+     */
     private bool IsTaggedPlayer(List<string> tags)
     {
+        /*
+         * Example tags:
+         * #Robin
+         * #Friend
+         */
         if (tags.Contains("Robin"))
         {
             return true;
@@ -153,13 +194,23 @@ public class DialogManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
+            if (DialogRoot.activeSelf)
+                Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
             return false;
         }
     }
 
+    /**
+    * Checks if the dialog line is tagged with a voice line.
+    * If this is the case the VA line should be played alongside the text.
+    */
     private void HandleVoiceTags(List<string> tags)
     {
+        /*
+         * Example tags:
+         * #Voice:VA/Notifications/EdmontonValleyZoo
+         * #Voice:VA/InterLevel/GreatToHear
+         */
         foreach (string tag in tags)
         {
             if (tag.StartsWith("Voice:"))
@@ -173,8 +224,17 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    private string GetNotificationTitle(List<string> tags)
+    /**
+     * Checks if the dialog line is tagged with the name of an app.
+     * If this is the case the dialog should be displayed as a notification.
+     */
+    private string GetNotificationAppTitle(List<string> tags)
     {
+        /*
+         * Example tags:
+         * #Notification:Readit
+         * #Notification:Instancegram
+         */
         foreach (string tag in tags)
         {
             if (tag.StartsWith("Notification:"))
@@ -186,8 +246,12 @@ public class DialogManager : MonoBehaviour
         return null;
     }
 
+    /**
+     * Replaces old choices with the current choices from the story.
+     */
     private void RefreshChoices()
     {
+        ClearChoices();
         foreach (Choice choice in story.currentChoices)
         {
             AddChoiceButton(choice.text, () =>
@@ -197,7 +261,27 @@ public class DialogManager : MonoBehaviour
             });
         }
     }
+    
+    /**
+     * Disables player movement if the UI is open.
+     * Enables player movement if the UI is closed.
+     */
+    private void UpdateDisabledBehaviours()
+    {
+        bool active = DialogRoot.activeSelf;
+        
+        GameObject player = GameObject.FindWithTag("Player");
+        PlayerControl playerControl = player.GetComponent<PlayerControl>();
 
+        playerControl.enabled = !active;
+
+        if (active)
+            playerControl.StopInPlace();
+    }
+
+    /**
+     * Adds a choice button to the UI for the player to click.
+     */
     private void AddChoiceButton(string text, UnityAction callback)
     {
         GameObject buttonObject = Instantiate(choiceButtonPrefab, choicesRoot);
@@ -209,6 +293,10 @@ public class DialogManager : MonoBehaviour
     }
 
 
+    /**
+     * Adds a conversation message to the screen.
+     * This is displayed after any previous messages.
+     */
     private void AddMessage(string text, bool isPlayer)
     {
         GameObject obj = Instantiate(messageBubblePrefab, historyContent);
@@ -219,17 +307,24 @@ public class DialogManager : MonoBehaviour
         historyScrollRect.verticalNormalizedPosition = 0f;
     }
 
-    private void AddNotification(string title, string body)
+    /**
+     * Adds a notification message to the screen from an app.
+     * This is displayed after any previous messages.
+     * The appTitle argument also selects which app icon to use.
+     */
+    private void AddNotification(string appTitle, string body)
     {
         GameObject obj = Instantiate(notificationBubblePrefab, historyContent);
         NotificationBubble bubble = obj.GetComponent<NotificationBubble>();
-        bubble.SetMessage(title, body);
+        bubble.SetMessage(appTitle, body);
 
         Canvas.ForceUpdateCanvases();
         historyScrollRect.verticalNormalizedPosition = 0f;
     }
-
-
+    
+    /**
+     * Removes all the option buttons presented to the player.
+     */
     private void ClearChoices()
     {
         for (int i = choicesRoot.childCount - 1; i >= 0; i--)
@@ -238,6 +333,9 @@ public class DialogManager : MonoBehaviour
         }
     }
 
+    /**
+     * Removes all the previous messages displayed in the UI.
+     */
     private void ClearMessages()
     {
         for (int i = historyContent.childCount - 1; i >= 0; i--)
@@ -245,7 +343,10 @@ public class DialogManager : MonoBehaviour
             Destroy(historyContent.GetChild(i).gameObject);
         }
     }
-
+    
+    /**
+     * Move the dialog UI to th main camera's position.
+     */
     private void MoveToCamera()
     {
         GameObject camera = GameObject.FindWithTag("MainCamera");

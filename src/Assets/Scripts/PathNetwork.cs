@@ -487,6 +487,15 @@ public class PathNetwork : MonoBehaviour
     {
         return paths[path].Traversable(isFuture);
     }
+    
+    /**
+     * Checks if a path requires the player to jump
+     */
+    public bool DoesPathRequireJump(int path)
+    {
+        return paths[path].requireJump;
+    }
+
 
     /**
      * Gets named path. Returns -1 if not found, or if there are multiple matches.
@@ -574,6 +583,7 @@ public class PathNetwork : MonoBehaviour
         public string name;
         public bool pastTraversable = true;
         public bool futureTraversable = true;
+        public bool requireJump = false;
 
         public Path(int nodeA, int nodeB)
         {
