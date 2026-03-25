@@ -15,8 +15,6 @@ public class Dog : PathFollower
     private float petTimer;
 
     public DogState currentState;
-    public float walkSpeed = 40f;
-    public float runSpeed = 80f;
     public float followWalkDistance = 40f;
     public float followRunDistance = 60f;
     public float decisionInterval = 1f;
@@ -78,9 +76,9 @@ public class Dog : PathFollower
             // Adjust speed based on distance, basically if falling too far behind, run faster
             // (probably will be important to adjust when we allow the player to run/walk faster)
             if (IsTooFarFromPlayer(followRunDistance)) {
-                speed = runSpeed;
+                SetCurrentSpeed(maxSpeed);
             } else {
-                speed = walkSpeed;
+                SetCurrentSpeed(minSpeed);
             }
 
             if (!IsPathfinding())
