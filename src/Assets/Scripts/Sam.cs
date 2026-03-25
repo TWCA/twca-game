@@ -13,6 +13,8 @@ public class Dog : PathFollower
     private PlayerControl player;
     private float decisionTimer;
     private float petTimer;
+    private Animator animator;
+    private SpriteRenderer spriteRenderer;
 
     public DogState currentState;
     public float followWalkDistance = 40f;
@@ -34,22 +36,18 @@ public class Dog : PathFollower
         {
             case DogState.Follow:
                 Follow();
-                // Set the animator
                 break;
 
             case DogState.Wander:
                 Wander();
-                // Set the animator (probably the same animation as DogState.Follow?)
                 break;
 
             case DogState.Wait:
                 StopPathfinding();
-                // Set the animator
                 break;
 
             case DogState.BeingPet:
                 StopPathfinding();
-                // Set the animator
                 break;
         }
     }
@@ -91,6 +89,8 @@ public class Dog : PathFollower
         {
             StopPathfinding();
         }
+
+        animator.SetBool("walk", true);
     }
 
     /*
@@ -102,10 +102,13 @@ public class Dog : PathFollower
         // If we don't currently have a wander target, set one
         if (wanderTarget.Equals(Vector2.zero))
         {
-            wanderTarget = new Vector2Int(Random.Range(-1, 1), Random.Range(-1, 1));;
+            wanderTarget = new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
+            Debug.Log(wanderTarget);
         } else {
             WalkTowards(wanderTarget, Time.deltaTime);
         }
+
+        animator.SetBool("walk", true);
     }
 
     /*
@@ -120,10 +123,7 @@ public class Dog : PathFollower
             // Reset timer
             petTimer = 0f;
 
-            // Do animation stuff and then set the currentState to something else to reset
-            // Maybe call animation setBool logic in HandleState() under the BeingPet case?
-            // Something like that idk, whatever works
-            // - adam
+            animator.SetBool("pet", true);
         }
     }
 
@@ -149,9 +149,15 @@ public class Dog : PathFollower
         petTimer += Time.deltaTime;
     }
 
+    void FlipSprite(Vector2 direction) {
+        spriteRenderer.flipX = direction.x > 0;
+    }
+
     void Start()
     {
         player = PlayerControl.Instance;
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
 
         currentState = DogState.Follow;
     }
@@ -162,12 +168,30 @@ public class Dog : PathFollower
 
         IncrementTimers();
 
-        if (decisionTimer >= decisionInterval && currentState != DogState.BeingPet && !player.IsMoving() && !IsTooFarFromPlayer(followWalkDistance))
+        if (decisionTimer >= decisionInterval && currentState != DogState.BeingPet && !player.IsMoving())
         {
             MakeStateDecision();
         }
 
         HandleState();
+    }
+
+    public override void StopPathfinding()
+    {
+        base.StopPathfinding();
+        animator.SetBool("walk", false);
+    }
+
+    public override Vector2 WalkTowards(Vector2 targetDirection, float delta)
+    {
+        FlipSprite(targetDirection);
+        return base.WalkTowards(targetDirection, delta);
+    }
+
+    public override bool PathfindTo(Vector2 target)
+    {
+        FlipSprite(target);
+        return base.PathfindTo(target);
     }
 
     void OnMouseUp() {
