@@ -77,7 +77,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: dab7e1242186d79409725029d9f25b44, type: 3}
   Birds:
   - {fileID: 8300000, guid: b1f380ade1d4c9041bf11bdd883fdee3, type: 3}
-  - {fileID: 8300000, guid: 984e6616c74db0649851c78c3dfd273f, type: 3}
+  - {fileID: 8300000, guid: 5990eba8c877e634aaa00832bb2423b8, type: 3}
   halfVol: 0
   fadeout: 0
 --- !u!82 &6825867173979630501

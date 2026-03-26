@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +13,8 @@ public enum Character
     Sam,
     Francis,
     Lorenzo,
-    Police
+    Police,
+    None
 }
 
 public class DialogManager : MonoBehaviour
@@ -26,6 +28,8 @@ public class DialogManager : MonoBehaviour
     public Transform choicesRoot;
     public GameObject choiceButtonPrefab;
     public Text timeText;
+    public float defaultTextDelay = 0.9f;
+    public float defaultNonTextDelay = 0.2f;
 
     public GameObject DialogRoot;
 
@@ -33,6 +37,7 @@ public class DialogManager : MonoBehaviour
 
     private bool isRunning = false;
     private bool isPhoneUp = false;
+    private bool isWaitingForTrigger = false;
     private float visualOffset = 270;
     private bool areBehavioursDisabled = false;
 
@@ -78,7 +83,9 @@ public class DialogManager : MonoBehaviour
     private void LateUpdate()
     {
         if (DialogRoot.activeSelf)
+        {
             MoveToCamera();
+        }
     }
 
     /**
@@ -123,7 +130,14 @@ public class DialogManager : MonoBehaviour
 
         AudioManager.Instance.PlayNotification();
     }
-    
+
+    public void ResumeDialogue()
+    {
+        if (!isWaitingForTrigger) return;
+        isWaitingForTrigger = false;
+        ContinueStory();
+    }
+
     /**
      * Makes the phone UI invisible
      */
@@ -131,7 +145,7 @@ public class DialogManager : MonoBehaviour
     {
         isPhoneUp = false;
     }
-    
+
     /**
      * Opens the story to a knot, handling the onFinished callback.
      */
@@ -170,7 +184,7 @@ public class DialogManager : MonoBehaviour
     {
         StartCoroutine(EndDialogCoroutine());
     }
-    
+
     private IEnumerator EndDialogCoroutine()
     {
         onDialogFinished?.Invoke();
@@ -185,11 +199,11 @@ public class DialogManager : MonoBehaviour
     {
         onDialogFinished?.Invoke();
         onDialogFinished = null;
-        
+
         isRunning = false;
         ClosePhoneUI();
         AudioManager.Instance.FullAll();
-        
+
         EnableBehaviours();
     }
 
@@ -198,27 +212,37 @@ public class DialogManager : MonoBehaviour
      */
     private void ContinueStory()
     {
-        string line = story.Continue().Trim();
-        List<string> tags = story.currentTags;
-        
-        HandleDialogControl(tags);
-        DisplayDialogLine(line, tags);
+        if (isWaitingForTrigger) return;
 
         ClearChoices();
 
-        // Wait for the VA line to stop playing
-        VAManager.Instance.OnQueueEmpty(() =>
+        if (!story.canContinue)
         {
-            if (story.canContinue)
-                ContinueStory(); // There are more lines to get...
-            else if (story.currentChoices.Count > 0)
+            if (story.currentChoices.Count > 0)
                 RefreshChoices();
-            else if (isPhoneUp)
+            else if (DialogRoot.activeSelf)
                 AddChoiceButton("(Put Down Phone)", EndDialog);
             else
-            {
                 EndDialog();
-            }
+
+            return;
+        }
+
+        string line = story.Continue().Trim();
+        List<string> tags = story.currentTags;
+
+        HandleDialogControl(tags);
+
+        VAManager.Instance.OnQueueEmpty(() =>
+        {
+            DisplayDialogLine(line, tags);
+            HandleVoiceTags(tags);
+
+            isWaitingForTrigger = tags.Exists(tag => tag.ToLower() == "waitfortrigger");
+
+            // Wait for the VA line to stop playing
+            if (!isWaitingForTrigger)
+                VAManager.Instance.OnQueueEmpty(ContinueStory);
         });
     }
 
@@ -249,17 +273,15 @@ public class DialogManager : MonoBehaviour
      */
     private void HandleDialogControl(List<string> tags)
     {
-        HandleVoiceTags(tags);
-
         if (tags.Contains("openPhone"))
             OpenPhoneUI();
-        
+
         if (tags.Contains("closePhone"))
             ClosePhoneUI();
-        
+
         if (tags.Contains("disableBehaviours"))
             DisableBehaviours();
-        
+
         if (tags.Contains("enableBehaviours"))
             EnableBehaviours();
 
@@ -271,6 +293,38 @@ public class DialogManager : MonoBehaviour
             onDialogFinished?.Invoke();
             onDialogFinished = null;
         }
+
+        string appTitle = GetNotificationAppTitle(tags);
+        Character character = GetCharacterTag(tags);
+
+        if (character != Character.Robin)
+        {
+            Nullable<float> delay = ExtractDelayFromTags(tags);
+
+            float defaultDelay = defaultNonTextDelay;
+            if (isPhoneUp && appTitle == null)
+                defaultDelay = defaultTextDelay;
+
+            VAManager.Instance.EnqueueDelay(delay ?? defaultDelay);
+        }
+    }
+
+    private Nullable<float> ExtractDelayFromTags(List<string> tags)
+    {
+        foreach (string tag in tags)
+        {
+            if (tag.StartsWith("delay:"))
+            {
+                string value = tag.Replace("delay:", "").Trim();
+
+                if (float.TryParse(value, out float delay))
+                {
+                    return delay;
+                }
+            }
+        }
+
+        return null; // means no delay found
     }
 
     /**
@@ -302,9 +356,7 @@ public class DialogManager : MonoBehaviour
         if (tags.Contains("Police"))
             return Character.Police;
 
-        if (isPhoneUp)
-            Debug.LogWarning("Dialog line was not tagged with any names, assuming Robin");
-        return Character.Robin;
+        return Character.None;
     }
 
     /**
