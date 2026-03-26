@@ -10,6 +10,8 @@ using UnityEngine.Rendering;
 public class DialogManager : MonoBehaviour
 {
     public static DialogManager Instance { get; private set; }
+    private bool isWaitingForTrigger = false;
+    private const float DEFAULT_DELAY = 1.3f;
     public TextAsset inkJson;
     public Transform historyContent;
     public ScrollRect historyScrollRect;
@@ -53,6 +55,28 @@ public class DialogManager : MonoBehaviour
      * Opens the story to knot and opens the UI.
      * If you want to play dialog without the UI, call StartDialogHeadless()
      */
+    
+
+    private void DisplayDialogLine(string line, List<string> tags)
+{
+    if (line.Length > 0 && DialogRoot.activeSelf)
+    {
+        string appTitle = GetNotificationAppTitle(tags);
+
+        if (appTitle == null)
+        {
+            bool isPlayer = IsTaggedPlayer(tags);
+            AddMessage(line, isPlayer);
+        }
+        else
+        {
+            AddNotification(appTitle, line);
+        }
+    }
+
+    HandleVoiceTags(tags);
+}
+    
     public void StartDialog(string knot, System.Action onFinished = null)
     {
         OpenToKnot(knot, onFinished);
@@ -74,11 +98,40 @@ public class DialogManager : MonoBehaviour
      * Opens the story to knot *without* opening the UI.
      * If you want to play dialog in the UI, call StartDialog()
      */
+
+
+    public void ResumeDialogue()
+{
+    if (!isWaitingForTrigger) return;
+
+    isWaitingForTrigger = false;
+
+    ContinueStory();
+}
+
+
     public void StartDialogHeadless(string knot, System.Action onFinished = null)
     {
         OpenToKnot(knot, onFinished);
         ContinueStory();
     }
+    private float ExtractDelayFromTags(List<string> tags)
+{
+    foreach (string tag in tags)
+    {
+        if (tag.StartsWith("delay:"))
+        {
+            string value = tag.Replace("delay:", "").Trim();
+
+            if (float.TryParse(value, out float delay))
+            {
+                return delay;
+            }
+        }
+    }
+
+    return DEFAULT_DELAY; // means no delay found
+}
 
     /**
      * Opens the story to a knot, handling the onFinished callback.
@@ -129,53 +182,42 @@ public class DialogManager : MonoBehaviour
      * Displays any remaining dialog lines, and the displays a choice.
      */
     private void ContinueStory()
-    {
-        string line = story.Continue().Trim();
-        List<string> tags = story.currentTags;
-        DisplayDialogLine(line, tags);
+{
+    if (isWaitingForTrigger) return;
+    
+    if (!story.canContinue) {
+        if (story.currentChoices.Count > 0)
+            RefreshChoices();
+        else if (DialogRoot.activeSelf)
+            AddChoiceButton("(Put Down Phone)", EndDialog);
+        else
+            EndDialog();
 
-        ClearChoices();
-        
-        // Wait for the VA line to stop playing
-        VAManager.Instance.OnQueueEmpty(() =>
-        {
-            if (story.canContinue)
-                ContinueStory(); // There are more lines to get...
-            else if (story.currentChoices.Count > 0)
-                RefreshChoices();
-            else if (DialogRoot.activeSelf)
-                AddChoiceButton("(Put Down Phone)", EndDialog);
-            else
-            {
-                EndDialog();
-            }
-        });
+        return;
     }
 
-    /**
-     * Displays a dialog as a message or notification.
-     * Also triggers voice acting lines to play.
-     */
-    private void DisplayDialogLine(string line,  List<string> tags)
+    string line = story.Continue().Trim();
+    List<string> tags = story.currentTags;
+
+    float delay = ExtractDelayFromTags(tags);
+
+    bool waitForTrigger = tags.Exists(tag => tag.ToLower() == "waitfortrigger");
+
+    DisplayDialogLine(line, tags);
+    ClearChoices();
+
+    if (waitForTrigger)
     {
-        if (line.Length > 0 && DialogRoot.activeSelf)
-        {
-            string appTitle = GetNotificationAppTitle(tags);
-
-            if (appTitle == null)
-            {
-                bool isPlayer = IsTaggedPlayer(tags);
-                AddMessage(line, isPlayer);
-            }
-            else
-            {
-                AddNotification(appTitle, line);
-            }
-        }
-
-        HandleVoiceTags(tags);
+        isWaitingForTrigger = true;
+        return;
     }
-
+    
+    // Debug.Log("Delay added: " + delay);
+    if (delay > 0)
+        VAManager.Instance.EnqueueDelay(delay);
+    
+    VAManager.Instance.OnQueueEmpty(ContinueStory);
+}
     /**
      * Checks if the dialog line is tagged as coming from the player.
      * If so it should be displayed as so in the messaging UI.
