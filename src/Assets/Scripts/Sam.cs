@@ -15,6 +15,7 @@ public class Dog : PathFollower
     private float petTimer;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private PlayerDetector playerDetector;
 
     public DogState currentState;
     public float followWalkDistance = 40f;
@@ -22,6 +23,7 @@ public class Dog : PathFollower
     public float decisionInterval = 1f;
     public float petCooldown = 2f;
     public int wanderOdds = 5; // For example "1 in (this value) chance of happening"
+    public bool ClickToPet;
 
     /**
     * Handles / redirects the logic for each state that Sam can be in
@@ -175,6 +177,10 @@ public class Dog : PathFollower
         player = PlayerControl.Instance;
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        playerDetector = GetComponentInChildren<PlayerDetector>();
+
+        playerDetector.PlayerTouched += OnPlayerSamInteraction;
+        playerDetector.PlayerLeft += OnPlayerLeft;
 
         currentState = DogState.Follow;
     }
@@ -205,19 +211,22 @@ public class Dog : PathFollower
         return base.WalkTowards(targetDirection, delta);
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject != null && collision.gameObject.CompareTag("Player"))
-        {
+    void OnPlayerSamInteraction() {
+        if (ClickToPet == false || player.GoingToSam) {
             currentState = DogState.BeingPet;
             animator.SetBool("pet", true);
+
+            player.PetSam(true);
         }
     }
 
-    void OnCollisionExit2D(Collision2D collision) {
-        if (collision.gameObject != null && collision.gameObject.CompareTag("Player"))
-        {
-            animator.SetBool("pet", false);
-        }
+    void OnPlayerLeft() {
+        animator.SetBool("pet", false);
+
+        player.PetSam(false);
+    }
+
+    void OnMouseUp() {
+        player.GoingToSam = true;
     }
 }

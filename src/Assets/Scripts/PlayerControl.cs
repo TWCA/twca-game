@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 public class PlayerControl : MonoBehaviour
 {
     public bool CanMove = true;
+    public bool GoingToSam = false;
     private PathFollower pathFollower;
     private Animator animator;
     private SpriteRenderer sprite;
@@ -75,6 +76,8 @@ public class PlayerControl : MonoBehaviour
 
             // Reset bringing an item to a location if the player overrides
             inventorySystem.Cancel();
+
+            GoingToSam = false;
         }
 
         Vector2 movementDirection;
@@ -125,19 +128,9 @@ public class PlayerControl : MonoBehaviour
         return CanMove && animator.GetBool("interacting") == false;
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject != null && collision.gameObject.CompareTag("Sam"))
-        {
-            animator.SetBool("petting", true);
-        }
-    }
-
-    void OnCollisionExit2D(Collision2D collision) {
-        if (collision.gameObject != null && collision.gameObject.CompareTag("Sam"))
-        {
-            animator.SetBool("petting", false);
-        }
+    public void PetSam(bool petting) {
+        animator.SetBool("petting", petting);
+        GoingToSam = false;
     }
 
     /*
