@@ -38,7 +38,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 32, y: -17}
-  m_SizeDelta: {x: 56, y: 0}
+  m_SizeDelta: {x: 56, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7934452250117448487
 CanvasRenderer:
@@ -126,7 +126,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 432, y: 0}
+  m_SizeDelta: {x: 432, y: 34}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5389284869669356043
 MonoBehaviour:
@@ -191,13 +191,7 @@ MonoBehaviour:
   messageText: {fileID: 6200802866542961}
   layout: {fileID: 5389284869669356043}
   background: {fileID: 9216385588850889842}
-  backgrounds:
-  - {fileID: 641536630, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
-  - {fileID: 1150482027, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
-  - {fileID: -1646025089, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
-  - {fileID: -41485756, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
-  - {fileID: -272480371, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
-  - {fileID: 549919452, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
+  backgroundSprites: []
 --- !u!1 &6756656312659924312
 GameObject:
   m_ObjectHideFlags: 0
@@ -234,7 +228,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 28, y: -15}
-  m_SizeDelta: {x: 40, y: 0}
+  m_SizeDelta: {x: 40, y: 14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3550666576872953621
 CanvasRenderer:

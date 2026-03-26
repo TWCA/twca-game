@@ -125,7 +125,7 @@ Hey Robin, you weren't at class the other day, and I'll just been wondering how 
    * * No, Sam's just gone off on his own. #Robin #Voice:VA/SceneWLorenzo/GoneOffOnHisOwn
        That rebelious dog!!! #Lorenzo
        I'm sure you'll find him. #Lorenzo
-       I hope so too. #Robin #TODO
+       I hope so too. #Robin #Voice:VA/SceneWLorenzo/IHopeSo
        ~ dogmentioned = true
       -> class_end_pos
    * * I'd prefer to not say. #Robin #TODO
