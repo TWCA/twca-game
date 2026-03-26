@@ -225,7 +225,7 @@ public class DialogManager : MonoBehaviour
         if (tags.Contains("enableBehaviours"))
             EnableBehaviours();
 
-        if (tags.Contains("NotificationSound"))
+        if (tags.Contains("notificationSound"))
             AudioManager.Instance.PlayNotification();
 
         if (tags.Contains("earlyFinishedCallback"))

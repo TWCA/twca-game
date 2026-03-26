@@ -223,7 +223,7 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
     Arf! #Sam #Voice:VA/SamBarks/Bark4
     Yeah, I'm a little tired. #Robin #Voice:VA/FoundSam/ALittleTired
     ... #Robin
-    Ding! #NotificationSound
+    Ding! #notificationSound
     Oh... #Robin #Voice:VA/FoundSam/OhNotif
     Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought
     I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
