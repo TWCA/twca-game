@@ -210,7 +210,7 @@ public class DialogManager : MonoBehaviour
         isWaitingForTrigger = true;
         return;
     }
-    Debug.Log("Delay added: " + delay);
+    // Debug.Log("Delay added: " + delay);
     VAManager.Instance.EnqueueDelay(delay);
 
     VAManager.Instance.OnQueueEmpty(() =>
