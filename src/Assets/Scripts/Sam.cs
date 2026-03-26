@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Dog : PathFollower
+public class Dog : MonoBehaviour
 {
     public enum DogState
     {
@@ -15,6 +15,7 @@ public class Dog : PathFollower
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private PlayerDetector playerDetector;
+    private PathFollower pathFollower;
 
     public DogState currentState;
     public float followWalkDistance = 40f;
@@ -23,6 +24,20 @@ public class Dog : PathFollower
     public float petCooldown = 2f;
     public int wanderOdds = 5; // For example "1 in (this value) chance of happening"
     public bool ClickToPet;
+
+    void Start()
+    {
+        player = PlayerControl.Instance;
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        playerDetector = GetComponentInChildren<PlayerDetector>();
+        pathFollower = GetComponent<PathFollower>();
+
+        playerDetector.PlayerTouched += OnPlayerSamInteraction;
+        playerDetector.PlayerLeft += OnPlayerLeft;
+
+        currentState = DogState.Follow;
+    }
 
     /**
     * Handles / redirects the logic for each state that Sam can be in
@@ -76,14 +91,14 @@ public class Dog : PathFollower
             // Adjust speed based on distance, basically if falling too far behind, run faster
             // (probably will be important to adjust when we allow the player to run/walk faster)
             if (IsTooFarFromPlayer(followRunDistance)) {
-                SetCurrentSpeed(maxSpeed);
+                SetCurrentSpeed(pathFollower.maxSpeed);
             } else {
-                SetCurrentSpeed(minSpeed);
+                SetCurrentSpeed(pathFollower.minSpeed);
             }
 
-            if (!IsPathfinding())
+            if (!pathFollower.IsPathfinding())
             {
-                PathfindTo(playerPosition);
+                pathFollower.PathfindTo(playerPosition);
             }
         }
         else
@@ -106,7 +121,8 @@ public class Dog : PathFollower
         {
             wanderTarget = new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
         } else {
-            WalkTowards(wanderTarget, Time.deltaTime);
+            pathFollower.WalkTowards(wanderTarget, Time.deltaTime);
+            FlipSprite((Vector2)transform.position + wanderTarget);
         }
 
         animator.SetBool("walk", true);
@@ -171,23 +187,8 @@ public class Dog : PathFollower
         spriteRenderer.flipX = position.x > transform.position.x;
     }
 
-    void Start()
+    public void Update()
     {
-        player = PlayerControl.Instance;
-        animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        playerDetector = GetComponentInChildren<PlayerDetector>();
-
-        playerDetector.PlayerTouched += OnPlayerSamInteraction;
-        playerDetector.PlayerLeft += OnPlayerLeft;
-
-        currentState = DogState.Follow;
-    }
-
-    public override void Update()
-    {
-        base.Update();
-
         IncrementTimers();
 
         if (decisionTimer >= decisionInterval)
@@ -198,21 +199,15 @@ public class Dog : PathFollower
         HandleState();
     }
 
-    public override void StopPathfinding()
+    public void StopPathfinding()
     {
-        base.StopPathfinding();
+        pathFollower.StopPathfinding();
         animator.SetBool("walk", false);
     }
 
-    public override Vector2 WalkTowards(Vector2 targetDirection, float delta)
+    public void SetCurrentSpeed(float value)
     {
-        FlipSprite((Vector2)transform.position + targetDirection);
-        return base.WalkTowards(targetDirection, delta);
-    }
-
-    public override void SetCurrentSpeed(float value)
-    {
-        base.SetCurrentSpeed(value);
+        pathFollower.SetCurrentSpeed(value);
         animator.SetFloat("movingSpeed", value / 100f);
     }
 

@@ -74,7 +74,7 @@ public class PathFollower : MonoBehaviour
         }
     }
 
-    public virtual void Update()
+    public void Update()
     {
         if (IsPathfinding())
         {
@@ -107,7 +107,7 @@ public class PathFollower : MonoBehaviour
         return currentSpeed;
     }
 
-    public virtual void SetCurrentSpeed(float value) {
+    public void SetCurrentSpeed(float value) {
         currentSpeed = value;
     }
 
@@ -120,7 +120,7 @@ public class PathFollower : MonoBehaviour
      * Begins pathfinding to a particular point, updating its progress automatically.
      * Returns if pathfinding was successful.
      */
-    public virtual bool PathfindTo(Vector2 target)
+    public bool PathfindTo(Vector2 target)
     {
         bool isFuture = TimeManager.Instance.IsFuture();
         (plannedPath, _, plannedEndPosition) =
@@ -131,7 +131,7 @@ public class PathFollower : MonoBehaviour
     /**
      * Stop trying to pathfind to a given position.
      */
-    public virtual void StopPathfinding()
+    public void StopPathfinding()
     {
         if (plannedPath != null)
         {
@@ -168,7 +168,7 @@ public class PathFollower : MonoBehaviour
      * Moves this entity along a direction (or as close as possible) in the path network.
      * This will cancel any attempt to pathfind.
      */
-    public virtual Vector2 WalkTowards(Vector2 targetDirection, float delta)
+    public Vector2 WalkTowards(Vector2 targetDirection, float delta)
     {
         StopPathfinding();
 

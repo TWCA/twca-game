@@ -731,8 +731,38 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7469444026263499214, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1940243801}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6054132484571790322, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5341665700068142930}
   m_SourcePrefab: {fileID: 100100000, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
+--- !u!1 &5341665700068142929 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6054132484571790322, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
+  m_PrefabInstance: {fileID: 5341665700068142928}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5341665700068142930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5341665700068142929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90f8a929ed345b87284cae2e24fa8be3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minSpeed: 50
+  maxSpeed: 120
+  minJumpSpeed: 110
+  acceleration: 50
+  deceleration: 500
+  gravity: 0.14
+  walkingLookAheadLength: 25
+  turnAssistStrength: 0.5
+  turnAssistThreshold: 0.1
+  perpendicularMovementThreshold: 0.1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
