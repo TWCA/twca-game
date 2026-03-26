@@ -128,7 +128,7 @@ Hey Robin, you weren't at class the other day, and I'll just been wondering how 
        I hope so too. #Robin #Voice:VA/SceneWLorenzo/IHopeSo
        ~ dogmentioned = true
       -> class_end_pos
-   * * I'd prefer to not say. #Robin #TODO
+   * * I'd don't want to say. #Robin #Voice:VA/SceneWLorenzo/IDontWantToSay
        All good Robin, I'm here to listen if you ever want to talk about it. #Lorenzo
       -> class_end_pos
  * [...]
@@ -189,12 +189,13 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
 
 //Police Start
 == police_dialog ==
-    Missing Person Alert #Police
-    Current whereabouts of Robin Wilf is unknown, and anyone with information is urged to report it to the nearest authorities. #Police
-    Robin's mother noticed that they hadn't been home for a few days and reached out to Robin's friends, who haven't heard from them either. #Police
-    It is believed that Robin was got lost after taking their dog, Sam for a walk. #Police
-    The authorities are combing the areas near the Wilf residence, but no luck in the search just yet. #Police
-    And to Robin, if you're hearing this, please come home, everyone's worried about you. #Police
+    This is an emergancy Missing Person Alert #Police #Voice:VA/CopDialog/MissingPerson
+    The current whereabouts of Robin Wilf is unknown, and anyone with information is urged to report it to the nearest authorities. #Police #Voice:VA/CopDialog/CurrentWhereabouts
+    Robin's mother noticed that they hadn't been home for a few days and reached out to Robin's friends, who haven't heard from them either. #Police #Voice:VA/CopDialog/RobinsMother
+    It is believed that Robin was got lost after taking their dog, Sam for a walk. #Police #Voice:VA/CopDialog/ItIsBelieved
+    The authorities are combing the areas near the Wilf residence, but no luck in the search just yet. #Police #Voice:VA/CopDialog/TheAuthorities
+    But rest assured, the authorities will not rest until every acre is covered. #Police #Voice:VA/CopDialog/RestAssured
+    And to Robin, if you're hearing this, please come home, everyone's worried about you. #Police #Voice:VA/CopDialog/PleaseComeHome
 -> END
 //Police End
 
@@ -224,8 +225,7 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
     Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought
     I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
     Woof! #Sam
-    I'm glad you agree. #Robin #Voice:VA/FoundSam/ImGladYouAgree
-    Now, let's get home! #Robin #TODO
+    I'm glad you agree, let's go home. #Robin #Voice:VA/FoundSam/ImGladYouAgree
     Bark, bark! #Sam
 
     -> END
