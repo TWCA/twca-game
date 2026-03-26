@@ -130,7 +130,7 @@ public class DialogManager : MonoBehaviour
         }
     }
 
-    return -1f; // means no delay found
+    return DEFAULT_DELAY; // means no delay found
 }
 
     /**
@@ -184,21 +184,20 @@ public class DialogManager : MonoBehaviour
     private void ContinueStory()
 {
     if (isWaitingForTrigger) return;
-
-    if (!story.canContinue)
-    {
+    
+    if (!story.canContinue) {
         if (story.currentChoices.Count > 0)
             RefreshChoices();
+        else if (DialogRoot.activeSelf)
+            AddChoiceButton("(Put Down Phone)", EndDialog);
         else
             EndDialog();
-        return;
     }
 
     string line = story.Continue().Trim();
     List<string> tags = story.currentTags;
 
     float delay = ExtractDelayFromTags(tags);
-    if (delay < 0) delay = DEFAULT_DELAY;
 
     bool waitForTrigger = tags.Exists(tag => tag.ToLower() == "waitfortrigger");
 
@@ -210,22 +209,12 @@ public class DialogManager : MonoBehaviour
         isWaitingForTrigger = true;
         return;
     }
+    
     // Debug.Log("Delay added: " + delay);
-    VAManager.Instance.EnqueueDelay(delay);
-
-    VAManager.Instance.OnQueueEmpty(() =>
-    {
-        if (isWaitingForTrigger) return;
-
-        if (story.canContinue)
-            ContinueStory();
-        else if (story.currentChoices.Count > 0)
-            RefreshChoices();
-        else if (DialogRoot.activeSelf)
-            AddChoiceButton("(Put Down Phone)", EndDialog);
-        else
-            EndDialog();
-    });
+    if (delay > 0)
+        VAManager.Instance.EnqueueDelay(delay);
+    
+    VAManager.Instance.OnQueueEmpty(ContinueStory);
 }
     /**
      * Checks if the dialog line is tagged as coming from the player.
