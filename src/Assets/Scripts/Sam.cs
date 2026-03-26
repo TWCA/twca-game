@@ -52,20 +52,19 @@ public class Dog : MonoBehaviour
         switch (currentState)
         {
             case DogState.Follow:
-                Follow();
+                FollowState();
                 break;
 
             case DogState.Wander:
-                Wander();
+                WanderState();
                 break;
 
             case DogState.Wait:
-                Wait();
+                WaitingState();
                 break;
 
             case DogState.BeingPet:
-                animator.SetBool("pet", true);
-                Wait();
+                PetState();
                 break;
         }
     }
@@ -83,7 +82,7 @@ public class Dog : MonoBehaviour
     /*
     * Logic for Sam following the player
     */
-    void Follow()
+    void FollowState()
     {
         Vector2 playerPosition = player.gameObject.transform.position;
 
@@ -115,7 +114,7 @@ public class Dog : MonoBehaviour
     * Logic for random wandering
     * Instead of selecting a random node to pathfind to, it selects a random direction to move in
     */
-    void Wander()
+    void WanderState()
     {
         // If we don't currently have a wander target, set one
         if (wanderTarget.Equals(Vector2.zero))
@@ -132,12 +131,20 @@ public class Dog : MonoBehaviour
     /*
     * Logic for waiting states
     */
-    void Wait() {
+    void WaitingState() {
         if (player.IsMoving() && IsTooFarFromPlayer(followWalkDistance)) {
             currentState = DogState.Follow;
         }
 
         StopPathfinding();
+    }
+
+    /*
+    * Logic for pet state
+    */
+    void PetState() {
+        animator.SetBool("pet", true);
+        WaitingState();
     }
 
     /*
