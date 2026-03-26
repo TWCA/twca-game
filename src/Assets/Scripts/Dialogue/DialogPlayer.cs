@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DialogTestPlayer : MonoBehaviour
+public class DialogPlayer : MonoBehaviour
 {
     public float delaySeconds;
     public bool headless;

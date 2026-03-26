@@ -32,7 +32,10 @@ public class DialogManager : MonoBehaviour
     public GameObject DialogRoot;
 
     private Story story;
+
     private bool isRunning = false;
+    private bool areBehavioursDisabled = false;
+
     private System.Action onDialogFinished;
 
 
@@ -66,17 +69,8 @@ public class DialogManager : MonoBehaviour
     public void StartDialog(string knot, System.Action onFinished = null)
     {
         OpenToKnot(knot, onFinished);
-
-        DialogRoot.SetActive(true);
-        UpdateDisabledBehaviours();
-
-        if (TimeManager.Instance.IsFuture())
-            timeText.text = "9:43pm";
-        else
-            timeText.text = "11:20am";
-
-        ClearMessages();
-
+        OpenPhoneUI();
+        DisableBehaviours();
         ContinueStory();
     }
 
@@ -90,6 +84,31 @@ public class DialogManager : MonoBehaviour
         ContinueStory();
     }
 
+    /**
+     * Makes the phone UI visible
+     */
+    private void OpenPhoneUI()
+    {
+        DialogRoot.SetActive(true);
+
+        if (TimeManager.Instance.IsFuture())
+            timeText.text = "9:43pm";
+        else
+            timeText.text = "11:20am";
+
+        ClearMessages();
+
+        AudioManager.Instance.PlayNotification();
+    }
+    
+    /**
+     * Makes the phone UI invisible
+     */
+    private void ClosePhoneUI()
+    {
+        DialogRoot.SetActive(false);
+    }
+    
     /**
      * Opens the story to a knot, handling the onFinished callback.
      */
@@ -127,12 +146,13 @@ public class DialogManager : MonoBehaviour
     public void EndDialog()
     {
         isRunning = false;
-        DialogRoot.SetActive(false);
+        ClosePhoneUI();
         AudioManager.Instance.FullAll();
+
         onDialogFinished?.Invoke();
         onDialogFinished = null;
-
-        UpdateDisabledBehaviours();
+        
+        EnableBehaviours();
     }
 
     /**
@@ -142,6 +162,8 @@ public class DialogManager : MonoBehaviour
     {
         string line = story.Continue().Trim();
         List<string> tags = story.currentTags;
+        
+        HandleDialogControl(tags);
         DisplayDialogLine(line, tags);
 
         ClearChoices();
@@ -182,8 +204,35 @@ public class DialogManager : MonoBehaviour
                 AddNotification(appTitle, line);
             }
         }
+    }
 
+    /**
+     * Handle control related tags, such as voice and UI control
+     */
+    private void HandleDialogControl(List<string> tags)
+    {
         HandleVoiceTags(tags);
+
+        if (tags.Contains("openPhone"))
+            OpenPhoneUI();
+        
+        if (tags.Contains("closePhone"))
+            ClosePhoneUI();
+        
+        if (tags.Contains("disableBehaviours"))
+            DisableBehaviours();
+        
+        if (tags.Contains("enableBehaviours"))
+            EnableBehaviours();
+
+        if (tags.Contains("NotificationSound"))
+            AudioManager.Instance.PlayNotification();
+
+        if (tags.Contains("earlyFinishedCallback"))
+        {
+            onDialogFinished?.Invoke();
+            onDialogFinished = null;
+        }
     }
 
     /**
@@ -199,22 +248,22 @@ public class DialogManager : MonoBehaviour
          */
         if (tags.Contains("Robin"))
             return Character.Robin;
-         
+
         if (tags.Contains("Sam"))
             return Character.Sam;
-        
+
         if (tags.Contains("Mom"))
             return Character.Mom;
-        
+
         if (tags.Contains("Francis"))
             return Character.Francis;
-         
+
         if (tags.Contains("Lorenzo"))
             return Character.Lorenzo;
-         
+
         if (tags.Contains("Police"))
             return Character.Police;
-        
+
         if (DialogRoot.activeSelf)
             Debug.LogWarning("Dialog line was not tagged with any names, assuming Robin");
         return Character.Robin;
@@ -283,19 +332,34 @@ public class DialogManager : MonoBehaviour
     }
 
     /**
-     * Disables player movement if the UI is open.
-     * Enables player movement if the UI is closed.
+     * Disables things like player movement while using the phone
+     */
+    public void DisableBehaviours()
+    {
+        areBehavioursDisabled = true;
+        UpdateDisabledBehaviours();
+    }
+
+    /**
+     * Enables normal behavour
+     */
+    public void EnableBehaviours()
+    {
+        areBehavioursDisabled = false;
+        UpdateDisabledBehaviours();
+    }
+
+    /**
+     * Disables player movement if needed.
      */
     private void UpdateDisabledBehaviours()
     {
-        bool active = DialogRoot.activeSelf;
-
         GameObject player = GameObject.FindWithTag("Player");
         PlayerControl playerControl = player.GetComponent<PlayerControl>();
 
-        playerControl.enabled = !active;
+        playerControl.enabled = !areBehavioursDisabled;
 
-        if (active)
+        if (areBehavioursDisabled)
             playerControl.StopInPlace();
     }
 

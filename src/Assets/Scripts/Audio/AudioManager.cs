@@ -198,7 +198,7 @@ public class AudioManager : MonoBehaviour
         chickadeeSource.mute = true;
     }
 
-    public void playNotification()
+    public void PlayNotification()
     {
         AudioClip notif = Notifications[0];
         oneShotSource.PlayOneShot(notif);

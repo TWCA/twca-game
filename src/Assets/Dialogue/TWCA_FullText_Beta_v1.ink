@@ -34,9 +34,9 @@ Okay, okay, I'll get up! #Robin #Voice:VA/IntroScene/IllGetUp
 
 Alright then, how's my favourite noisy dog this morning? #Robin #Voice:VA/IntroScene/HowMyFavourite
 Woof! #Sam
-That's good then, shall we go get some breakfast? #Robin
+That's good then, shall we go get some breakfast? #Robin #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast
 Woof, woof! #Sam
--> motherintro
+-> END
 
 // Could be converted to a text exchange if preferred
 == motherintro ==
@@ -46,26 +46,27 @@ Good morning Robin, I left you some toast on the table. #Mom
  - I've got a lot of work so I'll be out late tonight, either make yourself something or order in a dinner. #Mom
  Oh, and could you take Sam out for a walk, he gets too energetic when he's left inside too long. #Mom
  I will. #Robin #Voice:VA/IntroScene/IWill
- Alright, see you later then, I'm off. #Mom
- -> feedsam
- 
- // Cut this section if we want picking up items introduced later, but I thought this might be an easy way to introduce it.
- == feedsam ==
+ Alright, see you later then, I'm off. #Mom #closePhone #enableBehaviours
  Alright let's get you your breakfast. #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast
  Arf! #Sam
- // Add any needed hint dialogue here
+-> END
+ 
+ // Trigger once sam has been feed
+== feedsam ==
  \*nom nom\* #Sam
  Alright eat up, and let's go for that walk. #Robin #Voice:VA/IntroScene/EatUp
- -> dogwalk
+-> END
  
- == dogwalk ==
+== dogwalk ==
  Just a short walk today, okay Sam? #Robin #Voice:VA/IntroScene/JustAShortWalk
  Woof! #Sam
- ! #Ding!
- Hold on one second Sam, I have to check this notification. #Robin #Voice:VA/IntroScene/HoldOnSam
- Those were some interesting posts, now where were we Sam? #Robin
- ... #Robin
- Sam? #Robin #Voice:VA/IntroScene/Sam
+-> END
+
+== first_notif ==
+ Hold on one second Sam, I have to check this notification. #Robin #Voice:VA/IntroScene/HoldOnSam #closePhone
+ Stuck semi-truck closed High Level bridge. #Notification:News #Voice:VA/Notifications/StuckSemiTruck #openPhone
+ ... #Robin  #closePhone #earlyFinishedCallback
+ Sam? #Robin #Voice:VA/IntroScene/Sam #enableBehaviours
 -> END
 // Intro End
 
@@ -194,7 +195,7 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
     Robin's mother noticed that they hadn't been home for a few days and reached out to Robin's friends, who haven't heard from them either. #Police #Voice:VA/CopDialog/RobinsMother
     It is believed that Robin was got lost after taking their dog, Sam for a walk. #Police #Voice:VA/CopDialog/ItIsBelieved
     The authorities are combing the areas near the Wilf residence, but no luck in the search just yet. #Police #Voice:VA/CopDialog/TheAuthorities
-    But rest assured, the authorities will not rest until every acre is covered. #Police #Voice:VA/CopDialog/RestAssured
+    Rest assured, the authorities will not rest until every acre is covered. #Police #Voice:VA/CopDialog/RestAssured
     And to Robin, if you're hearing this, please come home, everyone's worried about you. #Police #Voice:VA/CopDialog/PleaseComeHome
 -> END
 //Police End
@@ -220,8 +221,8 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
     Arf! #Sam
     Yeah, I'm a little tired. #Robin #Voice:VA/FoundSam/ALittleTired
     ... #Robin
-    ! #Ding
-    Oh a notification... #Robin #Voice:VA/FoundSam/OhNotif
+    Ding! #NotificationSound
+    Oh... #Robin #Voice:VA/FoundSam/OhNotif
     Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought
     I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
     Woof! #Sam
