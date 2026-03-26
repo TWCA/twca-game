@@ -29,7 +29,7 @@ public class Dog : PathFollower
     void HandleState()
     {
         // Override if the player starts moving
-        if (player.IsMoving()) {
+        if (player.IsMoving() && currentState == DogState.BeingPet && IsTooFarFromPlayer(followWalkDistance)) {
             currentState = DogState.Follow;
         }
 
@@ -44,11 +44,11 @@ public class Dog : PathFollower
                 break;
 
             case DogState.Wait:
-                StopPathfinding();
+                Wait();
                 break;
 
             case DogState.BeingPet:
-                StopPathfinding();
+                Wait();
                 break;
         }
     }
@@ -113,6 +113,17 @@ public class Dog : PathFollower
     }
 
     /*
+    * Logic for waiting states
+    */
+    void Wait() {
+        if (player.IsMoving() && IsTooFarFromPlayer(followWalkDistance)) {
+            currentState = DogState.Follow;
+        }
+
+        StopPathfinding();
+    }
+
+    /*
     * Logic for when Sam is pet by the player
     */
     void HandlePet() {
@@ -141,7 +152,7 @@ public class Dog : PathFollower
         decisionTimer = 0f;
         wanderTarget = Vector2.zero;
 
-        if (currentState != DogState.BeingPet) {
+        if (currentState != DogState.BeingPet && !animator.GetBool("pet") && !player.IsMoving()) {
             int randomChoice = Random.Range(0, wanderOdds);
 
             if (randomChoice == 0)
@@ -156,8 +167,8 @@ public class Dog : PathFollower
         petTimer += Time.deltaTime;
     }
 
-    void FlipSprite(Vector2 direction) {
-        spriteRenderer.flipX = direction.x > 0;
+    void FlipSprite(Vector2 psotion) {
+        spriteRenderer.flipX = psotion.x > transform.position.x;
     }
 
     void Start()
@@ -175,7 +186,7 @@ public class Dog : PathFollower
 
         IncrementTimers();
 
-        if (decisionTimer >= decisionInterval && currentState != DogState.BeingPet && !player.IsMoving())
+        if (decisionTimer >= decisionInterval)
         {
             MakeStateDecision();
         }
@@ -199,6 +210,7 @@ public class Dog : PathFollower
     {
         if (collision.gameObject != null && collision.gameObject.CompareTag("Player"))
         {
+            currentState = DogState.BeingPet;
             animator.SetBool("pet", true);
         }
     }
