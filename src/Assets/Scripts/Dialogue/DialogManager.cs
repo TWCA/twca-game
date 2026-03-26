@@ -7,6 +7,16 @@ using JetBrains.Annotations;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 
+public enum Character
+{
+    Robin,
+    Mom,
+    Sam,
+    Francis,
+    Lorenzo,
+    Police
+}
+
 public class DialogManager : MonoBehaviour
 {
     public static DialogManager Instance { get; private set; }
@@ -56,7 +66,7 @@ public class DialogManager : MonoBehaviour
     public void StartDialog(string knot, System.Action onFinished = null)
     {
         OpenToKnot(knot, onFinished);
-        
+
         DialogRoot.SetActive(true);
         UpdateDisabledBehaviours();
 
@@ -66,7 +76,7 @@ public class DialogManager : MonoBehaviour
             timeText.text = "11:20am";
 
         ClearMessages();
-        
+
         ContinueStory();
     }
 
@@ -88,7 +98,7 @@ public class DialogManager : MonoBehaviour
         // stop old running story knot to open this one
         if (isRunning)
             EndDialog();
-        
+
         if (inkJson == null)
         {
             Debug.LogError("DialogManager: inkJson is not assigned!");
@@ -135,7 +145,7 @@ public class DialogManager : MonoBehaviour
         DisplayDialogLine(line, tags);
 
         ClearChoices();
-        
+
         // Wait for the VA line to stop playing
         VAManager.Instance.OnQueueEmpty(() =>
         {
@@ -156,7 +166,7 @@ public class DialogManager : MonoBehaviour
      * Displays a dialog as a message or notification.
      * Also triggers voice acting lines to play.
      */
-    private void DisplayDialogLine(string line,  List<string> tags)
+    private void DisplayDialogLine(string line, List<string> tags)
     {
         if (line.Length > 0 && DialogRoot.activeSelf)
         {
@@ -164,8 +174,8 @@ public class DialogManager : MonoBehaviour
 
             if (appTitle == null)
             {
-                bool isPlayer = IsTaggedPlayer(tags);
-                AddMessage(line, isPlayer);
+                Character character = GetCharacterTag(tags);
+                AddMessage(line, character);
             }
             else
             {
@@ -180,7 +190,7 @@ public class DialogManager : MonoBehaviour
      * Checks if the dialog line is tagged as coming from the player.
      * If so it should be displayed as so in the messaging UI.
      */
-    private bool IsTaggedPlayer(List<string> tags)
+    private Character GetCharacterTag(List<string> tags)
     {
         /*
          * Example tags:
@@ -188,19 +198,26 @@ public class DialogManager : MonoBehaviour
          * #Friend
          */
         if (tags.Contains("Robin"))
-        {
-            return true;
-        }
-        else if (tags.Contains("Friend"))
-        {
-            return false;
-        }
-        else
-        {
-            if (DialogRoot.activeSelf)
-                Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
-            return false;
-        }
+            return Character.Robin;
+         
+        if (tags.Contains("Sam"))
+            return Character.Sam;
+        
+        if (tags.Contains("Mom"))
+            return Character.Mom;
+        
+        if (tags.Contains("Francis"))
+            return Character.Francis;
+         
+        if (tags.Contains("Lorenzo"))
+            return Character.Lorenzo;
+         
+        if (tags.Contains("Police"))
+            return Character.Police;
+        
+        if (DialogRoot.activeSelf)
+            Debug.LogWarning("Dialog line was not tagged with any names, assuming Robin");
+        return Character.Robin;
     }
 
     /**
@@ -264,7 +281,7 @@ public class DialogManager : MonoBehaviour
             });
         }
     }
-    
+
     /**
      * Disables player movement if the UI is open.
      * Enables player movement if the UI is closed.
@@ -272,7 +289,7 @@ public class DialogManager : MonoBehaviour
     private void UpdateDisabledBehaviours()
     {
         bool active = DialogRoot.activeSelf;
-        
+
         GameObject player = GameObject.FindWithTag("Player");
         PlayerControl playerControl = player.GetComponent<PlayerControl>();
 
@@ -300,11 +317,11 @@ public class DialogManager : MonoBehaviour
      * Adds a conversation message to the screen.
      * This is displayed after any previous messages.
      */
-    private void AddMessage(string text, bool isPlayer)
+    private void AddMessage(string text, Character character)
     {
         GameObject obj = Instantiate(messageBubblePrefab, historyContent);
         MessageBubble bubble = obj.GetComponent<MessageBubble>();
-        bubble.SetMessage(text, isPlayer);
+        bubble.SetMessage(text, character);
 
         Canvas.ForceUpdateCanvases();
         historyScrollRect.verticalNormalizedPosition = 0f;
@@ -324,7 +341,7 @@ public class DialogManager : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         historyScrollRect.verticalNormalizedPosition = 0f;
     }
-    
+
     /**
      * Removes all the option buttons presented to the player.
      */
@@ -346,7 +363,7 @@ public class DialogManager : MonoBehaviour
             Destroy(historyContent.GetChild(i).gameObject);
         }
     }
-    
+
     /**
      * Move the dialog UI to th main camera's position.
      */

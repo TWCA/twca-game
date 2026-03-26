@@ -191,8 +191,13 @@ MonoBehaviour:
   messageText: {fileID: 6200802866542961}
   layout: {fileID: 5389284869669356043}
   background: {fileID: 9216385588850889842}
-  playerBackground: {fileID: 21300000, guid: 6d8c0f8ead4020dc795275b957ed876a, type: 3}
-  friendBackground: {fileID: 21300000, guid: 7f3626dd416a7e8169b8f5aa23a63462, type: 3}
+  backgrounds:
+  - {fileID: 641536630, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
+  - {fileID: 1150482027, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
+  - {fileID: -1646025089, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
+  - {fileID: -41485756, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
+  - {fileID: -272480371, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
+  - {fileID: 549919452, guid: 71b02999146dc99a9ad4d538a4e251bb, type: 3}
 --- !u!1 &6756656312659924312
 GameObject:
   m_ObjectHideFlags: 0
