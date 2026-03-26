@@ -18,10 +18,9 @@ public class RiverManager : MonoBehaviour
 
     void Start()
     {
-        TimeManager.Instance.onTimeChanged += () =>
-        {
-            IncrementNightPhase();
-        };
+        TimeManager.Instance.onTimeChanged += () => { IncrementNightPhase(); };
+        if (MusicPlayer.Instance != null)
+            MusicPlayer.Instance.PlayOnce("Music/RiverTrack 1");
     }
 
     public bool IncrementNightPhase()

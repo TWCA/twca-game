@@ -130,6 +130,9 @@ public class PlayerControl : MonoBehaviour
     */
     public void StopInPlace() {
         pathFollower.StopPathfinding();
+
+        if (!isActiveAndEnabled)
+            animator.SetBool("moving", false);
     }
 
     public void PathfindTo(Vector2 location) {

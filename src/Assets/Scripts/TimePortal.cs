@@ -12,7 +12,7 @@ public class TimePortal : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            DialogManager.Instance.StartDialog(dialogKnot, TimeManager.Instance.ToggleTime);
+            DialogManager.Instance.StartDialog(dialogKnot, TimeManager.Instance.ToggleTime, 0.8f);
         }
     }
 }
