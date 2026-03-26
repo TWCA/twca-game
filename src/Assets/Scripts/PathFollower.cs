@@ -107,7 +107,7 @@ public class PathFollower : MonoBehaviour
         return currentSpeed;
     }
 
-    public void SetCurrentSpeed(float value) {
+    public virtual void SetCurrentSpeed(float value) {
         currentSpeed = value;
     }
 

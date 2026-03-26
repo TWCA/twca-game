@@ -211,6 +211,12 @@ public class Dog : PathFollower
         return base.WalkTowards(targetDirection, delta);
     }
 
+    public override void SetCurrentSpeed(float value)
+    {
+        base.SetCurrentSpeed(value);
+        animator.SetFloat("movingSpeed", value / 100f);
+    }
+
     void OnPlayerSamInteraction() {
         if (ClickToPet == false || player.GoingToSam) {
             currentState = DogState.BeingPet;
