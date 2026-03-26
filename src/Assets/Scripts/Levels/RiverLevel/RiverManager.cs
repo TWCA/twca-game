@@ -14,16 +14,13 @@ public class RiverManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
-        
     }
 
     void Start()
     {
-        TimeManager.Instance.onTimeChanged += () =>
-        {
-            IncrementNightPhase();
-        };
-        MusicPlayer.Instance.PlayOnce("Music/RiverTrack 1");
+        TimeManager.Instance.onTimeChanged += () => { IncrementNightPhase(); };
+        if (MusicPlayer.Instance != null)
+            MusicPlayer.Instance.PlayOnce("Music/RiverTrack 1");
     }
 
     public bool IncrementNightPhase()

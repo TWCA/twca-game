@@ -87,7 +87,10 @@ public class VAManager : MonoBehaviour
 
     public void OnQueueEmpty(UnityAction callback)
     {
-        queueEmptyActions.Add(callback);
+        if (!isProcessing)
+            callback();
+        else
+            queueEmptyActions.Add(callback);
     }
 
     // =========================
