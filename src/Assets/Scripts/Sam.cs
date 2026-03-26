@@ -104,7 +104,6 @@ public class Dog : PathFollower
         if (wanderTarget.Equals(Vector2.zero))
         {
             wanderTarget = new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
-            Debug.Log(wanderTarget);
         } else {
             WalkTowards(wanderTarget, Time.deltaTime);
         }
@@ -129,9 +128,9 @@ public class Dog : PathFollower
     void HandlePet() {
         if (petTimer >= petCooldown) {
             if (currentState == DogState.BeingPet) {
-                animator.SetBool("pet", false);
-
                 currentState = DogState.Wait;
+
+                animator.SetBool("pet", false);
             } else {
                 player.PathfindTo(transform.position);
                 currentState = DogState.BeingPet;
@@ -202,7 +201,7 @@ public class Dog : PathFollower
 
     public override Vector2 WalkTowards(Vector2 targetDirection, float delta)
     {
-        FlipSprite(targetDirection);
+        FlipSprite((Vector2)transform.position + targetDirection);
         return base.WalkTowards(targetDirection, delta);
     }
 
