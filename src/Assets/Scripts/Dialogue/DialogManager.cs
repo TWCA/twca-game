@@ -1,11 +1,9 @@
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ink.Runtime;
-using JetBrains.Annotations;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
 
 public enum Character
 {
@@ -34,9 +32,12 @@ public class DialogManager : MonoBehaviour
     private Story story;
 
     private bool isRunning = false;
+    private bool isPhoneUp = false;
+    private float visualOffset = 270;
     private bool areBehavioursDisabled = false;
 
     private System.Action onDialogFinished;
+    private float delayAfterFinish;
 
 
     private void Awake()
@@ -54,20 +55,39 @@ public class DialogManager : MonoBehaviour
             story = new Story(inkJson.text);
     }
 
+    private void Update()
+    {
+        if (isPhoneUp)
+        {
+            // lerp movement
+            visualOffset = Mathf.Lerp(visualOffset, 0, Time.deltaTime * 5.0f);
+            // linear movement
+            visualOffset = Mathf.MoveTowards(visualOffset, 0, Time.deltaTime * 70.0f);
+        }
+        else
+        {
+            // lerp movement
+            visualOffset = Mathf.Lerp(visualOffset, 270, Time.deltaTime * 5.0f);
+            // linear movement
+            visualOffset = Mathf.MoveTowards(visualOffset, 270, Time.deltaTime * 70.0f);
+        }
+
+        DialogRoot.SetActive(visualOffset < 270);
+    }
+
     private void LateUpdate()
     {
         if (DialogRoot.activeSelf)
-        {
             MoveToCamera();
-        }
     }
 
     /**
      * Opens the story to knot and opens the UI.
      * If you want to play dialog without the UI, call StartDialogHeadless()
      */
-    public void StartDialog(string knot, System.Action onFinished = null)
+    public void StartDialog(string knot, System.Action onFinished = null, float _delayAfterFinish = 0)
     {
+        delayAfterFinish = _delayAfterFinish;
         OpenToKnot(knot, onFinished);
         OpenPhoneUI();
         DisableBehaviours();
@@ -78,8 +98,9 @@ public class DialogManager : MonoBehaviour
      * Opens the story to knot *without* opening the UI.
      * If you want to play dialog in the UI, call StartDialog()
      */
-    public void StartDialogHeadless(string knot, System.Action onFinished = null)
+    public void StartDialogHeadless(string knot, System.Action onFinished = null, float _delayAfterFinish = 0)
     {
+        delayAfterFinish = _delayAfterFinish;
         OpenToKnot(knot, onFinished);
         ContinueStory();
     }
@@ -89,7 +110,9 @@ public class DialogManager : MonoBehaviour
      */
     private void OpenPhoneUI()
     {
-        DialogRoot.SetActive(true);
+        visualOffset = 270f;
+        isPhoneUp = true;
+        MoveToCamera();
 
         if (TimeManager.Instance.IsFuture())
             timeText.text = "9:43pm";
@@ -106,7 +129,7 @@ public class DialogManager : MonoBehaviour
      */
     private void ClosePhoneUI()
     {
-        DialogRoot.SetActive(false);
+        isPhoneUp = false;
     }
     
     /**
@@ -145,12 +168,27 @@ public class DialogManager : MonoBehaviour
 
     public void EndDialog()
     {
+        StartCoroutine(EndDialogCoroutine());
+    }
+    
+    private IEnumerator EndDialogCoroutine()
+    {
+        onDialogFinished?.Invoke();
+        onDialogFinished = null;
+
+        yield return new WaitForSeconds(delayAfterFinish);
+
+        EndDialogInstantly();
+    }
+
+    public void EndDialogInstantly()
+    {
+        onDialogFinished?.Invoke();
+        onDialogFinished = null;
+        
         isRunning = false;
         ClosePhoneUI();
         AudioManager.Instance.FullAll();
-
-        onDialogFinished?.Invoke();
-        onDialogFinished = null;
         
         EnableBehaviours();
     }
@@ -175,7 +213,7 @@ public class DialogManager : MonoBehaviour
                 ContinueStory(); // There are more lines to get...
             else if (story.currentChoices.Count > 0)
                 RefreshChoices();
-            else if (DialogRoot.activeSelf)
+            else if (isPhoneUp)
                 AddChoiceButton("(Put Down Phone)", EndDialog);
             else
             {
@@ -190,7 +228,7 @@ public class DialogManager : MonoBehaviour
      */
     private void DisplayDialogLine(string line, List<string> tags)
     {
-        if (line.Length > 0 && DialogRoot.activeSelf)
+        if (line.Length > 0 && isPhoneUp)
         {
             string appTitle = GetNotificationAppTitle(tags);
 
@@ -264,7 +302,7 @@ public class DialogManager : MonoBehaviour
         if (tags.Contains("Police"))
             return Character.Police;
 
-        if (DialogRoot.activeSelf)
+        if (isPhoneUp)
             Debug.LogWarning("Dialog line was not tagged with any names, assuming Robin");
         return Character.Robin;
     }
@@ -436,6 +474,7 @@ public class DialogManager : MonoBehaviour
         GameObject camera = GameObject.FindWithTag("MainCamera");
         Vector3 position = camera.transform.position;
         position.z = DialogRoot.transform.position.z;
+        position.y -= visualOffset;
         DialogRoot.transform.position = position;
     }
 }
