@@ -12,7 +12,6 @@ public class Dog : PathFollower
     private Vector2 wanderTarget = Vector2.zero;
     private PlayerControl player;
     private float decisionTimer;
-    private float petTimer;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
     private PlayerDetector playerDetector;
@@ -128,20 +127,15 @@ public class Dog : PathFollower
     * Logic for when Sam is pet by the player
     */
     void HandlePet() {
-        if (petTimer >= petCooldown) {
-            if (currentState == DogState.BeingPet) {
-                currentState = DogState.Wait;
+        if (currentState == DogState.BeingPet) {
+            currentState = DogState.Wait;
 
-                animator.SetBool("pet", false);
-            } else {
-                player.PathfindTo(transform.position);
-                currentState = DogState.BeingPet;
+            animator.SetBool("pet", false);
+        } else {
+            player.PathfindTo(transform.position);
+            currentState = DogState.BeingPet;
 
-                animator.SetBool("pet", true);
-            }
-
-            // Reset timer
-            petTimer = 0f;
+            animator.SetBool("pet", true);
         }
     }
 
@@ -163,13 +157,18 @@ public class Dog : PathFollower
         }
     }
 
+    /*
+    * Increments timers related to state decisions
+    */
     void IncrementTimers() {
         decisionTimer += Time.deltaTime;
-        petTimer += Time.deltaTime;
     }
 
-    void FlipSprite(Vector2 psotion) {
-        spriteRenderer.flipX = psotion.x > transform.position.x;
+    /*
+    * Flips the sprite in the x direction of the position argument
+    */
+    void FlipSprite(Vector2 position) {
+        spriteRenderer.flipX = position.x > transform.position.x;
     }
 
     void Start()
@@ -217,6 +216,9 @@ public class Dog : PathFollower
         animator.SetFloat("movingSpeed", value / 100f);
     }
 
+    /*
+    * Handler for when the player hitbox enters Sam's hitbox
+    */
     void OnPlayerSamInteraction() {
         if (ClickToPet == false || player.GoingToSam) {
             currentState = DogState.BeingPet;
@@ -226,6 +228,9 @@ public class Dog : PathFollower
         }
     }
 
+    /*
+    * Handler for when the player hitbox exits Sam's hitbox
+    */
     void OnPlayerLeft() {
         animator.SetBool("pet", false);
 
@@ -233,6 +238,7 @@ public class Dog : PathFollower
     }
 
     void OnMouseUp() {
+        // Track if the player is walking to Sam
         player.GoingToSam = true;
     }
 }

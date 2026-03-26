@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -5,10 +6,10 @@ using UnityEngine.InputSystem;
 public class PlayerControl : MonoBehaviour
 {
     public bool CanMove = true;
-    public bool GoingToSam = false;
     private PathFollower pathFollower;
     private Animator animator;
     private SpriteRenderer sprite;
+    [NonSerialized] public bool GoingToSam = false; // Internally used to see if the player is walking to Sam so we can decide to play the animation or not
 
     private InputActionMap playerActionMap, UIActionMap;
     private InputAction moveAction, clickAction, pointAction;
@@ -128,6 +129,9 @@ public class PlayerControl : MonoBehaviour
         return CanMove && animator.GetBool("interacting") == false;
     }
 
+    /**
+    * Initiates the action of petting sam
+    */
     public void PetSam(bool petting) {
         animator.SetBool("petting", petting);
         GoingToSam = false;
