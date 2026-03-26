@@ -27,15 +27,17 @@ VAR dogmentioned = false
 
 // Intro Start
 == intro_scene ==
-Bark! #Sam
+Bark! #Sam #Voice:VA/SamBarks/Bark1
 ...Just a few more minutes Sam... #Robin #Voice:VA/IntroScene/JustAFewMinutes
-Bark, bark! #Sam
+Bark, bark! #Sam #Voice:VA/SamBarks/Bark4
+#Voice:VA/SamBarks/Bark3
 Okay, okay, I'll get up! #Robin #Voice:VA/IntroScene/IllGetUp
 
 Alright then, how's my favourite noisy dog this morning? #Robin #Voice:VA/IntroScene/HowMyFavourite
-Woof! #Sam
+Woof! #Sam #Voice:VA/SamBarks/Bark2
 That's good then, shall we go get some breakfast? #Robin #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast
-Woof, woof! #Sam
+Woof, woof! #Sam #Voice:VA/SamBarks/Bark5
+#Voice:VA/SamBarks/Bark6
 -> END
 
 // Could be converted to a text exchange if preferred
@@ -48,7 +50,7 @@ Good morning Robin, I left you some toast on the table. #Mom
  I will. #Robin #Voice:VA/IntroScene/IWill
  Alright, see you later then, I'm off. #Mom #closePhone #enableBehaviours
  Alright let's get you your breakfast. #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast
- Arf! #Sam
+ Arf! #Sam #Voice:VA/SamBarks/Bark7
 -> END
  
  // Trigger once sam has been feed
@@ -59,7 +61,7 @@ Good morning Robin, I left you some toast on the table. #Mom
  
 == dogwalk ==
  Just a short walk today, okay Sam? #Robin #Voice:VA/IntroScene/JustAShortWalk
- Woof! #Sam
+ Woof! #Sam #Voice:VA/SamBarks/Bark5
 -> END
 
 == first_notif ==
@@ -204,30 +206,30 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
 //Meet Sam
 == meet_sam ==
     Sam! There you are! #Robin #Voice:VA/FoundSam/SamThereYouAre
-    Woof! #Sam
+    Woof! #Sam #Voice:VA/SamBarks/Bark5
     I've been all over looking for you. #Robin #Voice:VA/FoundSam/AllOverLookingForYou
     I'm sorry I lost track of time and left you on your own. #Robin #Voice:VA/FoundSam/LeftYouOnYourOwn
     But we're together again now, so let's head home. #Robin #Voice:VA/FoundSam/TogetherAgain
-    Arf! #Sam
+    Arf! #Sam #Voice:VA/SamBarks/Bark6
     -> END
 
 
 //Walk
 == walk_home ==
     You would not believe what I've been through getting here Sam. #Robin #Voice:VA/FoundSam/WhatIveBeenThrough
-    Woof? #Sam
+    Woof? #Sam #Voice:VA/SamBarks/Bark1
     Yeah, I started slipping through time and had to figure out a way through the forest. #Robin #Voice:VA/FoundSam/JourneyExplanationPart1
     I redirected a river with a log, jumped some pretty large gaps and even managed to put out a fire! #Robin #Voice:VA/FoundSam/JourneyExplanationPart2
-    Arf! #Sam
+    Arf! #Sam #Voice:VA/SamBarks/Bark4
     Yeah, I'm a little tired. #Robin #Voice:VA/FoundSam/ALittleTired
     ... #Robin
     Ding! #NotificationSound
     Oh... #Robin #Voice:VA/FoundSam/OhNotif
     Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought
     I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
-    Woof! #Sam
+    Woof! #Sam #Voice:VA/SamBarks/Bark3
     I'm glad you agree, let's go home. #Robin #Voice:VA/FoundSam/ImGladYouAgree
-    Bark, bark! #Sam
+    Bark, bark! #Sam #Voice:VA/SamBarks/Bark7
 
     -> END
 
@@ -241,9 +243,9 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
     {not (dialog1chat and dialog2chat): I even called the police I was so worried! #Mom}
     I'm sorry Mom, I got a little lost. #Robin #Voice:VA/ArriveHome/ImSorryMom
     \*sigh* It's okay dear, I'm just glad you came home. #Mom
-    Arf! #Sam
+    Arf! #Sam #Voice:VA/SamBarks/Bark2
     Of course you too, Sammy. #Mom
-    Woof! #Sam
+    Woof! #Sam #Voice:VA/SamBarks/Bark1
     ... #Robin
     I love you, Mom. #Robin #Voice:VA/ArriveHome/ILoveYouMom
     I love you too, sweetie. #Mom
