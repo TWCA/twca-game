@@ -4,10 +4,10 @@
 intro_scene: Intro scene, includes dog food section (Robin, Sam, Mom)
 
 -Dialog Sections-:
-dialog_1: Amelia & Robin (Semi-voiced, I added lines after the ends)
+dialog_1: Francis & Robin (Semi-voiced, I added lines after the ends)
 dialog_2: Lorenzo & Robin
 dialog_3: Selects one of two options
--> group_dialog: Amelia and Lorenzo ask about Robin
+-> group_dialog: Francis and Lorenzo ask about Robin
 -> police_dialog: Police have started a search for Robin, due to no contact
 
 meet_sam: Plays when finding Sam
@@ -27,45 +27,45 @@ VAR dogmentioned = false
 
 // Intro Start
 == intro_scene ==
-Bark! # Sam
-...Just a few more minutes Sam... # Robin
-Bark, bark! # Sam
-Okay, okay, I'll get up! # Robin
+Bark! #Sam
+...Just a few more minutes Sam... #Robin #Voice:VA/IntroScene/JustAFewMinutes
+Bark, bark! #Sam
+Okay, okay, I'll get up! #Robin #Voice:VA/IntroScene/IllGetUp
 
-Alright then, how's my favourite noisy dog this morning? # Robin
-Woof! # Sam
-That's good then, shall we go get some breakfast? # Robin
-Woof, woof! # Sam
+Alright then, how's my favourite noisy dog this morning? #Robin #Voice:VA/IntroScene/HowMyFavourite
+Woof! #Sam
+That's good then, shall we go get some breakfast? #Robin
+Woof, woof! #Sam
 -> motherintro
 
 // Could be converted to a text exchange if preferred
 == motherintro ==
-Good morning Robin, I left you some toast on the table. # Mom
- * [...] # Robin
- * Thanks. # Robin
- - I've got a lot of work so I'll be out late tonight, either make yourself something or order in a dinner. # Mom
- Oh, and could you take Sam out for a walk, he gets too energetic when he's left inside too long. # Mom
- I will. # Robin
- Alright, see you later then, I'm off. # Mom
+Good morning Robin, I left you some toast on the table. #Mom
+ * [...] #Robin
+ * Thanks. #Robin #Voice:VA/IntroScene/Thanks
+ - I've got a lot of work so I'll be out late tonight, either make yourself something or order in a dinner. #Mom
+ Oh, and could you take Sam out for a walk, he gets too energetic when he's left inside too long. #Mom
+ I will. #Robin #Voice:VA/IntroScene/IWill
+ Alright, see you later then, I'm off. #Mom
  -> feedsam
  
  // Cut this section if we want picking up items introduced later, but I thought this might be an easy way to introduce it.
  == feedsam ==
- Alright let's get you your breakfast. # Robin
- Arf! # Sam
+ Alright let's get you your breakfast. #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast
+ Arf! #Sam
  // Add any needed hint dialogue here
- \*nom nom\* # Sam
- Alright eat up, and let's go for that walk. # Robin
+ \*nom nom\* #Sam
+ Alright eat up, and let's go for that walk. #Robin #Voice:VA/IntroScene/EatUp
  -> dogwalk
  
  == dogwalk ==
- Just a short walk today, okay Sam? # Robin
- Woof! # Sam
+ Just a short walk today, okay Sam? #Robin #Voice:VA/IntroScene/JustAShortWalk
+ Woof! #Sam
  ! #Ding!
- Hold on one second Sam, I have to check this notification. # Robin
- Those were some interesting posts, now where were we Sam? # Robin
- ... # Robin
- Sam? # Robin
+ Hold on one second Sam, I have to check this notification. #Robin #Voice:VA/IntroScene/HoldOnSam
+ Those were some interesting posts, now where were we Sam? #Robin
+ ... #Robin
+ Sam? #Robin #Voice:VA/IntroScene/Sam
 -> END
 // Intro End
 
@@ -74,41 +74,41 @@ Good morning Robin, I left you some toast on the table. # Mom
 
 // Dialog 1 Start
 == dialog_1 ==
-Hi Robin, just checking in on you, it's been a while since we last talked! #Amelia #Voice:VA/InterLevel/HiJustChecking
+Hi Robin, just checking in on you, it's been a while since we last talked! #Francis #Voice:VA/InterLevel/HiJustChecking
 
  * I've been okay. #Robin #Voice:VA/InterLevel/IveBeenOkay
-   Oh? Something happening? #Amelia #Voice:VA/InterLevel/SomethingHappening
+   Oh? Something happening? #Francis #Voice:VA/InterLevel/SomethingHappening
    * * Sam's gone missing, and I haven't found him yet. #Robin #Voice:VA/InterLevel/SamsGone
        ~ dogmentioned = true
-       Sorry to hear that Robin! Anything I can do? #Amelia #Voice:VA/InterLevel/SorryToHear
+       Sorry to hear that Robin! Anything I can do? #Francis #Voice:VA/InterLevel/SorryToHear
        No, I'm sure I'll find him soon, I'm okay. #Robin #Voice:VA/InterLevel/IllFindHim
-       Alright then, good luck! #Friend #Voice:VA/InterLevel/GoodLuck
-       Oh and, #Amelia #Voice:VA/InterLevel/OkIKnow #IgnoreNextVoice -> checkup_end_pos 
+       Alright then, good luck! #Francis #Voice:VA/InterLevel/GoodLuck
+       Oh and, #Francis #Voice:VA/InterLevel/OkIKnow #IgnoreNextVoice -> checkup_end_pos 
    * * It's just been a bit busy lately. #Robin #Voice:VA/InterLevel/ItsBeenBusy
-       Fair enough. Anyways, just wanted to check in, make sure you're doing well! #Amelia #Voice:VA/InterLevel/FairEnough
+       Fair enough. Anyways, just wanted to check in, make sure you're doing well! #Francis #Voice:VA/InterLevel/FairEnough
        -> checkup_end_pos
  * I've been good. #Robin #Voice:VA/InterLevel/IveBeenGood
-   That's great to hear! #Amelia #Voice:VA/InterLevel/GreatToHear
-   So, #Amelia #Voice:VA/InterLevel/SoIKnow #IgnoreNextVoice -> checkup_end_pos
+   That's great to hear! #Francis #Voice:VA/InterLevel/GreatToHear
+   So, #Francis #Voice:VA/InterLevel/SoIKnow #IgnoreNextVoice -> checkup_end_pos
  * [...] #Robin
  -> checkup_end_neg 
 
 == checkup_end_pos ==
 ~ dialog1chat = true
-I know you've been busy the last few times I tried to invite you out, but we'll hang out this time, okay? #Amelia #Voice:VA/InterLevel/IKnow
+I know you've been busy the last few times I tried to invite you out, but we'll hang out this time, okay? #Francis #Voice:VA/InterLevel/IKnow
  * Okay. #Robin #Voice:VA/InterLevel/Okay
-    Sounds like a plan then! #Amelia
+    Sounds like a plan then! #Francis #Voice:VA/InterLevel/SoundsLikeAPlan
     -> END
  * [...] #Robin
     -> END
 == checkup_end_neg ==
 ~ dialog1chat = false
-I know you've been busy the last few times I tried to invite you out, but we'll hang out this time, okay? #Amelia #Voice:VA/InterLevel/IKnow
+I know you've been busy the last few times I tried to invite you out, but we'll hang out this time, okay? #Francis #Voice:VA/InterLevel/IKnow
  * Okay. #Robin #Voice:VA/InterLevel/Okay
-   I know you don't want to talk now, but I'll be here when you do. #Amelia
+   I know you don't want to talk now, but I'll be here when you do. #Francis #Voice:VA/InterLevel/ThereWhenYouDo
     -> END
  * [...] #Robin
-   I'm worried about you Robin. #Amelia
+   I'm worried about you Robin. #Francis #Voice:VA/InterLevel/ImWorriedAboutYou
     -> END
 //Dialog 1 End
 
@@ -116,19 +116,19 @@ I know you've been busy the last few times I tried to invite you out, but we'll 
 //Dialog 2 Start
 == dialog_2 ==
 Hey Robin, you weren't at class the other day, and I'll just been wondering how you've been? #Lorenzo
- * I'm just feeling a little sick. #Robin
+ * I'm not feeling great. 🤒 #Robin #Voice:VA/SceneWLorenzo/NotFeelingGood
    So that's why I haven't seen you around! #Lorenzo
    Make sure to rest up and feel better! #Lorenzo
     -> class_end_pos
- * Just dealing with a few things. #Robin
+ * Just dealing with something. #Robin #Voice:VA/SceneWLorenzo/DealingWithSomething
    Something to do with your mother? #Lorenzo
-   * * No, Sam's just gone off on his own. #Robin
+   * * No, Sam's just gone off on his own. #Robin #Voice:VA/SceneWLorenzo/GoneOffOnHisOwn
        That rebelious dog!!! #Lorenzo
        I'm sure you'll find him. #Lorenzo
-       I hope so too. #Robin
+       I hope so too. #Robin #TODO
        ~ dogmentioned = true
       -> class_end_pos
-   * * I'd prefer to not say. #Robin
+   * * I'd prefer to not say. #Robin #TODO
        All good Robin, I'm here to listen if you ever want to talk about it. #Lorenzo
       -> class_end_pos
  * [...]
@@ -137,7 +137,7 @@ Hey Robin, you weren't at class the other day, and I'll just been wondering how 
 == class_end_pos ==
    ~ dialog2chat = true
    Don't worry, I'll make sure my notes are nice and neat so you can borrow them and catch up! #Lorenzo
-   Thanks, Lorenzo. #Robin
+   Thanks, Lorenzo. #Robin #Voice:VA/SceneWLorenzo/ThanksLorenzo
    Of course! #Lorenzo
     -> END
     
@@ -157,33 +157,33 @@ Hey Robin, you weren't at class the other day, and I'll just been wondering how 
 
 //Group Dialog Start
 == group_dialog ==
-Hey Robin, we were talking and we were hoping to have a little get-together soon. #Amelia
+Hey Robin, we were talking about having a party soon. #Francis #Voice:VA/GroupScene/PartySoon
 We know you've been away for a little while, but we'd like to see you again. #Lorenzo
-{dogmentioned: {dialog1chat: If you found Sam, bring him to the party! #Amelia - else: Bring Sam too, once you find him! #Lorenzo}} //This is ugly as hell. (two lines in here)
+{dogmentioned: {dialog1chat: If you found Sam, bring him to the party! #Francis #Voice:VA/GroupScene/BringHimToTheParty - else: Bring Sam too, once you find him! #Lorenzo}} //This is ugly as hell. (two lines in here)
 
-* {dogmentioned} I still haven't found him. #Robin
-    Tell us where you are Robin, we can come help. #Amelia
+* {dogmentioned} I still haven't found him. #Robin #Voice:VA/GroupScene/StillHaventFoundHim
+    Tell us where you are Robin, we can come help. #Francis #TODO
     Yeah, we'll make sure you and Sam get home safe! #Lorenzo
     -> home_soon
-* {!dogmentioned} I've been trying to find my dog. #Robin
+* {!dogmentioned} I've been trying to find my dog. #Robin #Voice:VA/GroupScene/TryingToFindSam
     Sorry to hear that! #Lorenzo
-    How long has Sam been missing? #Amelia
-    He ran off on me a little while ago. #Robin
+    How long has Sam been missing? #Francis #Voice:VA/GroupScene/HowLongHasSamBeenMissing
+    He ran off on me a little while ago. #Robin #Voice:VA/GroupScene/RanOffOnMe
     You've been out for more than a little while Robin, is Sam the only thing bothering you? #Lorenzo
-    Yeah, it's closer to a few days, so I'm a little worried about you myself. #Amelia
+    Yeah, it's closer to a few days, so I'm a little worried about you myself. #Francis #Voice:VA/GroupScene/CloserToAFewDays
     ->home_soon
-* I just need a little bit longer to myself. #Robin
-    Robin.. we're worried about you. #Amelia
+* I just need a little bit longer to myself. #Robin #Voice:VA/GroupScene/ALittleLongerToMyself
+    Robin.. we're worried about you. #Francis #Voice:VA/GroupScene/WereWorriedAboutYou
     We haven't seen you in a few days now... #Lorenzo
-    I know, I'm sorry guys, but I'll be back soon. #Robin
+    I know, I'm sorry guys, but I'll be back soon. #Robin #Voice:VA/GroupScene/IllComeBackSoon
     We trust you Robin, but please come back safe and sound? #Lorenzo
-    I will. #Robin
+    I will. #Robin  #Voice:VA/GroupScene/IWill
     -> END
 
 == home_soon ==
-    I think I hear him just up ahead, I don't think I'll be much longer. #Robin
-    Alright, we'll wait, but just come back soon. #Amelia
-    Don't worry, I'll be home soon. #Robin
+    I think I hear him just up ahead, I don't think I'll be much longer. #Robin #Voice:VA/GroupScene/HearHimJustUpAhead
+    Alright, we'll wait, but just come back soon. #Francis #Voice:VA/GroupScene/ComeBackSoon
+    Don't worry, I'll be home soon. #Robin #Voice:VA/GroupScene/DontWorry
     -> END
 //Group Dialog End
 
@@ -201,31 +201,31 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
 
 //Meet Sam
 == meet_sam ==
-    Sam! There you are! #Robin
+    Sam! There you are! #Robin #Voice:VA/FoundSam/SamThereYouAre
     Woof! #Sam
-    I've been all over looking for you. #Robin
-    I'm sorry I lost track of time and left you on your own. #Robin
-    But we're together again now, so let's head home. #Robin
+    I've been all over looking for you. #Robin #Voice:VA/FoundSam/AllOverLookingForYou
+    I'm sorry I lost track of time and left you on your own. #Robin #Voice:VA/FoundSam/LeftYouOnYourOwn
+    But we're together again now, so let's head home. #Robin #Voice:VA/FoundSam/TogetherAgain
     Arf! #Sam
     -> END
 
 
 //Walk
 == walk_home ==
-    You would not believe what I've been through getting here Sam. #Robin
+    You would not believe what I've been through getting here Sam. #Robin #Voice:VA/FoundSam/WhatIveBeenThrough
     Woof? #Sam
-    Yeah, I started slipping through time and had to figure out a way through the forest. #Robin
-    I redirected a river with a log, jumped some pretty large gaps and even managed to put out a fire! #Robin
+    Yeah, I started slipping through time and had to figure out a way through the forest. #Robin #Voice:VA/FoundSam/JourneyExplanationPart1
+    I redirected a river with a log, jumped some pretty large gaps and even managed to put out a fire! #Robin #Voice:VA/FoundSam/JourneyExplanationPart2
     Arf! #Sam
-    Yeah, I'm a little tired. #Robin
+    Yeah, I'm a little tired. #Robin #Voice:VA/FoundSam/ALittleTired
     ... #Robin
     ! #Ding
-    Oh a notification... #Robin
-    Actually, on second thought, I think I'm good for a little while. #Robin
-    I'd rather not lose you again, Sam, one time is enough for me. #Robin
+    Oh a notification... #Robin #Voice:VA/FoundSam/OhNotif
+    Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought
+    I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
     Woof! #Sam
-    I'm glad you agree. #Robin
-    Now, let's get home! #Robin
+    I'm glad you agree. #Robin #Voice:VA/FoundSam/ImGladYouAgree
+    Now, let's get home! #Robin #TODO
     Bark, bark! #Sam
 
     -> END
@@ -233,18 +233,18 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
 
 //Ending Start
 == end_scene ==
-    I'm home.. #Robin
+    I'm home.. #Robin #Voice:VA/ArriveHome/ImHome
     Oh Robin, I'm so happy you're home! #Mom
     Where were you, for so long? #Mom
     I asked your friends, called the school, no one had seen you. #Mom
     {not (dialog1chat and dialog2chat): I even called the police I was so worried! #Mom}
-    I'm sorry Mom, I got a little lost. #Robin
+    I'm sorry Mom, I got a little lost. #Robin #Voice:VA/ArriveHome/ImSorryMom
     \*sigh* It's okay dear, I'm just glad you came home. #Mom
     Arf! #Sam
     Of course you too, Sammy. #Mom
     Woof! #Sam
     ... #Robin
-    I love you, Mom. #Robin
+    I love you, Mom. #Robin #Voice:VA/ArriveHome/ILoveYouMom
     I love you too, sweetie. #Mom
     -> END
 
