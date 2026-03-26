@@ -64,6 +64,7 @@ public class Dog : MonoBehaviour
                 break;
 
             case DogState.BeingPet:
+                animator.SetBool("pet", true);
                 Wait();
                 break;
         }

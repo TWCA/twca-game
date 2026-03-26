@@ -16,5 +16,9 @@ public class SamBehavior : StateMachineBehaviour
             animator.speed = animator.GetFloat("movingSpeed");
         else
             animator.speed = 1;
+
+        if (animator.GetBool("pet") && animator.GetBool("walk")) {
+            animator.SetBool("pet", false);
+        }
     }
 }
