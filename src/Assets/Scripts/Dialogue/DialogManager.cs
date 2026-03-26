@@ -192,6 +192,8 @@ public class DialogManager : MonoBehaviour
             AddChoiceButton("(Put Down Phone)", EndDialog);
         else
             EndDialog();
+
+        return;
     }
 
     string line = story.Continue().Trim();
