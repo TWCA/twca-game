@@ -209,8 +209,8 @@ public class Dog : MonoBehaviour
         float xWander = Random.Range(wanderMin, wanderMax) * RandomSign();
         float yWander = Random.Range(wanderMin, wanderMax) * RandomSign();
 
-        Debug.Log(xWander);
-        Debug.Log(yWander);
+        // Debug.Log(xWander);
+        // Debug.Log(yWander);
 
         return new Vector2(playerPosition.x + xWander, playerPosition.y + yWander);
     }
