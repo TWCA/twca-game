@@ -1,11 +1,21 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ink.Runtime;
-using JetBrains.Annotations;
 using UnityEngine.Events;
-using UnityEngine.Rendering;
+
+public enum Character
+{
+    Robin,
+    Mom,
+    Sam,
+    Francis,
+    Lorenzo,
+    Police,
+    None
+}
 
 public class DialogManager : MonoBehaviour
 {
@@ -18,12 +28,21 @@ public class DialogManager : MonoBehaviour
     public Transform choicesRoot;
     public GameObject choiceButtonPrefab;
     public Text timeText;
+    public float defaultTextDelay = 0.9f;
+    public float defaultNonTextDelay = 0.2f;
 
     public GameObject DialogRoot;
 
     private Story story;
+
     private bool isRunning = false;
+    private bool isPhoneUp = false;
+    private bool isWaitingForTrigger = false;
+    private float visualOffset = 270;
+    private bool areBehavioursDisabled = false;
+
     private System.Action onDialogFinished;
+    private float delayAfterFinish;
 
 
     private void Awake()
@@ -41,6 +60,26 @@ public class DialogManager : MonoBehaviour
             story = new Story(inkJson.text);
     }
 
+    private void Update()
+    {
+        if (isPhoneUp)
+        {
+            // lerp movement
+            visualOffset = Mathf.Lerp(visualOffset, 0, Time.deltaTime * 5.0f);
+            // linear movement
+            visualOffset = Mathf.MoveTowards(visualOffset, 0, Time.deltaTime * 70.0f);
+        }
+        else
+        {
+            // lerp movement
+            visualOffset = Mathf.Lerp(visualOffset, 270, Time.deltaTime * 5.0f);
+            // linear movement
+            visualOffset = Mathf.MoveTowards(visualOffset, 270, Time.deltaTime * 70.0f);
+        }
+
+        DialogRoot.SetActive(visualOffset < 270);
+    }
+
     private void LateUpdate()
     {
         if (DialogRoot.activeSelf)
@@ -53,20 +92,12 @@ public class DialogManager : MonoBehaviour
      * Opens the story to knot and opens the UI.
      * If you want to play dialog without the UI, call StartDialogHeadless()
      */
-    public void StartDialog(string knot, System.Action onFinished = null)
+    public void StartDialog(string knot, System.Action onFinished = null, float _delayAfterFinish = 0)
     {
+        delayAfterFinish = _delayAfterFinish;
         OpenToKnot(knot, onFinished);
-        
-        DialogRoot.SetActive(true);
-        UpdateDisabledBehaviours();
-
-        if (TimeManager.Instance.IsFuture())
-            timeText.text = "9:43pm";
-        else
-            timeText.text = "11:20am";
-
-        ClearMessages();
-        
+        OpenPhoneUI();
+        DisableBehaviours();
         ContinueStory();
     }
 
@@ -74,10 +105,45 @@ public class DialogManager : MonoBehaviour
      * Opens the story to knot *without* opening the UI.
      * If you want to play dialog in the UI, call StartDialog()
      */
-    public void StartDialogHeadless(string knot, System.Action onFinished = null)
+    public void StartDialogHeadless(string knot, System.Action onFinished = null, float _delayAfterFinish = 0)
     {
+        delayAfterFinish = _delayAfterFinish;
         OpenToKnot(knot, onFinished);
         ContinueStory();
+    }
+
+    /**
+     * Makes the phone UI visible
+     */
+    private void OpenPhoneUI()
+    {
+        visualOffset = 270f;
+        isPhoneUp = true;
+        MoveToCamera();
+
+        if (TimeManager.Instance.IsFuture())
+            timeText.text = "9:43pm";
+        else
+            timeText.text = "11:20am";
+
+        ClearMessages();
+
+        AudioManager.Instance.PlayNotification();
+    }
+
+    public void ResumeDialogue()
+    {
+        if (!isWaitingForTrigger) return;
+        isWaitingForTrigger = false;
+        ContinueStory();
+    }
+
+    /**
+     * Makes the phone UI invisible
+     */
+    private void ClosePhoneUI()
+    {
+        isPhoneUp = false;
     }
 
     /**
@@ -88,7 +154,7 @@ public class DialogManager : MonoBehaviour
         // stop old running story knot to open this one
         if (isRunning)
             EndDialog();
-        
+
         if (inkJson == null)
         {
             Debug.LogError("DialogManager: inkJson is not assigned!");
@@ -119,10 +185,29 @@ public class DialogManager : MonoBehaviour
         isRunning = false;
         DialogRoot.SetActive(false);
         AudioManager.Instance.FullAll();
+        StartCoroutine(EndDialogCoroutine());
+    }
+
+    private IEnumerator EndDialogCoroutine()
+    {
         onDialogFinished?.Invoke();
         onDialogFinished = null;
 
-        UpdateDisabledBehaviours();
+        yield return new WaitForSeconds(delayAfterFinish);
+
+        EndDialogInstantly();
+    }
+
+    public void EndDialogInstantly()
+    {
+        onDialogFinished?.Invoke();
+        onDialogFinished = null;
+
+        isRunning = false;
+        ClosePhoneUI();
+        AudioManager.Instance.FullAll();
+
+        EnableBehaviours();
     }
 
     /**
@@ -130,25 +215,37 @@ public class DialogManager : MonoBehaviour
      */
     private void ContinueStory()
     {
-        string line = story.Continue().Trim();
-        List<string> tags = story.currentTags;
-        DisplayDialogLine(line, tags);
+        if (isWaitingForTrigger) return;
 
         ClearChoices();
-        
-        // Wait for the VA line to stop playing
-        VAManager.Instance.OnQueueEmpty(() =>
+
+        if (!story.canContinue)
         {
-            if (story.canContinue)
-                ContinueStory(); // There are more lines to get...
-            else if (story.currentChoices.Count > 0)
+            if (story.currentChoices.Count > 0)
                 RefreshChoices();
             else if (DialogRoot.activeSelf)
                 AddChoiceButton("(Put Down Phone)", EndDialog);
             else
-            {
                 EndDialog();
-            }
+
+            return;
+        }
+
+        string line = story.Continue().Trim();
+        List<string> tags = story.currentTags;
+
+        HandleDialogControl(tags);
+
+        VAManager.Instance.OnQueueEmpty(() =>
+        {
+            DisplayDialogLine(line, tags);
+            HandleVoiceTags(tags);
+
+            isWaitingForTrigger = tags.Exists(tag => tag.ToLower() == "waitfortrigger");
+
+            // Wait for the VA line to stop playing
+            if (!isWaitingForTrigger)
+                VAManager.Instance.OnQueueEmpty(ContinueStory);
         });
     }
 
@@ -156,31 +253,88 @@ public class DialogManager : MonoBehaviour
      * Displays a dialog as a message or notification.
      * Also triggers voice acting lines to play.
      */
-    private void DisplayDialogLine(string line,  List<string> tags)
+    private void DisplayDialogLine(string line, List<string> tags)
     {
-        if (line.Length > 0 && DialogRoot.activeSelf)
+        if (line.Length > 0 && isPhoneUp)
         {
             string appTitle = GetNotificationAppTitle(tags);
 
             if (appTitle == null)
             {
-                bool isPlayer = IsTaggedPlayer(tags);
-                AddMessage(line, isPlayer);
+                Character character = GetCharacterTag(tags);
+                AddMessage(line, character);
             }
             else
             {
                 AddNotification(appTitle, line);
             }
         }
+    }
 
-        HandleVoiceTags(tags);
+    /**
+     * Handle control related tags, such as voice and UI control
+     */
+    private void HandleDialogControl(List<string> tags)
+    {
+        if (tags.Contains("openPhone"))
+            OpenPhoneUI();
+
+        if (tags.Contains("closePhone"))
+            ClosePhoneUI();
+
+        if (tags.Contains("disableBehaviours"))
+            DisableBehaviours();
+
+        if (tags.Contains("enableBehaviours"))
+            EnableBehaviours();
+
+        if (tags.Contains("notificationSound"))
+            AudioManager.Instance.PlayNotification();
+
+        if (tags.Contains("earlyFinishedCallback"))
+        {
+            onDialogFinished?.Invoke();
+            onDialogFinished = null;
+        }
+
+        string appTitle = GetNotificationAppTitle(tags);
+        Character character = GetCharacterTag(tags);
+
+        if (character != Character.Robin)
+        {
+            Nullable<float> delay = ExtractDelayFromTags(tags);
+
+            float defaultDelay = defaultNonTextDelay;
+            if (isPhoneUp && appTitle == null)
+                defaultDelay = defaultTextDelay;
+
+            VAManager.Instance.EnqueueDelay(delay ?? defaultDelay);
+        }
+    }
+
+    private Nullable<float> ExtractDelayFromTags(List<string> tags)
+    {
+        foreach (string tag in tags)
+        {
+            if (tag.StartsWith("delay:"))
+            {
+                string value = tag.Replace("delay:", "").Trim();
+
+                if (float.TryParse(value, out float delay))
+                {
+                    return delay;
+                }
+            }
+        }
+
+        return null; // means no delay found
     }
 
     /**
      * Checks if the dialog line is tagged as coming from the player.
      * If so it should be displayed as so in the messaging UI.
      */
-    private bool IsTaggedPlayer(List<string> tags)
+    private Character GetCharacterTag(List<string> tags)
     {
         /*
          * Example tags:
@@ -188,19 +342,24 @@ public class DialogManager : MonoBehaviour
          * #Friend
          */
         if (tags.Contains("Robin"))
-        {
-            return true;
-        }
-        else if (tags.Contains("Friend"))
-        {
-            return false;
-        }
-        else
-        {
-            if (DialogRoot.activeSelf)
-                Debug.LogWarning("Dialog line was not tagged with #Robin or #Friend, assuming line is from friend");
-            return false;
-        }
+            return Character.Robin;
+
+        if (tags.Contains("Sam"))
+            return Character.Sam;
+
+        if (tags.Contains("Mom"))
+            return Character.Mom;
+
+        if (tags.Contains("Francis"))
+            return Character.Francis;
+
+        if (tags.Contains("Lorenzo"))
+            return Character.Lorenzo;
+
+        if (tags.Contains("Police"))
+            return Character.Police;
+
+        return Character.None;
     }
 
     /**
@@ -264,21 +423,36 @@ public class DialogManager : MonoBehaviour
             });
         }
     }
-    
+
     /**
-     * Disables player movement if the UI is open.
-     * Enables player movement if the UI is closed.
+     * Disables things like player movement while using the phone
+     */
+    public void DisableBehaviours()
+    {
+        areBehavioursDisabled = true;
+        UpdateDisabledBehaviours();
+    }
+
+    /**
+     * Enables normal behavour
+     */
+    public void EnableBehaviours()
+    {
+        areBehavioursDisabled = false;
+        UpdateDisabledBehaviours();
+    }
+
+    /**
+     * Disables player movement if needed.
      */
     private void UpdateDisabledBehaviours()
     {
-        bool active = DialogRoot.activeSelf;
-        
         GameObject player = GameObject.FindWithTag("Player");
         PlayerControl playerControl = player.GetComponent<PlayerControl>();
 
-        playerControl.enabled = !active;
+        playerControl.enabled = !areBehavioursDisabled;
 
-        if (active)
+        if (areBehavioursDisabled)
             playerControl.StopInPlace();
     }
 
@@ -300,11 +474,11 @@ public class DialogManager : MonoBehaviour
      * Adds a conversation message to the screen.
      * This is displayed after any previous messages.
      */
-    private void AddMessage(string text, bool isPlayer)
+    private void AddMessage(string text, Character character)
     {
         GameObject obj = Instantiate(messageBubblePrefab, historyContent);
         MessageBubble bubble = obj.GetComponent<MessageBubble>();
-        bubble.SetMessage(text, isPlayer);
+        bubble.SetMessage(text, character);
 
         Canvas.ForceUpdateCanvases();
         historyScrollRect.verticalNormalizedPosition = 0f;
@@ -324,7 +498,7 @@ public class DialogManager : MonoBehaviour
         Canvas.ForceUpdateCanvases();
         historyScrollRect.verticalNormalizedPosition = 0f;
     }
-    
+
     /**
      * Removes all the option buttons presented to the player.
      */
@@ -346,7 +520,7 @@ public class DialogManager : MonoBehaviour
             Destroy(historyContent.GetChild(i).gameObject);
         }
     }
-    
+
     /**
      * Move the dialog UI to th main camera's position.
      */
@@ -355,6 +529,7 @@ public class DialogManager : MonoBehaviour
         GameObject camera = GameObject.FindWithTag("MainCamera");
         Vector3 position = camera.transform.position;
         position.z = DialogRoot.transform.position.z;
+        position.y -= visualOffset;
         DialogRoot.transform.position = position;
     }
 }
