@@ -27,7 +27,7 @@ public class PickupObject : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (clickAction.WasReleasedThisFrame()) {
+        if (clickAction.WasPressedThisFrame()) {
             ItemRelease();
         }
 
