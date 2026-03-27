@@ -31,7 +31,7 @@ Bark! #Sam #Voice:VA/SamBarks/Bark1
 ...Just a few more minutes Sam... #Robin #Voice:VA/IntroScene/JustAFewMinutes
 Bark, bark! #Sam #Voice:VA/SamBarks/Bark4
 #Voice:VA/SamBarks/Bark3
-Okay, okay, I'll get up! #Robin #Voice:VA/IntroScene/IllGetUp
+Okay, okay, I'll get up! #Robin #Voice:VA/IntroScene/IllGetUp #waitForTrigger
 
 Alright then, how's my favourite noisy dog this morning? #Robin #Voice:VA/IntroScene/HowMyFavourite
 Woof! #Sam #Voice:VA/SamBarks/Bark2
@@ -48,8 +48,8 @@ Good morning Robin, I left you some toast on the table. #Mom #Voice:VA/IntroScen
  - I've got a lot of work so I'll be out late tonight, either make yourself something or order in some take-out. #Mom #Voice:VA/IntroScene/OutLateOrderTakeout
  Oh, and could you take Sam out for a walk, he gets too energetic when he's left inside too long. #Mom
  I will. #Robin #Voice:VA/IntroScene/IWill
- Alright, see you later then, I'm off. #Mom #Voice:VA/IntroScene/ImOff #closePhone #enableBehaviours
- Alright let's get you your breakfast. #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast
+ Alright, see you later then, I'm off. #Mom #Voice:VA/IntroScene/ImOff
+ Alright let's get you your breakfast. #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast #closePhone #enableBehaviours
  Arf! #Sam #Voice:VA/SamBarks/Bark7
 -> END
  
@@ -60,14 +60,18 @@ Good morning Robin, I left you some toast on the table. #Mom #Voice:VA/IntroScen
 -> END
  
 == dogwalk ==
+ Bark! #Sam #Voice:VA/SamBarks/Bark4 #waitForTrigger
+
  Just a short walk today, okay Sam? #Robin #Voice:VA/IntroScene/JustAShortWalk
  Woof! #Sam #Voice:VA/SamBarks/Bark5
 -> END
 
 == first_notif ==
- Hold on one second Sam, I have to check this notification. #Robin #Voice:VA/IntroScene/HoldOnSam #closePhone
+ Hold on one second Sam, I have to check this notification. #Robin #Voice:VA/IntroScene/HoldOnSam #disableBehaviours
  Stuck semi-truck closed High Level bridge. #Notification:News #Voice:VA/Notifications/StuckSemiTruck #openPhone
- ... #Robin #closePhone #earlyFinishedCallback
+-> END
+
+== after_first_notif ==
  Sam? #Robin #Voice:VA/IntroScene/Sam #enableBehaviours
 -> END
 // Intro End
@@ -203,6 +207,8 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
 
 //Meet Sam
 == meet_sam ==
+    Bark #Sam #Voice:VA/SamBarks/Bark1 #Delay:0.7
+    Is that barking? #Robin #Voice:VA/RobinLevelBarks/IsThatBarking #waitForTrigger
     Sam! There you are! #Robin #Voice:VA/FoundSam/SamThereYouAre
     Woof! #Sam #Voice:VA/SamBarks/Bark5
     I've been all over looking for you. #Robin #Voice:VA/FoundSam/AllOverLookingForYou
@@ -215,15 +221,15 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
 //Walk
 == walk_home ==
     You would not believe what I've been through getting here Sam. #Robin #Voice:VA/FoundSam/WhatIveBeenThrough
-    Woof? #Sam #Voice:VA/SamBarks/Bark1
-    Yeah, I started slipping through time and had to figure out a way through the forest. #Robin #Voice:VA/FoundSam/JourneyExplanationPart1
+    Woof? #Sam #Voice:VA/SamBarks/Bark1 #waitForTrigger
+    Yeah, I started slipping through time and had to figure out a way through the forest. #Robin #Voice:VA/FoundSam/JourneyExplanationPart1 #waitForTrigger
     I redirected a river with a log, jumped some pretty large gaps and even managed to put out a fire! #Robin #Voice:VA/FoundSam/JourneyExplanationPart2
-    Arf! #Sam #Voice:VA/SamBarks/Bark4
+    Arf! #Sam #Voice:VA/SamBarks/Bark4 #waitForTrigger
     Yeah, I'm a little tired. #Robin #Voice:VA/FoundSam/ALittleTired
     ... #Robin
-    Ding! #notificationSound
-    Oh... #Robin #Voice:VA/FoundSam/OhNotif
-    Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought
+    Ding! #notificationSound #Delay:0.5
+    Oh... #Robin #Voice:VA/FoundSam/OhNotif #Delay:0.5
+    Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought #Delay:1.0 #waitForTrigger
     I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
     Woof! #Sam #Voice:VA/SamBarks/Bark3
     I'm glad you agree, let's go home. #Robin #Voice:VA/FoundSam/ImGladYouAgree
@@ -234,7 +240,8 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
 
 //Ending Start
 == end_scene ==
-    I'm home.. #Robin #Voice:VA/ArriveHome/ImHome
+    Woof! #Sam #Voice:VA/SamBarks/Bark2 #waitForTrigger
+    I'm home.. #Robin #Voice:VA/ArriveHome/ImHome #waitForTrigger
     Robin where were you for so long! Ne... never mind. I'm just happy you're home! #Mom #Voice:VA/ArriveHome/ImHappyYoureHomeAngryVer
     I asked your friends, called the school, no one had seen you. #Mom #Voice:VA/ArriveHome/AskedEveryone
     {not (dialog1chat and dialog2chat): I even called the police I was so worried! #Mom #Voice:VA/ArriveHome/IEvenCalledThePolice}

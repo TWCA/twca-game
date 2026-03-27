@@ -12,7 +12,8 @@ public class DialogPlayer : MonoBehaviour
     
     void Update()
     {
-        if (Time.timeSinceLevelLoad > delaySeconds && !played)
+        delaySeconds -= Time.deltaTime;
+        if (delaySeconds <= 0 && !played)
         {
             if (headless)
                 DialogManager.Instance.StartDialogHeadless(knot);
@@ -20,6 +21,7 @@ public class DialogPlayer : MonoBehaviour
                 DialogManager.Instance.StartDialog(knot);
             
             played = true;
+            delaySeconds = float.PositiveInfinity;
         }
     }
 }

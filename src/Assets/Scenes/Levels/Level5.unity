@@ -5735,15 +5735,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.046904314
+      value: 0.083606556
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.99999994
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.90654314
+      value: 0.8317623
       objectReference: {fileID: 0}
     - target: {fileID: 9194941017122940838, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: ShapeModule.m_Rotation.x
@@ -10869,6 +10869,18 @@ PrefabInstance:
     - target: {fileID: 2552411629233280624, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589486739817815664, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
+      propertyPath: playOnOpening
+      value: Music/RiverTrack 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589486739817815664, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
+      propertyPath: playOnceVolume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589486739817815664, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
+      propertyPath: playTrackOnOpening
+      value: Music/RiverTrack 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

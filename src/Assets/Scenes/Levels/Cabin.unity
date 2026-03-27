@@ -893,7 +893,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2526098843139019801, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
       propertyPath: delaySeconds
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5379357951889160781, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
       propertyPath: m_Name
@@ -1775,15 +1775,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.07704918
+      value: 0.083606556
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.99999994
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.8455943
+      value: 0.8317623
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
