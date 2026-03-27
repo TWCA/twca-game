@@ -10073,7 +10073,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[16].pastTraversable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[17].pastTraversable
