@@ -45,7 +45,7 @@ public class PathFollower : MonoBehaviour
     private List<int> plannedPath;
     private Vector2 plannedEndPosition = Vector2.zero;
 
-    PathFollower()
+    public PathFollower()
     {
         currentSpeed = minSpeed;
     }
@@ -105,6 +105,10 @@ public class PathFollower : MonoBehaviour
     public float GetCurrentSpeed()
     {
         return currentSpeed;
+    }
+
+    public void SetCurrentSpeed(float value) {
+        currentSpeed = value;
     }
 
     public bool IsJumping()

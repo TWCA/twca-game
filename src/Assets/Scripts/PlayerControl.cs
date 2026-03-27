@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -8,6 +9,7 @@ public class PlayerControl : MonoBehaviour
     private PathFollower pathFollower;
     private Animator animator;
     private SpriteRenderer sprite;
+    [NonSerialized] public bool GoingToSam = false; // Internally used to see if the player is walking to Sam so we can decide to play the animation or not
 
     private InputActionMap playerActionMap, UIActionMap;
     private InputAction moveAction, clickAction, pointAction;
@@ -75,6 +77,8 @@ public class PlayerControl : MonoBehaviour
 
             // Reset bringing an item to a location if the player overrides
             inventorySystem.Cancel();
+
+            GoingToSam = false;
         }
 
         Vector2 movementDirection;
@@ -91,7 +95,7 @@ public class PlayerControl : MonoBehaviour
         animator.SetBool("jumping", pathFollower.IsJumping());
 
         if (moving) // only update while moving
-            sprite.flipX = movementDirection.x > 0;
+            FlipX(movementDirection.x > 0);
     }
 
     /**
@@ -125,6 +129,14 @@ public class PlayerControl : MonoBehaviour
         return CanMove && animator.GetBool("interacting") == false;
     }
 
+    /**
+    * Initiates the action of petting sam
+    */
+    public void PetSam(bool petting) {
+        animator.SetBool("petting", petting);
+        GoingToSam = false;
+    }
+
     /*
     * Stops all pathfinding and halts the player where they are
     */
@@ -137,5 +149,17 @@ public class PlayerControl : MonoBehaviour
 
     public void PathfindTo(Vector2 location) {
         pathFollower.PathfindTo(location);
+    }
+
+    public bool IsMoving() {
+        return animator.GetBool("moving");
+    }
+
+    public void FlipX(bool flip) {
+        sprite.flipX = flip;
+    }
+
+    public Vector2 GetPosition() {
+        return transform.position;
     }
 }
