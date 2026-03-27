@@ -29,6 +29,9 @@ public class InventoryCanvas : MonoBehaviour
         
     }
 
+    /*
+    * Adds a new object to the inventory bar
+    */
     public void AddUIObject(Transform uiObject, GameObject prefab) {
         uiObject.SetParent(itemLayout.transform, false);
 
@@ -38,6 +41,9 @@ public class InventoryCanvas : MonoBehaviour
         itemNameText.SetText(uiObject.name);
     }
 
+    /*
+    * Shows the item as selected in the inventory bar
+    */
     public void SetSelectedInventoryItemBox(InventoryItem inventoryItem) {
         selectedInventoryItemBox = inventoryItem;
 

@@ -210,10 +210,16 @@ public class ItemDropNode : MonoBehaviour
         ItemRemoved?.Invoke();
     }
 
+    /*
+    * Sets the transparency of the outline material
+    */
     private void SetAlpha(float alpha) {
         materialRenderer.material.SetColor("_Color", new Color(1f, 1f, 1f, alpha));
     }
 
+    /*
+    * Gets the alpha/transparency of the outline material
+    */
     private float GetAlpha()
     {
         return materialRenderer.material.GetColor("_Color").a;
@@ -250,12 +256,18 @@ public class ItemDropNode : MonoBehaviour
         }
     }
 
+    /*
+    * Occurs when the player is close enough to the trigger that causes the hint outline to show
+    */
     void NearbyNotifyEntered() {
         if (GetAlpha() != HoverAlpha) {
             SetAlpha(NotifyAlpha);
         }
     }
 
+    /*
+    * Occurs when the player is far enough from the trigger that causes the hint outline to hide/reset
+    */
     void NearbyNotifyExited() {
         if (GetAlpha() != HoverAlpha) {
             SetAlpha(BaseAlpha);

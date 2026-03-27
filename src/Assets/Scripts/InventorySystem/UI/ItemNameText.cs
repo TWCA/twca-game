@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -27,6 +26,9 @@ public class ItemNameText : MonoBehaviour
         }
     }
 
+    /*
+    * Sets the text and plays the fade in and fade out animation of the text
+    */
     private IEnumerator SetTextInternal(string newText) {
         textComponent.text = newText;
 
@@ -37,6 +39,9 @@ public class ItemNameText : MonoBehaviour
         fadeManager.FadeIn();
     }
 
+    /*
+    * Sets the text (usually an item name)
+    */
     public void SetText(string newText)
     {
         StopAllCoroutines();

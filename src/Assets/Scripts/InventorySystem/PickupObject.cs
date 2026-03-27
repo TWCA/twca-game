@@ -8,7 +8,6 @@ public class PickupObject : MonoBehaviour
     public string NiceName; // The name of the item that faces the user
     [NonSerialized] public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
-    private InventoryCanvas inventoryCanvas;
     private InputAction clickAction;
     private PlayerControl player;
 
@@ -16,7 +15,6 @@ public class PickupObject : MonoBehaviour
     void Start()
     {
         inventorySystem = InventorySystem.Instance;
-        inventoryCanvas = InventoryCanvas.Instance;
         player = PlayerControl.Instance;
 
         clickAction = InputSystem.actions.FindAction("Click");
