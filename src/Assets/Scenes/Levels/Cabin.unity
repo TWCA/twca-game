@@ -624,6 +624,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &496781023 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5607203572572925108, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
+  m_PrefabInstance: {fileID: 1188942231}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9155cf0ce89b2587d82812733644f182, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &551375002
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,6 +1252,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1834990461 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2251703310826657736, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
+  m_PrefabInstance: {fileID: 7866210720210961203}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1834990470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1834990461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4523101d6ad2c1b878ddd00b2d833284, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DogBowl: {fileID: 496781023}
 --- !u!1001 &1971977624
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1389,6 +1418,10 @@ PrefabInstance:
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.size
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
+      propertyPath: paths.Array.data[7].name
+      value: bowlfilled
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[0].nodeB
@@ -1564,7 +1597,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[7].pastTraversable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[8].pastTraversable
@@ -1600,7 +1633,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[7].futureTraversable
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[8].futureTraversable
@@ -1897,7 +1930,10 @@ PrefabInstance:
     m_RemovedGameObjects:
     - {fileID: 5501483572454794932, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2251703310826657736, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1834990470}
   m_SourcePrefab: {fileID: 100100000, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
 --- !u!1001 &8325998607508313678
 PrefabInstance:
@@ -1973,15 +2009,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.07704918
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.99999994
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.8455943
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
