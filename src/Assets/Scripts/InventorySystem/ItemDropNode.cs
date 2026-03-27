@@ -15,14 +15,20 @@ public class ItemDropNode : MonoBehaviour
     public Sprite EmptySpriteOverride; // What does the item drop node look like when there is no item in it
     public Sprite ActiveSpriteOverride; // What does the item drop nodel look like when there is an item in it
 
+    public float FadeInTime = 0.5f;
+    public float FadeOutTime = 0.5f;
+    public float MinAlpha = 0f;
+    public float MaxAlpha = 0.5f;
+
     public bool SingleUse; // Can this drop node only be used once?
 
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
     private PlayerDetector playerDetector;
-    private Material originalMaterial;
     private Renderer materialRenderer;
+    private FadeManager fadeManager;
     private bool used; // Used for keeping track of if the drop node was used if SingleUse is true
+    private bool mouseIn;
 
     // Events for level code (like the river system) to interact with
     public event Action ItemPlaced;
@@ -34,6 +40,7 @@ public class ItemDropNode : MonoBehaviour
     private void Initialize() {
         circleCollider = GetComponent<CircleCollider2D>();
         playerDetector = GetComponentInChildren<PlayerDetector>();
+        fadeManager = GetComponent<FadeManager>();
     }
 
     /*
@@ -55,11 +62,19 @@ public class ItemDropNode : MonoBehaviour
 
         inventorySystem = InventorySystem.Instance;
         materialRenderer = SpriteRenderer.GetComponent<Renderer>();
-        originalMaterial = materialRenderer.material;
 
         playerDetector.PlayerTouched += () => {
             InteractedWith();
         };
+
+        materialRenderer.material = SelectedMaterial;
+
+        fadeManager.FadeInTime = FadeInTime;
+        fadeManager.FadeOutTime = FadeOutTime;
+        // fadeManager.MaxAlpha = MaxAlpha;
+        // fadeManager.MinAlpha = MinAlpha;
+        fadeManager.SetAlpha(MinAlpha);
+        fadeManager.FadeOut();
     }
 
     // Update is called once per frame
@@ -69,6 +84,20 @@ public class ItemDropNode : MonoBehaviour
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
         if (playerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
             InteractedWith();
+        }
+
+        if (!mouseIn) {
+            materialRenderer.material.SetColor("_Color", fadeManager.GetRGBAatTime(new Color(1f, 1f, 1f), Time.deltaTime));
+        }
+
+        // Debug.Log(fadeManager.GetRGBAatTime(new Color(1f, 1f, 1f), Time.deltaTime));
+
+        if (fadeManager.HasReachedTarget() && !mouseIn) {
+            if (fadeManager.HasReachedMinAlpha()) {
+                fadeManager.FadeOut();
+            } else if (fadeManager.HasReachedMaxAlpha()) {
+                fadeManager.FadeIn();
+            }
         }
 
         HoverCircle.gameObject.SetActive(inventorySystem.HasMouseItem);
@@ -196,12 +225,14 @@ public class ItemDropNode : MonoBehaviour
     void OnMouseEnter() {
         if (ActiveItem != null) {
             materialRenderer.material = SelectedMaterial;
+            mouseIn = true;
+            fadeManager.SetAlpha(1);
         }
     }
 
     void OnMouseExit()
     {
-        materialRenderer.material = originalMaterial;
+        mouseIn = false;
     }
 
     void OnMouseUp() {
