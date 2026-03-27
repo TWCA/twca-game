@@ -182,6 +182,12 @@ public class DialogManager : MonoBehaviour
 
     public void EndDialog()
     {
+<<<<<<< HEAD
+=======
+        isRunning = false;
+        DialogRoot.SetActive(false);
+        AudioManager.Instance.FullAll();
+>>>>>>> main
         StartCoroutine(EndDialogCoroutine());
     }
 
