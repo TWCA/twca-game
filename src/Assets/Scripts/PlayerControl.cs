@@ -59,7 +59,7 @@ public class PlayerControl : MonoBehaviour
         InventorySystem inventorySystem = InventorySystem.Instance;
         
         // Toggle the player click action depending on the situation
-        if (pointerOverUI || inventorySystem.CarriedItem != null || inventorySystem.MouseItem != null) {
+        if (pointerOverUI || !inventorySystem.IsPlayerMovementAllowed()) {
             clickAction.Disable();
         } else {
             clickAction.Enable();

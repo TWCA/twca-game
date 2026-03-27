@@ -20,7 +20,7 @@ public class ItemNameText : MonoBehaviour
         
         if (showTimer >= ShowTime) {
             showTimer = 0;
-            textComponent.text = "";
+            ClearText();
         }
     }
 
@@ -30,6 +30,10 @@ public class ItemNameText : MonoBehaviour
 
     private void FadeOut() {
         // TODO fade out
+    }
+
+    public void ClearText() {
+        textComponent.text = "";
     }
 
     public void SetText(string newText)

@@ -71,11 +71,7 @@ public class ItemDropNode : MonoBehaviour
             InteractedWith();
         }
 
-        if (inventorySystem.MouseItem != null) {
-            HoverCircle.gameObject.SetActive(true);
-        } else {
-            HoverCircle.gameObject.SetActive(false);
-        }
+        HoverCircle.gameObject.SetActive(inventorySystem.HasMouseItem);
     }
 
     private void InitializeSprite() {
@@ -112,7 +108,7 @@ public class ItemDropNode : MonoBehaviour
                 return false;
             } else {
                 inventorySystem.CarriedItem = prefab;
-                inventorySystem.MouseItem = null;
+                inventorySystem.HasMouseItem = false;
             }
 
             if (SingleUse) {

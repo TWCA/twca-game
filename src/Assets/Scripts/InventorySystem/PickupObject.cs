@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -5,8 +6,7 @@ public class PickupObject : MonoBehaviour
 {
     public bool AllowStacking = true; // Can the object be stacked? No support for stack size maximums for now, not sure if needed.
 
-    [System.NonSerialized]
-    public GameObject PickupObjectPrefab;
+    [NonSerialized] public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
     private InventoryCanvas inventoryCanvas;
     private InputAction clickAction;
@@ -49,7 +49,6 @@ public class PickupObject : MonoBehaviour
             }
         }
 
-        inventorySystem.MouseItem = null;
         inventoryCanvas.SetSelectedInventoryItemBox(null);
         Destroy(gameObject);
     }

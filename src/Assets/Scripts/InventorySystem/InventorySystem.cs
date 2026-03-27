@@ -14,7 +14,7 @@ public class InventorySystem : MonoBehaviour
     public GameObject TemplateItem;
     private InventoryCanvas inventoryCanvas;
     public static InventorySystem Instance { get; private set; }
-    [NonSerialized] public GameObject MouseItem; // The item that appears where the mouse is
+    [NonSerialized] public bool HasMouseItem; // The item that appears where the mouse is
     [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
     [NonSerialized] public ItemDropNode TargetDropNode;
     private List<Item> items;
@@ -109,7 +109,7 @@ public class InventorySystem : MonoBehaviour
             newObject.name = prefab.name;
             newObject.GetComponent<PickupObject>().PickupObjectPrefab = prefab;
 
-            MouseItem = newObject.gameObject;
+            HasMouseItem = true;
 
             return newObject.gameObject;
         }
@@ -123,6 +123,10 @@ public class InventorySystem : MonoBehaviour
     public void Cancel() {
         TargetDropNode = null;
         CarriedItem = null;
+    }
+
+    public bool IsPlayerMovementAllowed() {
+        return CarriedItem == null && !HasMouseItem;
     }
 
     /*
