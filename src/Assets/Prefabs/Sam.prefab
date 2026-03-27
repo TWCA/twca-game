@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5762236453178697866}
   - component: {fileID: 6248194391349859984}
   - component: {fileID: 8780038784008361675}
+  - component: {fileID: 884897228319368418}
   m_Layer: 0
   m_Name: Sam
   m_TagString: Sam
@@ -100,22 +101,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff3c21fca3599432381b2c146aa90724, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minSpeed: 50
-  maxSpeed: 120
-  minJumpSpeed: 110
-  acceleration: 50
-  deceleration: 500
-  gravity: 0.14
-  walkingLookAheadLength: 25
-  turnAssistStrength: 0.5
-  turnAssistThreshold: 0.1
-  perpendicularMovementThreshold: 0.1
   currentState: 0
   followWalkDistance: 40
   followRunDistance: 60
   decisionInterval: 0.5
   petCooldown: 2
   wanderOdds: 5
+  ClickToPet: 0
 --- !u!61 &5762236453178697866
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -152,7 +144,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.52, y: 0}
-    oldSize: {x: 0.25, y: 0.24}
+    oldSize: {x: 25, y: 24}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -209,3 +201,25 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &884897228319368418
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6054132484571790322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90f8a929ed345b87284cae2e24fa8be3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minSpeed: 50
+  maxSpeed: 120
+  minJumpSpeed: 110
+  acceleration: 50
+  deceleration: 500
+  gravity: 0.14
+  walkingLookAheadLength: 25
+  turnAssistStrength: 0.5
+  turnAssistThreshold: 0.1
+  perpendicularMovementThreshold: 0.1
