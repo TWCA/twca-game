@@ -12,7 +12,7 @@ public class InventorySystem : MonoBehaviour
     public int ItemMax = 5;
     public int Padding = 1;
     public GameObject TemplateItem;
-    private GameObject inventoryUIObject;
+    private InventoryCanvas inventoryCanvas;
     public static InventorySystem Instance { get; private set; }
     [NonSerialized] public GameObject MouseItem; // The item that appears where the mouse is
     [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
@@ -29,7 +29,9 @@ public class InventorySystem : MonoBehaviour
 
     private void Awake()
     {
-        inventoryUIObject = GameObject.FindGameObjectWithTag("InventoryUIRoot");
+        GameObject inventoryUIObject = GameObject.FindGameObjectWithTag("InventoryUIRoot");
+        inventoryCanvas = inventoryUIObject.GetComponent<InventoryCanvas>();
+
         Instance = this;
     }
 
@@ -55,7 +57,7 @@ public class InventorySystem : MonoBehaviour
     * returns true if it was a success (if stacking is prevented or not)
     */
     public bool AddItem(GameObject prefab) {
-        if (inventoryUIObject.transform.childCount >= ItemMax) {
+        if (items.Count >= ItemMax) {
             Debug.Log($"Inventory reached max size of {ItemMax}!");
         }
 
@@ -150,7 +152,7 @@ public class InventorySystem : MonoBehaviour
 
             // Create UI object and set it to proper position
             Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);
-            newItemUIObject.gameObject.transform.SetParent(inventorySystem.inventoryUIObject.gameObject.transform, false);
+            inventorySystem.inventoryCanvas.AddUIObject(newItemUIObject);
 
             InventoryItem newInventoryItem = newItemUIObject.GetComponent<InventoryItem>();
 
