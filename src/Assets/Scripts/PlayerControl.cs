@@ -95,7 +95,7 @@ public class PlayerControl : MonoBehaviour
         animator.SetBool("jumping", pathFollower.IsJumping());
 
         if (moving) // only update while moving
-            sprite.flipX = movementDirection.x > 0;
+            FlipX(movementDirection.x > 0);
     }
 
     /**
@@ -150,5 +150,13 @@ public class PlayerControl : MonoBehaviour
 
     public bool IsMoving() {
         return animator.GetBool("moving");
+    }
+
+    public void FlipX(bool flip) {
+        sprite.flipX = flip;
+    }
+
+    public Vector2 GetPosition() {
+        return transform.position;
     }
 }

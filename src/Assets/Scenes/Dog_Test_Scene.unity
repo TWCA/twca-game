@@ -247,6 +247,10 @@ PrefabInstance:
       propertyPath: m_Radius
       value: 15
       objectReference: {fileID: 0}
+    - target: {fileID: 2510318594071555836, guid: c037a0114f1076aecb8964191bbab3aa, type: 3}
+      propertyPath: m_Offset.y
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 7938855487780389848, guid: c037a0114f1076aecb8964191bbab3aa, type: 3}
       propertyPath: m_Name
       value: PlayerDetector

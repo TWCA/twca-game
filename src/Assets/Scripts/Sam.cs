@@ -7,7 +7,8 @@ public class Dog : MonoBehaviour
         Follow,
         Wander,
         Wait,
-        BeingPet
+        BeingPet,
+        WaitingForPet
     }
     private Vector2 wanderTarget = Vector2.zero;
     private PlayerControl player;
@@ -23,6 +24,7 @@ public class Dog : MonoBehaviour
     public float decisionInterval = 1f;
     public float petCooldown = 2f;
     public int wanderOdds = 5; // For example "1 in (this value) chance of happening"
+    public float petPadding = 10f;
 
     void Start()
     {
@@ -64,6 +66,10 @@ public class Dog : MonoBehaviour
 
             case DogState.BeingPet:
                 PetState();
+                break;
+
+            case DogState.WaitingForPet:
+                WaitingState();
                 break;
         }
     }
@@ -143,23 +149,14 @@ public class Dog : MonoBehaviour
     */
     void PetState() {
         animator.SetBool("pet", true);
+
+        Vector2 playerPosition = player.gameObject.transform.position;
+        bool shouldFlip = transform.position.x > playerPosition.x;
+
+        spriteRenderer.flipX = shouldFlip;
+        player.FlipX(shouldFlip);
+
         WaitingState();
-    }
-
-    /*
-    * Logic for when Sam is pet by the player
-    */
-    void HandlePet() {
-        if (currentState == DogState.BeingPet) {
-            currentState = DogState.Wait;
-
-            animator.SetBool("pet", false);
-        } else {
-            player.PathfindTo(transform.position);
-            currentState = DogState.BeingPet;
-
-            animator.SetBool("pet", true);
-        }
     }
 
     /*
@@ -170,7 +167,7 @@ public class Dog : MonoBehaviour
         decisionTimer = 0f;
         wanderTarget = Vector2.zero;
 
-        if (currentState != DogState.BeingPet && !animator.GetBool("pet") && !player.IsMoving()) {
+        if (currentState != DogState.BeingPet && currentState != DogState.WaitingForPet && !animator.GetBool("pet") && !player.IsMoving()) {
             int randomChoice = Random.Range(0, wanderOdds);
 
             if (randomChoice == 0)
@@ -235,12 +232,31 @@ public class Dog : MonoBehaviour
     */
     void OnPlayerLeft() {
         animator.SetBool("pet", false);
-
         player.PetSam(false);
+        currentState = DogState.Wait;
     }
 
     void OnMouseUp() {
+        float padding;
+        Vector2 playerPosition = player.GetPosition();
+
+        if (transform.position.x > playerPosition.x) {
+            padding = -petPadding;
+        } else {
+            padding = petPadding;
+        }
+
+        Vector2 adjustedPosition = new(transform.position.x + padding, transform.position.y + petPadding);
+
         // Track if the player is walking to Sam
         player.GoingToSam = true;
+
+        player.PathfindTo(adjustedPosition);
+
+        currentState = DogState.WaitingForPet;
+
+        if (playerDetector.TouchingPlayer) {
+            OnPlayerSamInteraction();
+        }
     }
 }
