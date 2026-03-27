@@ -15,7 +15,7 @@ public class AudioManager : MonoBehaviour
     }
 
     // oneShotSource shouldn't be messed with. Just leave it at full volume to play random ones-hot sounds.
-    public AudioSource oneShotSource, insectSource, rainSource, thunderSource, owlsSource, chickadeeSource, RiverSourcePast, RiverSourceFuture;
+    public AudioSource oneShotSource, insectSource, rainSource, thunderSource, owlsSource, chickadeeSource;
     public List<AudioClip> steps;
     public List<AudioClip> stepsWet;
     public List<AudioClip> timeJump;
@@ -24,15 +24,17 @@ public class AudioManager : MonoBehaviour
     private Vector3 previousPosition;
     public List<AudioClip> Birds;
     private bool playingChickadee, playingOwls = false;
-
+    public bool halfVol, fadeout = false;
     void Awake()
     {
         _instance = this;
-        playRain();
+        FullAll();
+        
     }
 
     void Start()
     {
+        StartOfLevel();
         TimeManager.Instance.onTimeChanged += () =>
         {
             // the time just changed this frame
@@ -54,7 +56,7 @@ public class AudioManager : MonoBehaviour
         previousPosition = transform.position;
 
         float rainStrength = TimeManager.Instance.GetRainStrength();
-        //Debug.Log(rainStrength);
+        
         if (rainStrength <= 0) // no rain
         {
             stopRain();
@@ -77,7 +79,7 @@ public class AudioManager : MonoBehaviour
         }
         
         float lighting = TimeManager.Instance.GetLightingTime();
-        //Debug.Log(lighting);
+        
         if (lighting <= 0.2) // day
         {
             playChickadee();
@@ -95,24 +97,7 @@ public class AudioManager : MonoBehaviour
             stopChickadee();
             playOwls();
         }
-        if (RiverSourceFuture != null && RiverSourcePast != null)
-        {
-            if (lighting <= 0.2)
-            {
-                playRiverPast();
-                stopRiverFuture();
-            }
-            else if (lighting < 0.8)
-            {
-                stopRiverPast();
-                stopRiverFuture();
-            }
-            else
-            {
-                stopRiverPast();
-                playRiverFuture();
-            }
-        }
+
     }
 
     public void playSteps()
@@ -136,61 +121,37 @@ public class AudioManager : MonoBehaviour
     public void playInsects()
     {
         insectSource.loop = true;
-        
         if (!insectSource.isPlaying)
-            insectSource.Play();
-        
-        insectSource.volume = 0.6f;
+            StartCoroutine(FadeIn(insectSource, 3f, 0.6f));
     }
 
     public void playRain()
     {
-        rainSource.loop = true;  
+        rainSource.loop = true;
         if (!rainSource.isPlaying)
-            rainSource.Play();
+            StartCoroutine(FadeIn(rainSource,3f, 0.8f));
     }
 
     public void stopRain()
     {
-        rainSource.Pause();
+        StartCoroutine(FadeOut(rainSource, 2f));
     }
-    public void playRiverPast()
-    {
-        RiverSourcePast.loop = true;
-        if (!RiverSourcePast.isPlaying)
-            RiverSourcePast.Play();
-    }
-
-    public void stopRiverPast()
-    {
-        RiverSourcePast.Pause();
-    }
-    public void playRiverFuture()
-    {
-        RiverSourceFuture.loop = true;
-        if (!RiverSourceFuture.isPlaying)
-            RiverSourceFuture.Play();
-    }
-
-    public void stopRiverFuture()
-    {
-        RiverSourceFuture.Pause();
-    }
+    
     public void playThunder()
     {
         thunderSource.loop = true;
         if (!thunderSource.isPlaying)
-            thunderSource.Play();
+            StartCoroutine(FadeIn(thunderSource, 5f, 0.8f));
     }
 
     public void stopThunder()
     {
-        thunderSource.Pause();
+        StartCoroutine(FadeOut(thunderSource, 2f));
     }
 
     public void stopInsect()
     {
-        insectSource.Pause();
+        StartCoroutine(FadeOut(insectSource, 2f));
     }
 
     public void playTimeForward()
@@ -248,7 +209,7 @@ public class AudioManager : MonoBehaviour
         if (aud == chickadeeSource)
         {
             playingChickadee = true;
-            float rand = Random.Range(2f, 5);
+            float rand = Random.Range(3f, 30);
             aud.PlayOneShot(Birds[0]);
             yield return new WaitForSeconds(rand);
             playingChickadee = false;
@@ -260,5 +221,79 @@ public class AudioManager : MonoBehaviour
             yield return new WaitForSeconds(rand);
             playingOwls = false;
         }
+    }
+
+    private void halfVolume(AudioSource aud)
+    {
+        aud.volume = 0.4f;
+    }
+
+    private void fullVolume(AudioSource aud)
+    {
+        aud.volume = 0.8f;
+    }
+    public void HalfAll()
+    {
+        insectSource.volume = 0.3f;
+        halfVolume(rainSource);
+        halfVolume(thunderSource);
+        halfVolume(owlsSource);
+        halfVolume(chickadeeSource);
+        halfVol = true;
+        
+    }
+    public void FullAll()
+    {
+        insectSource.volume = 0.6f;
+        fullVolume(rainSource);
+        fullVolume(thunderSource);
+        fullVolume(owlsSource);
+        fullVolume(chickadeeSource);
+        halfVol = false;
+    }
+
+    public static IEnumerator FadeOut(AudioSource audioSource, float duration)
+    {
+        float startVolume = audioSource.volume;
+        while (audioSource.volume > 0)
+        {
+            audioSource.volume -= startVolume * Time.deltaTime / duration;
+            yield return null;
+        }
+        audioSource.volume = 0;
+        audioSource.Stop(); 
+    }
+
+    public static IEnumerator FadeIn(AudioSource audioSource, float duration, float targetVolume)
+    {
+        audioSource.volume = 0;
+        audioSource.Play();
+        while (audioSource.volume < targetVolume)
+        {
+            audioSource.volume += targetVolume * Time.deltaTime / duration;
+            yield return null;
+        }
+        audioSource.volume = targetVolume;
+    }
+
+    public void EndofLevel()
+    {
+        StartCoroutine(FadeOut(rainSource, 2f));
+        StartCoroutine(FadeOut(thunderSource, 2f));
+        StartCoroutine(FadeOut(insectSource, 2f));
+        StartCoroutine(FadeOut(owlsSource, 2f));
+        StartCoroutine(FadeOut(chickadeeSource, 2f));
+        StartCoroutine(FadeOut(rainSource, 2f));
+        fadeout = true;
+    }
+
+    public void StartOfLevel()
+    {
+        StartCoroutine(FadeIn(rainSource, 5f, 0.8f));
+        StartCoroutine(FadeIn(thunderSource, 2f, 0.8f));
+        StartCoroutine(FadeIn(insectSource, 2f, 0.6f));
+        StartCoroutine(FadeIn(owlsSource, 2f, 0.8f));
+        StartCoroutine(FadeIn(chickadeeSource, 2f, 0.8f));
+        StartCoroutine(FadeIn(rainSource, 2f, 0.8f));  
     }
 }
