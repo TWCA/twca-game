@@ -17,10 +17,12 @@ public class Dog : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private PlayerDetector playerDetector;
     private PathFollower pathFollower;
+    private float urgeToFollow = 0;
 
     public DogState currentState;
     public float followWalkDistance = 40f;
     public float followRunDistance = 60f;
+    public float delayBeforeFollowing = 0.4f;
     public float decisionInterval = 1f;
     public float petCooldown = 2f;
     public int wanderOdds = 5; // For example "1 in (this value) chance of happening"
@@ -48,7 +50,17 @@ public class Dog : MonoBehaviour
     void HandleState()
     {
         // Override if the player starts moving
-        if (player.IsMoving() && currentState == DogState.BeingPet && IsTooFarFromPlayer(followWalkDistance)) {
+        if (player.IsMoving() && IsTooFarFromPlayer(followWalkDistance))
+        {
+            urgeToFollow = Mathf.MoveTowards(urgeToFollow, delayBeforeFollowing * 2, Time.deltaTime);
+        }
+        else
+        {
+            urgeToFollow = Mathf.MoveTowards(urgeToFollow, 0, Time.deltaTime);
+        }
+
+        if (urgeToFollow > delayBeforeFollowing)
+        {
             currentState = DogState.Follow;
         }
 
@@ -139,10 +151,6 @@ public class Dog : MonoBehaviour
     * Logic for waiting states
     */
     void WaitingState() {
-        if (player.IsMoving() && IsTooFarFromPlayer(followWalkDistance)) {
-            currentState = DogState.Follow;
-        }
-
         StopPathfinding();
     }
 

@@ -27,13 +27,13 @@ VAR dogmentioned = false
 
 // Intro Start
 == intro_scene ==
-Bark! #Sam #Voice:VA/SamBarks/Bark1
+Bark! #Sam #Voice:VA/SamBarks/Bark1 #disableBehaviours
 ...Just a few more minutes Sam... #Robin #Voice:VA/IntroScene/JustAFewMinutes
 Bark, bark! #Sam #Voice:VA/SamBarks/Bark4
 #Voice:VA/SamBarks/Bark3
-Okay, okay, I'll get up! #Robin #Voice:VA/IntroScene/IllGetUp #waitForTrigger
+Okay, okay, I'll get up! #Robin #Voice:VA/IntroScene/IllGetUp #waitForTrigger #enableBehaviours
 
-Alright then, how's my favourite noisy dog this morning? #Robin #Voice:VA/IntroScene/HowMyFavourite
+Alright then, how's my favourite noisy dog this morning? #Robin #Voice:VA/IntroScene/HowMyFavourite #Delay:0.3
 Woof! #Sam #Voice:VA/SamBarks/Bark2
 That's good then, shall we go get some breakfast? #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast
 Woof, woof! #Sam #Voice:VA/SamBarks/Bark5
