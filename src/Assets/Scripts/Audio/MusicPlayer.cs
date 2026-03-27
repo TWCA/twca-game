@@ -7,38 +7,69 @@ public class MusicPlayer : MonoBehaviour
     public static MusicPlayer Instance { get; private set; }
 
     [SerializeField] private AudioSource musicSource;
-    
+    [SerializeField] private string playOnOpening;
+    [SerializeField] private float playOnOpenVolume = 1.0f;
+
+    private bool fadingOut = false;
+    private string nextTrack;
+    private float nextTrackVolume;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
-            Destroy(Instance.gameObject);
-        else
-            DontDestroyOnLoad(gameObject);
-
-        Instance = this;
-    }
-
-    public void Play(string FilePath)
-    {
-        AudioClip clip = Resources.Load<AudioClip>(FilePath.Trim());
-        if (clip == null)
-            Debug.Log("Failed to load voice clip from path: " + FilePath);
+        {
+            Destroy(this.gameObject);
+        }
         else
         {
-            musicSource.clip = Resources.Load<AudioClip>(FilePath);
-            musicSource.Play();
+            DontDestroyOnLoad(gameObject);
+            Instance = this;
         }
-            
+
+        // play on whatever is the valid instance is now
+        if (playOnOpening.Trim().Length > 0)
+            Instance.PlayOnce(playOnOpening, playOnOpenVolume);
     }
 
-    public void PlayOnce(string FilePath)
+    public void Update()
     {
-        AudioClip clip = Resources.Load<AudioClip>(FilePath.Trim());
-        
-        if (clip == null)
-            Debug.LogWarning("Failed to load voice clip from path: " + FilePath);
-        else
-            musicSource.PlayOneShot(clip);
+        if (fadingOut)
+        {
+            musicSource.volume = Mathf.Lerp(musicSource.volume, 0, Time.deltaTime * 2);
+            if (musicSource.volume < Time.deltaTime * 2)
+            {
+                fadingOut = false;
+                musicSource.Stop();
+                if (nextTrack.Trim().Length > 0)
+                {
+                    PlayOnce(nextTrack, nextTrackVolume);
+                    nextTrack = "";
+                }
+            }
+        }
     }
 
+    public void PlayOnce(string filePath, float volume = 1.0f)
+    {
+        if (musicSource.isPlaying)
+        {
+            fadingOut = true;
+            nextTrack = filePath;
+            nextTrackVolume = volume;
+            return;
+        }
+        
+        AudioClip clip = Resources.Load<AudioClip>(filePath.Trim());
+
+        if (clip == null)
+        {
+            Debug.LogWarning("Failed to load voice clip from path: " + filePath);
+            return;
+        }
+
+        musicSource.clip = clip;
+        musicSource.loop = false;
+        musicSource.volume = volume;
+        musicSource.Play();
+    }
 }

@@ -37,7 +37,7 @@ public class DialogManager : MonoBehaviour
 
     private bool isRunning = false;
     private bool isPhoneUp = false;
-    private bool isWaitingForTrigger = false;
+    private int waitingForTriggerCount = 0;
     private float visualOffset = 270;
     private bool areBehavioursDisabled = false;
 
@@ -78,6 +78,28 @@ public class DialogManager : MonoBehaviour
         }
 
         DialogRoot.SetActive(visualOffset < 270);
+
+        if (DialogRoot.activeSelf)
+        {
+            float time = TimeManager.Instance.GetLightingTime();
+            float startHour = 9.72f;
+            float endHour = 23.33f;
+            float currentHour = Mathf.Lerp(startHour, endHour, time);
+
+            string postfix = "am";
+            if (currentHour >= 13)
+            {
+                currentHour -= 12;
+                postfix = "pm";
+            }
+
+            float currentMinute = (currentHour - Mathf.Floor(currentHour)) * 60;
+
+            currentHour = Mathf.Floor(currentHour);
+            currentMinute = Mathf.Floor(currentMinute);
+
+            timeText.text = currentHour + ":" + currentMinute + postfix;
+        }
     }
 
     private void LateUpdate()
@@ -120,12 +142,6 @@ public class DialogManager : MonoBehaviour
         visualOffset = 270f;
         isPhoneUp = true;
         MoveToCamera();
-
-        if (TimeManager.Instance.IsFuture())
-            timeText.text = "9:43pm";
-        else
-            timeText.text = "11:20am";
-
         ClearMessages();
 
         AudioManager.Instance.PlayNotification();
@@ -133,9 +149,9 @@ public class DialogManager : MonoBehaviour
 
     public void ResumeDialogue()
     {
-        if (!isWaitingForTrigger) return;
-        isWaitingForTrigger = false;
-        ContinueStory();
+        waitingForTriggerCount -= 1;
+        if (waitingForTriggerCount == 0)
+            VAManager.Instance.OnQueueEmpty(ContinueStory);
     }
 
     /**
@@ -185,6 +201,7 @@ public class DialogManager : MonoBehaviour
         isRunning = false;
         DialogRoot.SetActive(false);
         AudioManager.Instance.FullAll();
+
         StartCoroutine(EndDialogCoroutine());
     }
 
@@ -215,7 +232,7 @@ public class DialogManager : MonoBehaviour
      */
     private void ContinueStory()
     {
-        if (isWaitingForTrigger) return;
+        if (waitingForTriggerCount > 0) return;
 
         ClearChoices();
 
@@ -241,10 +258,11 @@ public class DialogManager : MonoBehaviour
             DisplayDialogLine(line, tags);
             HandleVoiceTags(tags);
 
-            isWaitingForTrigger = tags.Exists(tag => tag.ToLower() == "waitfortrigger");
+            if (tags.Exists(tag => tag.ToLower() == "waitfortrigger"))
+                waitingForTriggerCount++;
 
             // Wait for the VA line to stop playing
-            if (!isWaitingForTrigger)
+            if (waitingForTriggerCount <= 0)
                 VAManager.Instance.OnQueueEmpty(ContinueStory);
         });
     }
@@ -300,7 +318,7 @@ public class DialogManager : MonoBehaviour
         string appTitle = GetNotificationAppTitle(tags);
         Character character = GetCharacterTag(tags);
 
-        if (character != Character.Robin)
+        if (!(character == Character.Robin && isPhoneUp))
         {
             Nullable<float> delay = ExtractDelayFromTags(tags);
 
@@ -316,9 +334,9 @@ public class DialogManager : MonoBehaviour
     {
         foreach (string tag in tags)
         {
-            if (tag.StartsWith("delay:"))
+            if (tag.ToLower().StartsWith("delay:"))
             {
-                string value = tag.Replace("delay:", "").Trim();
+                string value = tag.ToLower().Replace("delay:", "").Trim();
 
                 if (float.TryParse(value, out float delay))
                 {
