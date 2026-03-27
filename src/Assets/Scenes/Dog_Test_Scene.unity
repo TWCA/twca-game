@@ -661,6 +661,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5182192927411619632, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
+      propertyPath: wanderOdds
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 5182192927411619632, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
+      propertyPath: decisionInterval
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 5762236453178697866, guid: 35b6bec1fe88143828e1c73b5c13eab0, type: 3}
       propertyPath: m_Size.x
       value: 19.902662

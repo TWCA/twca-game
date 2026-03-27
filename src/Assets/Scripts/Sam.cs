@@ -24,6 +24,8 @@ public class Dog : MonoBehaviour
     public float decisionInterval = 1f;
     public float petCooldown = 2f;
     public int wanderOdds = 5; // For example "1 in (this value) chance of happening"
+    public float wanderMin = 40;
+    public float wanderMax = 60;
     public float petPadding = 10f;
 
     void Start()
@@ -124,11 +126,11 @@ public class Dog : MonoBehaviour
         // If we don't currently have a wander target, set one
         if (wanderTarget.Equals(Vector2.zero))
         {
-            wanderTarget = new Vector2Int(Random.Range(-1, 2), Random.Range(-1, 2));
-        } else {
-            pathFollower.WalkTowards(wanderTarget, Time.deltaTime);
-            FlipSprite((Vector2)transform.position + wanderTarget);
+            wanderTarget = RandomWanderPosition();
+            pathFollower.PathfindTo(wanderTarget);
         }
+
+        FlipSprite(wanderTarget);
 
         animator.SetBool("walk", true);
     }
@@ -189,6 +191,28 @@ public class Dog : MonoBehaviour
     */
     void FlipSprite(Vector2 position) {
         spriteRenderer.flipX = position.x > transform.position.x;
+    }
+
+    /*
+    * Returns 1 or -1
+    */
+    int RandomSign() {
+        return Random.Range(0, 2) * 2 - 1;
+    }
+
+    /*
+    * Generates a random position to path to for random wandering
+    */
+    Vector2 RandomWanderPosition() {
+        Vector2 playerPosition = player.GetPosition();
+
+        float xWander = Random.Range(wanderMin, wanderMax) * RandomSign();
+        float yWander = Random.Range(wanderMin, wanderMax) * RandomSign();
+
+        Debug.Log(xWander);
+        Debug.Log(yWander);
+
+        return new Vector2(playerPosition.x + xWander, playerPosition.y + yWander);
     }
 
     public void Update()
