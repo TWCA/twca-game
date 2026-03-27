@@ -45,7 +45,7 @@ public class PathFollower : MonoBehaviour
     private List<int> plannedPath;
     private Vector2 plannedEndPosition = Vector2.zero;
 
-    PathFollower()
+    public PathFollower()
     {
         currentSpeed = minSpeed;
     }
@@ -101,10 +101,14 @@ public class PathFollower : MonoBehaviour
 
         movedLastFrame = false;
     }
-    
+
     public float GetCurrentSpeed()
     {
         return currentSpeed;
+    }
+
+    public void SetCurrentSpeed(float value) {
+        currentSpeed = value;
     }
 
     public bool IsJumping()
@@ -195,8 +199,9 @@ public class PathFollower : MonoBehaviour
         (List<int> walkPath, _, Vector2 walkEndPosition) =
             AStarPathfinder.CalculatePathBetweenPositions(transform.position, goalPosition, isFuture);
 
-        if (Vector2.Distance(transform.position, net.GetNodePosition(walkPath[1])) < currentSpeed * Time.deltaTime)
-            walkPath.RemoveAt(0);
+        if (walkPath.Count >= 2)
+            if (Vector2.Distance(transform.position, net.GetNodePosition(walkPath[1])) < currentSpeed * Time.deltaTime)
+                walkPath.RemoveAt(0);
 
         if (walkPath.Count > 2)
             return net.GetNodePosition(walkPath[1]);

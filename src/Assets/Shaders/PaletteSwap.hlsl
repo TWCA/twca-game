@@ -20,7 +20,7 @@ void paletteSwap_float(
     
     if (time < 0.5)
     {
-        float3 day = dayDayLUT.tex.Load(int3(x, y, 0));
+        float3 day = color.rgb;
         float3 dawn = dayDawnLUT.tex.Load(int3(x, y, 0));
         colorOut = lerp(day, dawn, time * 2.0);
     } else

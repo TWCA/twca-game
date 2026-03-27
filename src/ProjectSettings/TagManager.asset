@@ -8,6 +8,7 @@ TagManager:
   - UITemplate
   - InventoryUIRoot
   - DialogUIRoot
+  - Sam
   layers:
   - Default
   - TransparentFX

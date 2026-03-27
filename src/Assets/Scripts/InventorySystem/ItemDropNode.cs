@@ -129,6 +129,8 @@ public class ItemDropNode : MonoBehaviour
                 used = true;
             }
 
+            MarkUsed();
+
             inventorySystem.TargetDropNode = this;
 
             return true;
@@ -154,7 +156,7 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                     }));
 
-                player.StopInPlace();
+                MarkUsed();
             } else if (inventorySystem.CarriedItem) {
                 SetActiveItem(inventorySystem.CarriedItem);
 
@@ -165,13 +167,14 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                     }));
 
-                player.StopInPlace();
+                MarkUsed();
             }
 
             if (SingleUse) {
                 used = true;
             }
 
+            player.StopInPlace();
             inventorySystem.Cancel();
         }
     }
@@ -211,8 +214,18 @@ public class ItemDropNode : MonoBehaviour
         materialRenderer.material.SetColor("_Color", new Color(1f, 1f, 1f, alpha));
     }
 
-    private float GetAlpha() {
+    private float GetAlpha()
+    {
         return materialRenderer.material.GetColor("_Color").a;
+    }
+    
+    /*
+    * Marks this item as used if it is single use
+    */
+    private void MarkUsed() {
+        if (SingleUse) {
+            used = true;
+        }
     }
 
     void OnMouseEnter() {
@@ -232,7 +245,7 @@ public class ItemDropNode : MonoBehaviour
     }
 
     void OnMouseUp() {
-        if (inventorySystem.TargetDropNode == null) {
+        if (inventorySystem.TargetDropNode == null && !(SingleUse && used)) {
             inventorySystem.TargetDropNode = this;
         }
     }
