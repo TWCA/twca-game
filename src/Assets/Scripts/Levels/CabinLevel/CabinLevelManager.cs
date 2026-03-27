@@ -12,15 +12,10 @@ public class CabinLevelManager : MonoBehaviour
         DogBowl.ItemPlaced += OnBowlFilled;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     void OnBowlFilled() {
         PathNetwork pathNetwork = PathNetwork.Instance;
 
         pathNetwork.SetPathPastTraversable(pathNetwork.GetNamedPath("bowlfilled"), true);
+        DialogManager.Instance.StartDialogHeadless("feedsam");
     }
 }
