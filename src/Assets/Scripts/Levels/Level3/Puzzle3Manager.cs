@@ -33,6 +33,6 @@ public class Puzzle3Manager : MonoBehaviour
     void HandleFireExtinguished() {
         PathNetwork pathNetwork = PathNetwork.Instance;
 
-        pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("bush"), true);
+        pathNetwork.SetPathPastTraversable(pathNetwork.GetNamedPath("bush"), true);
     }
 }
