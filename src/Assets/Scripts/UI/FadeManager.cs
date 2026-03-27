@@ -17,7 +17,7 @@ public class FadeManager : MonoBehaviour
     private float alphaChangeTime;
 
     public Color GetRGBAatTime(Color baseColor, float time) {
-        // alpha = Mathf.Lerp(alpha, targetAlpha, time / alphaChangeTime);
+        alpha = Mathf.MoveTowards(alpha, targetAlpha, time / alphaChangeTime);
         baseColor.a = alpha;
         return baseColor;
     }

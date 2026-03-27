@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class PickupObject : MonoBehaviour
 {
     public bool AllowStacking = true; // Can the object be stacked? No support for stack size maximums for now, not sure if needed.
-
+    public string NiceName; // The name of the item that faces the user
     [NonSerialized] public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
     private InventoryCanvas inventoryCanvas;
@@ -49,8 +49,7 @@ public class PickupObject : MonoBehaviour
             }
         }
 
-        inventoryCanvas.SetSelectedInventoryItemBox(null);
-        Destroy(gameObject);
+        inventorySystem.DeletePickupObject(this);
     }
 
     /*

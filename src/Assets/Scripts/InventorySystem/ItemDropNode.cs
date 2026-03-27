@@ -63,9 +63,7 @@ public class ItemDropNode : MonoBehaviour
         inventorySystem = InventorySystem.Instance;
         materialRenderer = SpriteRenderer.GetComponent<Renderer>();
 
-        playerDetector.PlayerTouched += () => {
-            InteractedWith();
-        };
+        playerDetector.PlayerTouched += InteractedWith;
 
         materialRenderer.material = SelectedMaterial;
 
@@ -75,6 +73,10 @@ public class ItemDropNode : MonoBehaviour
         // fadeManager.MinAlpha = MinAlpha;
         fadeManager.SetAlpha(MinAlpha);
         fadeManager.FadeOut();
+    }
+
+    void OnDisable() {
+        playerDetector.PlayerTouched -= InteractedWith;
     }
 
     // Update is called once per frame
@@ -239,5 +241,13 @@ public class ItemDropNode : MonoBehaviour
         if (inventorySystem.TargetDropNode == null) {
             inventorySystem.TargetDropNode = this;
         }
+    }
+
+    void OnMouseItemActivated() {
+
+    }
+
+    void OnMouseItemDeactivated() {
+
     }
 }

@@ -12,7 +12,6 @@ public class InventorySystem : MonoBehaviour
     public int ItemMax = 5;
     public int Padding = 1;
     public GameObject TemplateItem;
-    private InventoryCanvas inventoryCanvas;
     public static InventorySystem Instance { get; private set; }
     [NonSerialized] public bool HasMouseItem; // The item that appears where the mouse is
     [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
@@ -27,8 +26,6 @@ public class InventorySystem : MonoBehaviour
 
     private void Awake()
     {
-        inventoryCanvas = InventoryCanvas.Instance;
-
         Instance = this;
     }
 
@@ -118,6 +115,17 @@ public class InventorySystem : MonoBehaviour
     }
 
     /*
+    * Deletes a pickupobject
+    */
+    public void DeletePickupObject(PickupObject pickupObject) {
+        InventoryCanvas.Instance.SetSelectedInventoryItemBox(null);
+
+        HasMouseItem = false;
+
+        Destroy(pickupObject.gameObject);
+    }
+
+    /*
     * Cancels all actions for picking up / dropping items
     */
     public void Cancel() {
@@ -140,10 +148,12 @@ public class InventorySystem : MonoBehaviour
 
         public Item(GameObject prefab) {
             InventorySystem inventorySystem = Instance;
+            PickupObject pickupObject = prefab.GetComponent<PickupObject>();
 
             // Create UI object and set it to proper position
             Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);
-            inventorySystem.inventoryCanvas.AddUIObject(newItemUIObject, prefab);
+            newItemUIObject.name = pickupObject.NiceName;
+            InventoryCanvas.Instance.AddUIObject(newItemUIObject, prefab);
 
             this.name = prefab.name;
             this.uiObject = newItemUIObject;
