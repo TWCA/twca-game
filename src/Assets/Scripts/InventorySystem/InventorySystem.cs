@@ -17,8 +17,6 @@ public class InventorySystem : MonoBehaviour
     [NonSerialized] public GameObject MouseItem; // The item that appears where the mouse is
     [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
     [NonSerialized] public ItemDropNode TargetDropNode;
-    private InventoryItem selectedInventoryItemBox; // The InventoryItem UI element that is selected
-    public event Action SelectedInventoryItemBoxChanged;
     private List<Item> items;
 
     // Start is called before the first frame update
@@ -29,8 +27,7 @@ public class InventorySystem : MonoBehaviour
 
     private void Awake()
     {
-        GameObject inventoryUIObject = GameObject.FindGameObjectWithTag("InventoryUIRoot");
-        inventoryCanvas = inventoryUIObject.GetComponent<InventoryCanvas>();
+        inventoryCanvas = InventoryCanvas.Instance;
 
         Instance = this;
     }
@@ -128,16 +125,6 @@ public class InventorySystem : MonoBehaviour
         CarriedItem = null;
     }
 
-    public void SetSelectedInventoryItemBox(InventoryItem inventoryItem) {
-        selectedInventoryItemBox = inventoryItem;
-
-        SelectedInventoryItemBoxChanged.Invoke();
-    }
-
-    public InventoryItem GetSelectedInventoryBox() {
-        return selectedInventoryItemBox;
-    }
-
     /*
     * Object that represents an Item in the inventory and its UI elements
     * Used for properly insantiating items in the scene
@@ -152,11 +139,7 @@ public class InventorySystem : MonoBehaviour
 
             // Create UI object and set it to proper position
             Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);
-            inventorySystem.inventoryCanvas.AddUIObject(newItemUIObject);
-
-            InventoryItem newInventoryItem = newItemUIObject.GetComponent<InventoryItem>();
-
-            newInventoryItem.PickupObjectPrefab = prefab;
+            inventorySystem.inventoryCanvas.AddUIObject(newItemUIObject, prefab);
 
             this.name = prefab.name;
             this.uiObject = newItemUIObject;

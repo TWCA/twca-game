@@ -20,7 +20,7 @@ public class ItemNameText : MonoBehaviour
         
         if (showTimer >= ShowTime) {
             showTimer = 0;
-            gameObject.SetActive(false);
+            textComponent.text = "";
         }
     }
 
@@ -35,7 +35,6 @@ public class ItemNameText : MonoBehaviour
     public void SetText(string newText)
     {
         textComponent.text = newText;
-        gameObject.SetActive(true);
         showTimer = 0;
 
         // TODO

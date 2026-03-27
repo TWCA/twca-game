@@ -8,6 +8,7 @@ public class PickupObject : MonoBehaviour
     [System.NonSerialized]
     public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;
+    private InventoryCanvas inventoryCanvas;
     private InputAction clickAction;
     private PlayerControl player;
 
@@ -15,6 +16,7 @@ public class PickupObject : MonoBehaviour
     void Start()
     {
         inventorySystem = InventorySystem.Instance;
+        inventoryCanvas = InventoryCanvas.Instance;
         player = PlayerControl.Instance;
 
         clickAction = InputSystem.actions.FindAction("Click");
@@ -48,7 +50,7 @@ public class PickupObject : MonoBehaviour
         }
 
         inventorySystem.MouseItem = null;
-        inventorySystem.SetSelectedInventoryItemBox(null);
+        inventoryCanvas.SetSelectedInventoryItemBox(null);
         Destroy(gameObject);
     }
 

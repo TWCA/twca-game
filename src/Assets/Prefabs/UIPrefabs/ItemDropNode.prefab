@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4267484377463088540}
   - component: {fileID: 1475751711233110218}
-  - component: {fileID: 8758614893081380358}
+  - component: {fileID: 8645497442717055847}
   m_Layer: 0
   m_Name: ItemDropNode
   m_TagString: Untagged
@@ -155,7 +155,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 6
---- !u!114 &8758614893081380358
+--- !u!114 &8645497442717055847
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

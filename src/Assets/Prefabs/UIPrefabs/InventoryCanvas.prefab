@@ -11,13 +11,14 @@ GameObject:
   - component: {fileID: 3069213916213409789}
   - component: {fileID: 2253072553215150219}
   - component: {fileID: 2967546027255855012}
+  - component: {fileID: 6276004274784456983}
   m_Layer: 5
   m_Name: ItemNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3069213916213409789
 RectTransform:
   m_ObjectHideFlags: 0
@@ -78,7 +79,20 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 
+--- !u!114 &6276004274784456983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112634190745275579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: badf7e3d92c6ca1f98f3c00bf97dacbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowTime: 3
 --- !u!1 &5461810850100021289
 GameObject:
   m_ObjectHideFlags: 0
@@ -94,7 +108,7 @@ GameObject:
   - component: {fileID: 6957424511560949485}
   m_Layer: 5
   m_Name: InventoryCanvas
-  m_TagString: Untagged
+  m_TagString: InventoryUIRoot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -195,7 +209,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e95a976912e3af436a2b98ab46e093b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ItemText: {fileID: 0}
 --- !u!1 &7388524002327249988
 GameObject:
   m_ObjectHideFlags: 0
