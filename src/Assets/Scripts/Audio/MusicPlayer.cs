@@ -34,9 +34,11 @@ public class MusicPlayer : MonoBehaviour
     public void PlayOnce(string FilePath)
     {
         AudioClip clip = Resources.Load<AudioClip>(FilePath.Trim());
+        
         if (clip == null)
-            Debug.Log("Failed to load voice clip from path: " + FilePath);
-        musicSource.PlayOneShot(clip);
+            Debug.LogWarning("Failed to load voice clip from path: " + FilePath);
+        else
+            musicSource.PlayOneShot(clip);
     }
 
 }
