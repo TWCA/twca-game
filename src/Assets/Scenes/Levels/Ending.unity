@@ -257,8 +257,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
-<<<<<<< HEAD
-=======
 --- !u!1001 &55438509
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -316,7 +314,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
->>>>>>> main
 --- !u!1001 &88791304
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4428,17 +4425,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-<<<<<<< HEAD
-      value: 0.046904314
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.width
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 0.90654314
-=======
       value: 0.07704918
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
@@ -4448,7 +4434,6 @@ PrefabInstance:
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
       value: 0.8455943
->>>>>>> main
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4470,7 +4455,4 @@ SceneRoots:
   - {fileID: 1865411293}
   - {fileID: 245438325}
   - {fileID: 52585992}
-<<<<<<< HEAD
-=======
   - {fileID: 55438509}
->>>>>>> main

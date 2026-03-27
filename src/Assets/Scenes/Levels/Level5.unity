@@ -5735,11 +5735,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-<<<<<<< HEAD
       value: 0.046904314
-=======
-      value: 0.07704918
->>>>>>> main
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
@@ -5747,11 +5743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-<<<<<<< HEAD
       value: 0.90654314
-=======
-      value: 0.8455943
->>>>>>> main
       objectReference: {fileID: 0}
     - target: {fileID: 9194941017122940838, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: ShapeModule.m_Rotation.x

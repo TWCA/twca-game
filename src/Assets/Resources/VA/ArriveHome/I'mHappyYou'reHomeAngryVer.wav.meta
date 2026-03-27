@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:src/Assets/Resources/VA/CopDialog/ItIsBelieved.wav.meta
 guid: afbfd4a26d5a546b7a65b1c8b44f7ab8
-========
-guid: 34a7c9b0c170f144182385b4d8957246
->>>>>>>> main:src/Assets/Resources/VA/ArriveHome/I'mHappyYou'reHomeAngryVer.wav.meta
 AudioImporter:
   externalObjects: {}
   serializedVersion: 7

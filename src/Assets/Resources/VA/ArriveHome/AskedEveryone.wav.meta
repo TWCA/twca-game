@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<<< HEAD:src/Assets/Resources/VA/CopDialog/CurrentWhereabouts.wav.meta
 guid: 01ac9c2aaaf9960d8b14d6057603836c
-========
-guid: fa1b3ad2c90584d0bad2326155a928b3
->>>>>>>> main:src/Assets/Resources/VA/ArriveHome/AskedEveryone.wav.meta
 AudioImporter:
   externalObjects: {}
   serializedVersion: 7
