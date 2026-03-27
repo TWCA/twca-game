@@ -6,12 +6,14 @@ public class Puzzle3Manager : MonoBehaviour
 {
     public ItemDropNode FillUpPointInitial;
     public ItemDropNode FillUpPointFilled;
+    public ItemDropNode BurningBush;
     public TimePortal TimePortal;
 
     // Start is called before the first frame update
     void Start()
     {
         TimeManager.Instance.onTimeChanged += HandleTimeChanged;
+        BurningBush.ItemPlaced += HandleFireExtinguished;
     }
 
     // Update is called once per frame
@@ -26,5 +28,11 @@ public class Puzzle3Manager : MonoBehaviour
             FillUpPointInitial.gameObject.SetActive(false);
             TimePortal.gameObject.SetActive(false);
         }
+    }
+
+    void HandleFireExtinguished() {
+        PathNetwork pathNetwork = PathNetwork.Instance;
+
+        pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("bush"), true);
     }
 }
