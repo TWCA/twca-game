@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerDetector : MonoBehaviour
 {
     public event Action PlayerTouched;
+    public event Action PlayerLeft;
     [NonSerialized] public bool TouchingPlayer;
 
     // Start is called before the first frame update
@@ -17,11 +18,13 @@ public class PlayerDetector : MonoBehaviour
         PlayerControl playerControl = other.GetComponent<PlayerControl>();
         if (playerControl && !TouchingPlayer) {
             TouchingPlayer = playerControl;
-            PlayerTouched.Invoke();
+            PlayerTouched?.Invoke();
         }
     }
 
     void OnTriggerExit2D() {
         TouchingPlayer = false;
+
+        PlayerLeft?.Invoke();
     }
 }
