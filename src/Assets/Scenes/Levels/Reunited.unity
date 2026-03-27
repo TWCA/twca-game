@@ -376,6 +376,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3589486739817815664, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
+      propertyPath: playOnOpening
+      value: Music/EndingTrack
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589486739817815664, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
+      propertyPath: playOnOpenVolume
+      value: 0.1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -577,6 +585,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &627323904
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 162
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3656283798726390554, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6697457212826216675, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
+      propertyPath: m_Name
+      value: SawSamTrigger
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d3394af18d9591b3dad3b3d8eeb83c74, type: 3}
 --- !u!1001 &797320900
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -595,7 +660,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2526098843139019801, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
       propertyPath: delaySeconds
-      value: 3
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 5379357951889160781, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
       propertyPath: m_Name
@@ -1839,15 +1904,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.07704918
+      value: 0.083606556
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.99999994
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.8455943
+      value: 0.8317623
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1869,3 +1934,4 @@ SceneRoots:
   - {fileID: 299084721}
   - {fileID: 797320900}
   - {fileID: 392237098}
+  - {fileID: 627323904}
