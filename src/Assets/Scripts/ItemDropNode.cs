@@ -9,11 +9,20 @@ public class ItemDropNode : MonoBehaviour
     public Material SelectedMaterial;
     public SpriteRenderer SpriteRenderer;
     public SpriteRenderer HoverCircle;
+
+    // You may leave these two fields blank and it will just use the sprite the item has
+    // These fields are good for something like the dog food bowl where it goes from empty to full
+    public Sprite EmptySpriteOverride; // What does the item drop node look like when there is no item in it
+    public Sprite ActiveSpriteOverride; // What does the item drop nodel look like when there is an item in it
+
+    public bool SingleUse; // Can this drop node only be used once?
+
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
     private PlayerDetector playerDetector;
     private Material originalMaterial;
     private Renderer materialRenderer;
+    private bool used; // Used for keeping track of if the drop node was used if SingleUse is true
 
     // Events for level code (like the river system) to interact with
     public event Action ItemPlaced;
@@ -72,10 +81,19 @@ public class ItemDropNode : MonoBehaviour
     private void InitializeSprite() {
         if (ActiveItem != null) {
             SpriteRenderer activeItemSpriteRenderer = ActiveItem.GetComponent<SpriteRenderer>();
-            SpriteRenderer.sprite = activeItemSpriteRenderer.sprite;
-            SpriteRenderer.color = activeItemSpriteRenderer.color;
+
+            if (ActiveSpriteOverride != null) {
+                SpriteRenderer.sprite = ActiveSpriteOverride;
+            } else {
+                SpriteRenderer.sprite = activeItemSpriteRenderer.sprite;
+                SpriteRenderer.color = activeItemSpriteRenderer.color;
+            }
         } else {
-            SpriteRenderer.sprite = null;
+            if (EmptySpriteOverride != null) {
+                SpriteRenderer.sprite = EmptySpriteOverride;
+            } else {
+                SpriteRenderer.sprite = null;
+            }
         }
     }
 
@@ -84,7 +102,7 @@ public class ItemDropNode : MonoBehaviour
     */
     public bool ItemIncoming(GameObject prefab) {
         // Do we even allow this item in this node?
-        if (AllowDeny.IsItemAllowed(prefab.name)) {
+        if (AllowDeny.IsItemAllowed(prefab.name) && !(SingleUse && used)) {
             if (ActiveItem != null) {
                 // Call some abitrary function that runs when one item is dragged onto the other
                 // ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
@@ -96,6 +114,8 @@ public class ItemDropNode : MonoBehaviour
                 inventorySystem.CarriedItem = prefab;
                 inventorySystem.MouseItem = null;
             }
+
+            MarkUsed();
 
             inventorySystem.TargetDropNode = this;
 
@@ -122,7 +142,7 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                     }));
 
-                player.StopInPlace();
+                MarkUsed();
             } else if (inventorySystem.CarriedItem) {
                 SetActiveItem(inventorySystem.CarriedItem);
 
@@ -133,9 +153,10 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                     }));
 
-                player.StopInPlace();
+                MarkUsed();
             }
 
+            player.StopInPlace();
             inventorySystem.Cancel();
         }
     }
@@ -171,8 +192,19 @@ public class ItemDropNode : MonoBehaviour
         ItemRemoved?.Invoke();
     }
 
+    /*
+    * Marks this item as used if it is single use
+    */
+    private void MarkUsed() {
+        if (SingleUse) {
+            used = true;
+        }
+    }
+
     void OnMouseEnter() {
-        materialRenderer.material = SelectedMaterial;
+        if (ActiveItem != null) {
+            materialRenderer.material = SelectedMaterial;
+        }
     }
 
     void OnMouseExit()
@@ -181,7 +213,7 @@ public class ItemDropNode : MonoBehaviour
     }
 
     void OnMouseUp() {
-        if (inventorySystem.TargetDropNode == null) {
+        if (inventorySystem.TargetDropNode == null && !(SingleUse && used)) {
             inventorySystem.TargetDropNode = this;
         }
     }
