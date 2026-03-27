@@ -4,18 +4,18 @@ using UnityEngine;
 
 public class MusicPlayer : MonoBehaviour
 {
-    private static MusicPlayer _instance;
+    public static MusicPlayer Instance { get; private set; }
 
-    public static MusicPlayer Instance
-    {
-        get { return _instance; }
-    }
     [SerializeField] private AudioSource musicSource;
-    // Start is called before the first frame update
-    void Start()
+    
+    private void Awake()
     {
-        DontDestroyOnLoad(this);
-        _instance = this;
+        if (Instance != null && Instance != this)
+            Destroy(Instance.gameObject);
+        else
+            DontDestroyOnLoad(gameObject);
+
+        Instance = this;
     }
 
     public void Play(string FilePath)
@@ -34,9 +34,11 @@ public class MusicPlayer : MonoBehaviour
     public void PlayOnce(string FilePath)
     {
         AudioClip clip = Resources.Load<AudioClip>(FilePath.Trim());
+        
         if (clip == null)
-            Debug.Log("Failed to load voice clip from path: " + FilePath);
-        musicSource.PlayOneShot(clip);
+            Debug.LogWarning("Failed to load voice clip from path: " + FilePath);
+        else
+            musicSource.PlayOneShot(clip);
     }
 
 }
