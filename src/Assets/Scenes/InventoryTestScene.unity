@@ -200,6 +200,10 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 2111879119}
+    - target: {fileID: 2967546027255855012, guid: 36469708396fc76e69cbe48503474df1, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5461810850100021289, guid: 36469708396fc76e69cbe48503474df1, type: 3}
       propertyPath: m_Name
       value: InventoryCanvas

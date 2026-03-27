@@ -7,43 +7,39 @@ public class ItemNameText : MonoBehaviour
 {
     public float ShowTime = 3f;
     private Text textComponent;
-    private float showTimer;
+    private FadeManager fadeManager;
 
     // Start is called before the first frame update
     void Start()
     {
         textComponent = GetComponent<Text>();
+        fadeManager = GetComponent<FadeManager>();
+
+        fadeManager.SetAlpha(0);
+        fadeManager.FadeInTime = 0.5f;
+        fadeManager.FadeOutTime = 0.5f;
     }
 
     void Update() {
-        showTimer += Time.deltaTime;
-        
-        if (showTimer >= ShowTime) {
-            showTimer = 0;
-            ClearText();
+        if (!fadeManager.HasReachedTarget())
+        {
+            textComponent.color = fadeManager.GetRGBAatTime(new Color(0.8f, 0.8f, 0.8f), Time.deltaTime);
         }
     }
 
-    private void FadeIn() {
-        // TODO fade in
-    }
+    private IEnumerator SetTextInternal(string newText) {
+        textComponent.text = newText;
 
-    private void FadeOut() {
-        // TODO fade out
-    }
+        fadeManager.FadeOut();
 
-    public void ClearText() {
-        textComponent.text = "";
+        yield return new WaitForSeconds(ShowTime);
+
+        fadeManager.FadeIn();
     }
 
     public void SetText(string newText)
     {
-        textComponent.text = newText;
-        showTimer = 0;
-
-        // TODO
-        // FadeIn();
-        // wait ShowTime
-        // FadeOut();
+        StopAllCoroutines();
+        StartCoroutine(SetTextInternal(newText));
     }
 }
