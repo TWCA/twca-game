@@ -152,7 +152,13 @@ public class InventorySystem : MonoBehaviour
 
             // Create UI object and set it to proper position
             Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);
-            newItemUIObject.name = pickupObject.NiceName;
+
+            if (string.IsNullOrEmpty(pickupObject.NiceName)) {
+                newItemUIObject.name = pickupObject.name;
+            } else {
+                newItemUIObject.name = pickupObject.NiceName;
+            }
+
             InventoryCanvas.Instance.AddUIObject(newItemUIObject, prefab);
 
             this.name = prefab.name;
