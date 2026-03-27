@@ -23,7 +23,6 @@ public class Dog : MonoBehaviour
     public float decisionInterval = 1f;
     public float petCooldown = 2f;
     public int wanderOdds = 5; // For example "1 in (this value) chance of happening"
-    public bool ClickToPet;
 
     void Start()
     {
@@ -223,7 +222,7 @@ public class Dog : MonoBehaviour
     * Handler for when the player hitbox enters Sam's hitbox
     */
     void OnPlayerSamInteraction() {
-        if (ClickToPet == false || player.GoingToSam) {
+        if (player.GoingToSam) {
             currentState = DogState.BeingPet;
             animator.SetBool("pet", true);
 
