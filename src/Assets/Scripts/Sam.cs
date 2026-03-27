@@ -270,7 +270,7 @@ public class Dog : MonoBehaviour
             padding = petPadding;
         }
 
-        Vector2 adjustedPosition = new(transform.position.x + padding, transform.position.y + petPadding);
+        Vector2 adjustedPosition = new(transform.position.x + padding, transform.position.y);
 
         // Track if the player is walking to Sam
         player.GoingToSam = true;
