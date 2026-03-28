@@ -78,7 +78,7 @@ public class ItemDropNode : MonoBehaviour
         }
     }
 
-    private void InitializeSprite() {
+    public void InitializeSprite() {
         if (ActiveItem != null) {
             SpriteRenderer activeItemSpriteRenderer = ActiveItem.GetComponent<SpriteRenderer>();
 
