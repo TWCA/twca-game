@@ -174,7 +174,7 @@ public class DialogManager : MonoBehaviour
     {
         // stop old running story knot to open this one
         if (isRunning)
-            EndDialog();
+            EndDialogInstantly();
 
         if (inkJson == null)
         {
