@@ -142,6 +142,26 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
+  - name: Frame_1
+    originalName: 
+    pivot: {x: 0.5, y: 0}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 282
+      width: 960
+      height: 270
+    spriteID: 6b32ae584d4bd9dd7a1417af458cb985
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 282}
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
@@ -156,7 +176,7 @@ ScriptedImporter:
     layerType: 0
     blendMode: 0
     cells:
-    - name: OutsideCabin
+    - name: Frame_0
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
@@ -165,6 +185,15 @@ ScriptedImporter:
         width: 960
         height: 270
       spriteId: a69bd3d906f01d92c8ee2b67aa4ac67a
+    - name: Frame_1
+      frameIndex: 1
+      additiveSortOrder: 0
+      cellRect:
+        x: 0
+        y: 0
+        width: 960
+        height: 270
+      spriteId: 6b32ae584d4bd9dd7a1417af458cb985
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -220,4 +249,4 @@ ScriptedImporter:
   secondarySpriteTextures: []
   spritePackingTag: 
   canvasSize: {x: 960, y: 270}
-  previousTextureSize: {x: 1024, y: 512}
+  previousTextureSize: {x: 1024, y: 1024}
