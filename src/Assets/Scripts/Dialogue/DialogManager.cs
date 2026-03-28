@@ -34,6 +34,7 @@ public class DialogManager : MonoBehaviour
     public GameObject DialogRoot;
 
     private Story story;
+    [SerializeField] private GameObject sam;
 
     private bool isRunning = false;
     private bool isPhoneUp = false;
@@ -318,6 +319,12 @@ public class DialogManager : MonoBehaviour
             onDialogFinished?.Invoke();
             onDialogFinished = null;
         }
+
+        if (tags.Contains("disableSam"))
+            sam.SetActive(false);
+
+        if (tags.Contains("enableSam"))
+            sam.SetActive(true);
 
         string appTitle = GetNotificationAppTitle(tags);
         Character character = GetCharacterTag(tags);

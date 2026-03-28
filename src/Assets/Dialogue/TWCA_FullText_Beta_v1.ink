@@ -207,8 +207,9 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
 
 //Meet Sam
 == meet_sam ==
-    Bark #Sam #Voice:VA/SamBarks/Bark1 #Delay:0.7
+    Bark! #Sam #Voice:VA/SamBarks/Bark7 #Delay:0.9
     Is that barking? #Robin #Voice:VA/RobinLevelBarks/IsThatBarking #waitForTrigger
+    Arf! #Sam #Voice:VA/SamBarks/Bark3 #enableSam
     Sam! There you are! #Robin #Voice:VA/FoundSam/SamThereYouAre
     Woof! #Sam #Voice:VA/SamBarks/Bark5
     I've been all over looking for you. #Robin #Voice:VA/FoundSam/AllOverLookingForYou
