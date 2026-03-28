@@ -23,10 +23,9 @@ public class Puzzle3Manager : MonoBehaviour
     }
 
     void HandleTimeChanged() {
-        if (FillUpPointInitial.ActiveItem != null) {
+        if (FillUpPointInitial.ActiveItem != null && TimeManager.Instance.IsFuture()) {
             FillUpPointFilled.gameObject.SetActive(true);
             FillUpPointInitial.gameObject.SetActive(false);
-            TimePortal.gameObject.SetActive(false);
         }
     }
 
