@@ -30,6 +30,8 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
         SpriteImage.color = pickupObjectSpriteRenderer.color;
 
         inventoryCanvas.SelectedInventoryItemBoxChanged += SelectedBoxUpdated;
+
+        CountText.enabled = PickupObjectPrefab.GetComponent<PickupObject>().AllowStacking;
     }
 
     void OnDestroy() {
