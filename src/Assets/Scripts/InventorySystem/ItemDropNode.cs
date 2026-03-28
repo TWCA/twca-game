@@ -55,13 +55,13 @@ public class ItemDropNode : MonoBehaviour
     void Start()
     {
         SetAlpha(BaseAlpha);
+
+        inventorySystem = InventorySystem.Instance;
     }
 
     void Awake() {
         Initialize();
         InitializeSprite();
-
-        inventorySystem = InventorySystem.Instance;
 
         InteractPlayerDetector.PlayerTouched += InteractedWith;
         NotifyPlayerDetector.PlayerTouched += NearbyNotifyEntered;
