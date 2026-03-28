@@ -69,7 +69,7 @@ MonoBehaviour:
   acceleration: 50
   deceleration: 500
   gravity: 0.14
-  walkingLookAheadLength: 25
+  walkingLookAheadLength: 35
   turnAssistStrength: 0.5
   turnAssistThreshold: 0.1
   perpendicularMovementThreshold: 0.1

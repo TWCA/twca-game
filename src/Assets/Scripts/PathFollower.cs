@@ -227,12 +227,15 @@ public class PathFollower : MonoBehaviour
         // 1.0 -> path perfectly matches target
         // 0.0 -> path is perpendicular to target
         float alignment = Vector2.Dot(pathDirection, targetDirection);
+        
+        float distanceFromStartOfPath = Vector2.Distance(transform.position, start);
+        float distanceFromEndOfPath = Vector2.Distance(transform.position, end);
 
         // if we are trying to walk perpendicular to the path, don't move
-        if (alignment < perpendicularMovementThreshold)
+        if (alignment < perpendicularMovementThreshold &&
+            distanceFromStartOfPath > perpendicularMovementThreshold &&
+            distanceFromEndOfPath > perpendicularMovementThreshold)
             return transform.position;
-
-        float distanceFromStartOfPath = Vector2.Distance(transform.position, start);
 
         if (distanceFromStartOfPath > walkingLookAheadLength)
         {

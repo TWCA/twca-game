@@ -88,7 +88,7 @@ public class ItemDropNode : MonoBehaviour
         HoverCircle.gameObject.SetActive(InventorySystem.Instance.HasMouseItem);
     }
 
-    private void InitializeSprite() {
+    public void InitializeSprite() {
         if (ActiveItem != null) {
             SpriteRenderer activeItemSpriteRenderer = ActiveItem.GetComponent<SpriteRenderer>();
 

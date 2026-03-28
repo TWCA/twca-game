@@ -48,11 +48,15 @@ public class DialogManager : MonoBehaviour
     private void Awake()
     {
         if (Instance != null && Instance != this)
-            Destroy(Instance.gameObject);
+        {
+            Destroy(this.gameObject);
+            return;
+        }
         else
+        {
             DontDestroyOnLoad(gameObject);
-
-        Instance = this;
+            Instance = this;
+        }
 
         if (inkJson == null)
             Debug.LogError("DialogManager: inkJson is not assigned!");
