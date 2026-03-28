@@ -154,6 +154,7 @@ public class ItemDropNode : MonoBehaviour
                         inventorySystem.AddItem(ActiveItem);
                         ClearActiveItem();
                         InitializeSprite();
+                        ItemRemoved?.Invoke();
                     }));
 
                 MarkUsed();
@@ -165,6 +166,7 @@ public class ItemDropNode : MonoBehaviour
                         inventorySystem.RemoveItem(ActiveItem);
                         
                         InitializeSprite();
+                        ItemPlaced?.Invoke();
                     }));
 
                 MarkUsed();
@@ -199,7 +201,6 @@ public class ItemDropNode : MonoBehaviour
     */
     private void SetActiveItem(GameObject item) {
         ActiveItem = item;
-        ItemPlaced?.Invoke();
     }
 
     /*
@@ -207,7 +208,6 @@ public class ItemDropNode : MonoBehaviour
     */
     private void ClearActiveItem() {
         ActiveItem = null;
-        ItemRemoved?.Invoke();
     }
 
     /*
