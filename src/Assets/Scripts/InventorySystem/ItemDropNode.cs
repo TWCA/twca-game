@@ -125,12 +125,6 @@ public class ItemDropNode : MonoBehaviour
                 inventorySystem.HasMouseItem = false;
             }
 
-            if (SingleUse) {
-                used = true;
-            }
-
-            MarkUsed();
-
             inventorySystem.TargetDropNode = this;
 
             return true;
@@ -172,9 +166,7 @@ public class ItemDropNode : MonoBehaviour
                 MarkUsed();
             }
 
-            if (SingleUse) {
-                used = true;
-            }
+            MarkUsed();
 
             player.StopInPlace();
             inventorySystem.Cancel();
