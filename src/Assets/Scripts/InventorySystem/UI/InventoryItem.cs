@@ -59,13 +59,15 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
     * Create an object when clicking on the inventory item.
     */
     public void OnPointerDown(PointerEventData eventData) {
-        backgroundImage.sprite = SelectedItemBoxSprite;
+        if (inventorySystem.HasMouseItem == false) {
+            backgroundImage.sprite = SelectedItemBoxSprite;
 
-        GameObject newObject = inventorySystem.CreatePickupObject(PickupObjectPrefab);
+            GameObject newObject = inventorySystem.CreatePickupObject(PickupObjectPrefab);
 
-        if (newObject) {
-            UpdateText();
-            inventoryCanvas.SetSelectedInventoryItemBox(this);
+            if (newObject) {
+                UpdateText();
+                inventoryCanvas.SetSelectedInventoryItemBox(this);
+            }
         }
     }
 
