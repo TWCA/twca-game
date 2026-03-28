@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -118,11 +119,19 @@ public class InventorySystem : MonoBehaviour
     * Deletes a pickupobject
     */
     public void DeletePickupObject(PickupObject pickupObject) {
+        StartCoroutine(DeletePickupObjectInternal(pickupObject));
+    }
+
+    public IEnumerator DeletePickupObjectInternal(PickupObject pickupObject) {
         InventoryCanvas.Instance.SetSelectedInventoryItemBox(null);
 
-        HasMouseItem = false;
-
         Destroy(pickupObject.gameObject);
+
+        // Because the player and the item both listen to the click at the same time this is a cursed way of delaying a few frames so the player doesn't move
+        // Yes I know this sucks
+        yield return new WaitForSeconds(0.3f);
+
+        HasMouseItem = false;
     }
 
     /*
