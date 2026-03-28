@@ -325,6 +325,9 @@ public class DialogManager : MonoBehaviour
 
         if (tags.Contains("enableSam"))
             sam.SetActive(true);
+                
+        if (tags.Contains("ReturnToMainMenu"))
+            StartCoroutine(TransitionController.Instance.SwitchScenes("MainMenu", ""));
 
         string appTitle = GetNotificationAppTitle(tags);
         Character character = GetCharacterTag(tags);

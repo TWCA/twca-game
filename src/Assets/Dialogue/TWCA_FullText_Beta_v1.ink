@@ -254,6 +254,8 @@ We know you've been away for a little while, but we'd like to see you again. #Lo
     ... #Robin
     I love you, Mom. #Robin #Voice:VA/ArriveHome/ILoveYouMom
     I love you too, sweetie. #Mom #Voice:VA/ArriveHome/ILoveYouTooSweetie
+    ... #Delay:3.0
+    The End #ReturnToMainMenu
     -> END
 
 //Dialogs End
