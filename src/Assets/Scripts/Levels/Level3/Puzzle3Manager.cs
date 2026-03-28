@@ -5,8 +5,9 @@ using UnityEngine;
 public class Puzzle3Manager : MonoBehaviour
 {
     public ItemDropNode FillUpPointInitial;
-    public ItemDropNode FillUpPointFilled;
+    public ItemDropNode FillUpPointFuture;
     public ItemDropNode BurningBush;
+    public GameObject FullBucket;
     public TimePortal TimePortal;
 
     // Start is called before the first frame update
@@ -24,8 +25,10 @@ public class Puzzle3Manager : MonoBehaviour
 
     void HandleTimeChanged() {
         if (FillUpPointInitial.ActiveItem != null && TimeManager.Instance.IsFuture()) {
-            FillUpPointFilled.gameObject.SetActive(true);
-            FillUpPointInitial.gameObject.SetActive(false);
+            FillUpPointFuture.ActiveItem = FullBucket;
+            FillUpPointFuture.InitializeSprite();
+            FillUpPointInitial.ActiveItem = null;
+            FillUpPointInitial.InitializeSprite();
         }
     }
 
