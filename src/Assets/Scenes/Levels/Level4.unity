@@ -3268,11 +3268,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4267484377463088540, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 182.1
+      value: 178.3
       objectReference: {fileID: 0}
     - target: {fileID: 4267484377463088540, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 25.6
+      value: 32.9
       objectReference: {fileID: 0}
     - target: {fileID: 4267484377463088540, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_LocalPosition.z
@@ -4769,11 +4769,11 @@ PrefabInstance:
       objectReference: {fileID: -2075480746, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
     - target: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 657.7
+      value: 667.2
       objectReference: {fileID: 0}
     - target: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 26.4
+      value: 34.4
       objectReference: {fileID: 0}
     - target: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5156,11 +5156,11 @@ PrefabInstance:
       objectReference: {fileID: -89854663, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
     - target: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 592
+      value: 622
       objectReference: {fileID: 0}
     - target: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 5824343455680163453, guid: c7e3dbecab3e0e1a1acdf9a706a04d17, type: 3}
       propertyPath: m_LocalPosition.z
@@ -6368,6 +6368,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 10
       objectReference: {fileID: 0}
+    - target: {fileID: 860817972659402281, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_FilterMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1205952532859487973, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: target
       value: 
@@ -6434,15 +6438,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0
+      value: 0.0970266
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 1
+      value: 0.99999994
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 1
+      value: 0.8072183
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
