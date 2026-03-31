@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ink.Runtime;
+using UnityEditor.PackageManager;
 using UnityEngine.Events;
 
 public enum Character
@@ -34,6 +35,7 @@ public class DialogManager : MonoBehaviour
     public GameObject DialogRoot;
 
     private Story story;
+    [SerializeField] private GameObject sam;
 
     private bool isRunning = false;
     private bool isPhoneUp = false;
@@ -173,7 +175,7 @@ public class DialogManager : MonoBehaviour
     {
         // stop old running story knot to open this one
         if (isRunning)
-            EndDialog();
+            EndDialogInstantly();
 
         if (inkJson == null)
         {
@@ -202,6 +204,7 @@ public class DialogManager : MonoBehaviour
 
     public void EndDialog()
     {
+        
         isRunning = false;
         DialogRoot.SetActive(false);
         AudioManager.Instance.FullAll();
@@ -318,6 +321,15 @@ public class DialogManager : MonoBehaviour
             onDialogFinished?.Invoke();
             onDialogFinished = null;
         }
+
+        if (tags.Contains("disableSam"))
+            sam.SetActive(false);
+
+        if (tags.Contains("enableSam"))
+            sam.SetActive(true);
+                
+        if (tags.Contains("ReturnToMainMenu"))
+            StartCoroutine(TransitionController.Instance.SwitchScenes("MainMenu", ""));
 
         string appTitle = GetNotificationAppTitle(tags);
         Character character = GetCharacterTag(tags);
