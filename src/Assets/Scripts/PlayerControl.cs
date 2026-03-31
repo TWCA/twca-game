@@ -56,7 +56,6 @@ public class PlayerControl : MonoBehaviour
 
     public void Update()
     {
-        Vector2 inputDirection = Vector2.zero;
         bool pointerOverUI = EventSystem.current.IsPointerOverGameObject(); 
         InventorySystem inventorySystem = InventorySystem.Instance;
         
@@ -67,27 +66,22 @@ public class PlayerControl : MonoBehaviour
             clickAction.Enable();
         }
 
+        Vector2 inputDirection = Vector2.zero;
+        
         if (IsMovementAllowed())
             inputDirection = moveAction.ReadValue<Vector2>();
 
-        // stop pathfinding path if manual input is entered
         if (!inputDirection.Equals(Vector2.zero))
         {
-            pathFollower.StopPathfinding();
-
             // Reset bringing an item to a location if the player overrides
             inventorySystem.Cancel();
 
             GoingToSam = false;
         }
 
-        Vector2 movementDirection;
-        if (pathFollower.IsPathfinding())
-            // find our movement direction if we are pathfinding
-            movementDirection = pathFollower.GetPathfindingDirection();
-        else
-            // try walking if we are not pathfinding already
-            movementDirection = pathFollower.WalkTowards(inputDirection, Time.deltaTime);
+        pathFollower.WalkTowards(inputDirection);
+
+        Vector2 movementDirection = pathFollower.GetPathfindingDirection();
 
         bool moving = !movementDirection.Equals(Vector2.zero);
         animator.SetBool("moving", moving);
