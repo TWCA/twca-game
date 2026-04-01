@@ -247,6 +247,10 @@ public class PathFollower : MonoBehaviour
      */
     private void MoveDuringJump()
     {
+        // stop half finised paths created using WASD control from making us backtrack
+        if (isPathfindingToWalk)
+            StopPathfinding();
+    
         jumpDistanceTraveled += currentSpeed * Time.deltaTime * 0.75f;
         Vector2 jumpGroundPosition = Vector2.MoveTowards(jumpStart, jumpEnd, jumpDistanceTraveled);
 
