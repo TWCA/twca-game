@@ -22,7 +22,7 @@ public class ItemDropNode : MonoBehaviour
     private PlayerDetector playerDetector;
     private Material originalMaterial;
     private Renderer materialRenderer;
-    private bool used; // Used for keeping track of if the drop node was used if SingleUse is true
+    public bool used; // Used for keeping track of if the drop node was used if SingleUse is true
 
     // Events for level code (like the river system) to interact with
     public event Action ItemPlaced;

@@ -15,7 +15,7 @@ public class MainMenu : SubMenu
         base.OnEnable();
 
         versionText.text = "Version " + Application.version;
-
+        //MusicPlayer.Instance.loopTrack();
         HookButtons();
     }
 
@@ -27,6 +27,7 @@ public class MainMenu : SubMenu
 
     private void PlayClick() {
         SceneManager.LoadScene(targetScene);
+        MusicPlayer.Instance.stopPlayer();
     }
 
     private void SettingsClick() {
