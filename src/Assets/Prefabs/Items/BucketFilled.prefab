@@ -28,6 +28,14 @@ PrefabInstance:
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: NiceName
+      value: Water Bucket
+      objectReference: {fileID: 0}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: AllowStacking
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6237717639685285321, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: AllowStacking
       value: 0

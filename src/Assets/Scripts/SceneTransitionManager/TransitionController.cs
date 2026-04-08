@@ -14,37 +14,38 @@ public class TransitionController : MonoBehaviour
 
     private PathNetwork pathNetwork;
     private DialogManager dialogManager;
+    private FadeManager fadeManager;
     private Image screenFadeImage;
-    private float alpha;
-    private float targetAlpha;
-    private float alphaChangeTime;
 
     private void Awake()
     {
         Instance = this;
 
         screenFadeImage = GameObject.FindGameObjectWithTag("FadeTexture").GetComponent<Image>();
+        fadeManager = GetComponent<FadeManager>();
+
+        fadeManager.FadeOutTime = FadeOutDelay;
+        fadeManager.FadeInTime = FadeInDelay;
     }
 
     void Start()
     {
         screenFadeImage.color = new Color(0, 0, 0, 1.0f);
-        alpha = 1;
-        FadeIn();
+        fadeManager.SetAlpha(1);
+        fadeManager.FadeIn();
     }
 
     void Update()
     {
-        if (!alpha.Equals(targetAlpha))
+        if (!fadeManager.HasReachedTarget())
         {
-            alpha = Mathf.MoveTowards(alpha, targetAlpha, Time.deltaTime / alphaChangeTime);
-            screenFadeImage.color = new Color(0, 0, 0, alpha);
+            screenFadeImage.color = fadeManager.GetRGBAatTime(new Color(0, 0, 0), Time.deltaTime);
         }
     }
 
     public IEnumerator SwitchScenes(string sceneName, string dialogKnot)
     {
-        FadeOut();
+        fadeManager.FadeOut();
         
         yield return new WaitForSeconds(FadeOutDelay);
 
@@ -66,19 +67,5 @@ public class TransitionController : MonoBehaviour
         int triggerNode = pathNetwork.ForkNode(nearestNode, levelPortalPosition);
 
         pathNetwork.ForkNode(triggerNode, exitPosition);
-    }
-
-    // Does the fade out screen effect
-    public void FadeOut()
-    {
-        targetAlpha = 1;
-        alphaChangeTime = FadeOutDelay;
-    }
-
-    // Does the fade in sceen effect
-    public void FadeIn()
-    {
-        targetAlpha = 0;
-        alphaChangeTime = FadeInDelay;
     }
 }

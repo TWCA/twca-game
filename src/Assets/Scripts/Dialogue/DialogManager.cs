@@ -205,7 +205,7 @@ public class DialogManager : MonoBehaviour
 
     public void EndDialog()
     {
-        
+
         isRunning = false;
         DialogRoot.SetActive(false);
         AudioManager.Instance.FullAll();
@@ -328,7 +328,7 @@ public class DialogManager : MonoBehaviour
 
         if (tags.Contains("enableSam"))
             sam.SetActive(true);
-                
+
         if (tags.Contains("ReturnToMainMenu"))
             StartCoroutine(TransitionController.Instance.SwitchScenes("MainMenu", ""));
 

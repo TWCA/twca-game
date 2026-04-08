@@ -165,7 +165,7 @@ GameObject:
   - component: {fileID: 5893754881828088133}
   - component: {fileID: 8756988844479257264}
   - component: {fileID: 2766793619240532459}
-  - component: {fileID: 8680570153735911988}
+  - component: {fileID: 225542458892942529}
   m_Layer: 5
   m_Name: InventoryItem
   m_TagString: UITemplate
@@ -232,7 +232,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8680570153735911988
+--- !u!114 &225542458892942529
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -241,7 +241,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8508542180599918211}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3820a85f9086a25a5889ce8194f24522, type: 3}
+  m_Script: {fileID: 11500000, guid: 04d17fbf3644de4678366da379f323a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ItemCount: 1
