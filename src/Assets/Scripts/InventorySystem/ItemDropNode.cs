@@ -94,6 +94,7 @@ public class ItemDropNode : MonoBehaviour
 
             if (ActiveSpriteOverride != null) {
                 SpriteRenderer.sprite = ActiveSpriteOverride;
+                OnActiveChange(true);
             } else {
                 SpriteRenderer.sprite = activeItemSpriteRenderer.sprite;
                 SpriteRenderer.color = activeItemSpriteRenderer.color;
@@ -101,10 +102,16 @@ public class ItemDropNode : MonoBehaviour
         } else {
             if (EmptySpriteOverride != null) {
                 SpriteRenderer.sprite = EmptySpriteOverride;
+                OnActiveChange(false);
             } else {
                 SpriteRenderer.sprite = null;
             }
         }
+    }
+
+    protected virtual void OnActiveChange(bool active)
+    {
+        // do nothing
     }
 
     /*
