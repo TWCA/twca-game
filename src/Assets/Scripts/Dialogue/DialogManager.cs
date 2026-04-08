@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ink.Runtime;
-using UnityEditor.PackageManager;
 using UnityEngine.Events;
 
 public enum Character
