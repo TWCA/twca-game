@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 639100618494559200
+  platformSettingsDirtyTick: 639112470682770530
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -147,13 +147,13 @@ ScriptedImporter:
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0, y: 1, z: 0, w: 1}
     rect:
       serializedVersion: 2
       x: 4
-      y: 20
+      y: 19
       width: 16
-      height: 13
+      height: 15
     spriteID: 13eae6f9bda2be0128baba388231b0de
     spriteBone: []
     spriteOutline: []
@@ -167,13 +167,13 @@ ScriptedImporter:
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0, y: 1, z: 0, w: 1}
     rect:
       serializedVersion: 2
       x: 4
-      y: 4
+      y: 3
       width: 16
-      height: 13
+      height: 15
     spriteID: e973ef708487a0e40b937209f4ae0052
     spriteBone: []
     spriteOutline: []
@@ -225,7 +225,7 @@ ScriptedImporter:
     ignorePlatformSupport: 0
     maxTextureSize: 16384
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 4
     textureCompression: 0
     compressionQuality: 50
     forceMaximumCompressionQuality_BC6H_BC7: 0
