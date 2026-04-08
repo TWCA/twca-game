@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7201299096094867918}
   - component: {fileID: 990996692200902691}
-  - component: {fileID: 6237717639685285321}
+  - component: {fileID: 3054084485680338735}
   m_Layer: 2
   m_Name: PickupObject
   m_TagString: Untagged
@@ -53,7 +53,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 85e0278c510c036d9b02e7008b9ca43a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6237717639685285321
+--- !u!114 &3054084485680338735
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,7 +94,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 537990157711792668}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14d1ff3bbfdc99317a7a1afda9c37297, type: 3}
+  m_Script: {fileID: 11500000, guid: b7ace6253cb7d0a548de02d9860bf733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   AllowStacking: 1
