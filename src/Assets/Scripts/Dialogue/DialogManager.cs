@@ -34,7 +34,7 @@ public class DialogManager : MonoBehaviour
     public GameObject DialogRoot;
 
     private Story story;
-    [SerializeField] private GameObject sam;
+    private GameObject sam;
 
     private bool isRunning = false;
     private bool isPhoneUp = false;
@@ -63,6 +63,8 @@ public class DialogManager : MonoBehaviour
             Debug.LogError("DialogManager: inkJson is not assigned!");
         else
             story = new Story(inkJson.text);
+
+        sam = GameObject.FindGameObjectWithTag("Sam");
     }
 
     private void Update()
