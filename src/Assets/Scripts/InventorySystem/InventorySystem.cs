@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -12,13 +13,10 @@ public class InventorySystem : MonoBehaviour
     public int ItemMax = 5;
     public int Padding = 1;
     public GameObject TemplateItem;
-    private GameObject inventoryUIObject;
     public static InventorySystem Instance { get; private set; }
-    [NonSerialized] public GameObject MouseItem; // The item that appears where the mouse is
+    [NonSerialized] public bool HasMouseItem; // The item that appears where the mouse is
     [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
     [NonSerialized] public ItemDropNode TargetDropNode;
-    private InventoryItem selectedInventoryItemBox; // The InventoryItem UI element that is selected
-    public event Action SelectedInventoryItemBoxChanged;
     private List<Item> items;
 
     // Start is called before the first frame update
@@ -29,7 +27,6 @@ public class InventorySystem : MonoBehaviour
 
     private void Awake()
     {
-        inventoryUIObject = GameObject.FindGameObjectWithTag("InventoryUIRoot");
         Instance = this;
     }
 
@@ -55,7 +52,7 @@ public class InventorySystem : MonoBehaviour
     * returns true if it was a success (if stacking is prevented or not)
     */
     public bool AddItem(GameObject prefab) {
-        if (inventoryUIObject.transform.childCount >= ItemMax) {
+        if (items.Count >= ItemMax) {
             Debug.Log($"Inventory reached max size of {ItemMax}!");
         }
 
@@ -110,12 +107,31 @@ public class InventorySystem : MonoBehaviour
             newObject.name = prefab.name;
             newObject.GetComponent<PickupObject>().PickupObjectPrefab = prefab;
 
-            MouseItem = newObject.gameObject;
+            HasMouseItem = true;
 
             return newObject.gameObject;
         }
 
         return null;
+    }
+
+    /*
+    * Deletes a pickupobject
+    */
+    public void DeletePickupObject(PickupObject pickupObject) {
+        StartCoroutine(DeletePickupObjectInternal(pickupObject));
+    }
+
+    public IEnumerator DeletePickupObjectInternal(PickupObject pickupObject) {
+        InventoryCanvas.Instance.SetSelectedInventoryItemBox(null);
+
+        Destroy(pickupObject.gameObject);
+
+        // Because the player and the item both listen to the click at the same time this is a cursed way of delaying a few frames so the player doesn't move
+        // Yes I know this sucks
+        yield return new WaitForSeconds(0.3f);
+
+        HasMouseItem = false;
     }
 
     /*
@@ -126,14 +142,8 @@ public class InventorySystem : MonoBehaviour
         CarriedItem = null;
     }
 
-    public void SetSelectedInventoryItemBox(InventoryItem inventoryItem) {
-        selectedInventoryItemBox = inventoryItem;
-
-        SelectedInventoryItemBoxChanged.Invoke();
-    }
-
-    public InventoryItem GetSelectedInventoryBox() {
-        return selectedInventoryItemBox;
+    public bool IsPlayerMovementAllowed() {
+        return CarriedItem == null && !HasMouseItem;
     }
 
     /*
@@ -147,14 +157,18 @@ public class InventorySystem : MonoBehaviour
 
         public Item(GameObject prefab) {
             InventorySystem inventorySystem = Instance;
+            PickupObject pickupObject = prefab.GetComponent<PickupObject>();
 
             // Create UI object and set it to proper position
             Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);
-            newItemUIObject.gameObject.transform.SetParent(inventorySystem.inventoryUIObject.gameObject.transform, false);
 
-            InventoryItem newInventoryItem = newItemUIObject.GetComponent<InventoryItem>();
+            if (string.IsNullOrEmpty(pickupObject.NiceName)) {
+                newItemUIObject.name = pickupObject.name;
+            } else {
+                newItemUIObject.name = pickupObject.NiceName;
+            }
 
-            newInventoryItem.PickupObjectPrefab = prefab;
+            InventoryCanvas.Instance.AddUIObject(newItemUIObject, prefab);
 
             this.name = prefab.name;
             this.uiObject = newItemUIObject;

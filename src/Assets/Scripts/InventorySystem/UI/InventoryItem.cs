@@ -13,14 +13,15 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
     [NonSerialized] public GameObject PickupObjectPrefab;
     public Image SpriteImage;
     private InventorySystem inventorySystem;
+    private InventoryCanvas inventoryCanvas;
     private SpriteRenderer pickupObjectSpriteRenderer;
     private Image backgroundImage;
-    // private Outline selectedOutline;
 
     // Start is called before the first frame update
     void Start()
     {
         inventorySystem = InventorySystem.Instance;
+        inventoryCanvas = InventoryCanvas.Instance;
 
         pickupObjectSpriteRenderer = PickupObjectPrefab.GetComponent<SpriteRenderer>();
         backgroundImage = GetComponent<Image>();
@@ -28,15 +29,17 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
         SpriteImage.sprite = pickupObjectSpriteRenderer.sprite;
         SpriteImage.color = pickupObjectSpriteRenderer.color;
 
-        inventorySystem.SelectedInventoryItemBoxChanged += SelectedBoxUpdated;
+        inventoryCanvas.SelectedInventoryItemBoxChanged += SelectedBoxUpdated;
+
+        CountText.enabled = PickupObjectPrefab.GetComponent<PickupObject>().AllowStacking;
     }
 
     void OnDestroy() {
-        inventorySystem.SelectedInventoryItemBoxChanged -= SelectedBoxUpdated;
+        inventoryCanvas.SelectedInventoryItemBoxChanged -= SelectedBoxUpdated;
     }
 
     void SelectedBoxUpdated() {
-        if (inventorySystem.GetSelectedInventoryBox() == this) {
+        if (inventoryCanvas.GetSelectedInventoryBox() == this) {
             backgroundImage.sprite = SelectedItemBoxSprite;
         } else {
             backgroundImage.sprite = NonSelectedItemBoxSprite;
@@ -58,13 +61,15 @@ public class InventoryItem : MonoBehaviour, IPointerDownHandler
     * Create an object when clicking on the inventory item.
     */
     public void OnPointerDown(PointerEventData eventData) {
-        backgroundImage.sprite = SelectedItemBoxSprite;
+        if (inventorySystem.HasMouseItem == false) {
+            backgroundImage.sprite = SelectedItemBoxSprite;
 
-        GameObject newObject = inventorySystem.CreatePickupObject(PickupObjectPrefab);
+            GameObject newObject = inventorySystem.CreatePickupObject(PickupObjectPrefab);
 
-        if (newObject) {
-            UpdateText();
-            inventorySystem.SetSelectedInventoryItemBox(this);
+            if (newObject) {
+                UpdateText();
+                inventoryCanvas.SetSelectedInventoryItemBox(this);
+            }
         }
     }
 

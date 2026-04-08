@@ -9,6 +9,8 @@ public class ItemDropNode : MonoBehaviour
     public Material SelectedMaterial;
     public SpriteRenderer SpriteRenderer;
     public SpriteRenderer HoverCircle;
+    public PlayerDetector InteractPlayerDetector;
+    public PlayerDetector NotifyPlayerDetector;
 
     // You may leave these two fields blank and it will just use the sprite the item has
     // These fields are good for something like the dog food bowl where it goes from empty to full
@@ -19,8 +21,6 @@ public class ItemDropNode : MonoBehaviour
 
     private CircleCollider2D circleCollider;
     private InventorySystem inventorySystem;
-    private PlayerDetector playerDetector;
-    private Material originalMaterial;
     private Renderer materialRenderer;
     private bool used; // Used for keeping track of if the drop node was used if SingleUse is true
 
@@ -28,12 +28,16 @@ public class ItemDropNode : MonoBehaviour
     public event Action ItemPlaced;
     public event Action ItemRemoved;
 
+    public float BaseAlpha = 0f;
+    public float NotifyAlpha = 0.2f;
+    public float HoverAlpha = 0.8f;
+
     /*
     * Runs some logic that sets up the ItemDropNode
     */
     private void Initialize() {
         circleCollider = GetComponent<CircleCollider2D>();
-        playerDetector = GetComponentInChildren<PlayerDetector>();
+        materialRenderer = SpriteRenderer.GetComponent<Renderer>();
     }
 
     /*
@@ -50,16 +54,26 @@ public class ItemDropNode : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SetAlpha(BaseAlpha);
+
+        inventorySystem = InventorySystem.Instance;
+    }
+
+    void Awake() {
         Initialize();
         InitializeSprite();
 
-        inventorySystem = InventorySystem.Instance;
-        materialRenderer = SpriteRenderer.GetComponent<Renderer>();
-        originalMaterial = materialRenderer.material;
+        InteractPlayerDetector.PlayerTouched += InteractedWith;
+        NotifyPlayerDetector.PlayerTouched += NearbyNotifyEntered;
+        NotifyPlayerDetector.PlayerLeft += NearbyNotifyExited;
 
-        playerDetector.PlayerTouched += () => {
-            InteractedWith();
-        };
+        materialRenderer.material = SelectedMaterial;
+    }
+
+    void OnDisable() {
+        InteractPlayerDetector.PlayerTouched -= InteractedWith;
+        NotifyPlayerDetector.PlayerTouched -= NearbyNotifyEntered;
+        NotifyPlayerDetector.PlayerLeft -= NearbyNotifyExited;
     }
 
     // Update is called once per frame
@@ -67,15 +81,11 @@ public class ItemDropNode : MonoBehaviour
     {
         // Handle when the player is still in the collider and picks up the item
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
-        if (playerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
+        if (InteractPlayerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
             InteractedWith();
         }
 
-        if (inventorySystem.MouseItem != null) {
-            HoverCircle.gameObject.SetActive(true);
-        } else {
-            HoverCircle.gameObject.SetActive(false);
-        }
+        HoverCircle.gameObject.SetActive(InventorySystem.Instance.HasMouseItem);
     }
 
     public void InitializeSprite() {
@@ -112,10 +122,8 @@ public class ItemDropNode : MonoBehaviour
                 return false;
             } else {
                 inventorySystem.CarriedItem = prefab;
-                inventorySystem.MouseItem = null;
+                inventorySystem.HasMouseItem = false;
             }
-
-            MarkUsed();
 
             inventorySystem.TargetDropNode = this;
 
@@ -158,6 +166,8 @@ public class ItemDropNode : MonoBehaviour
                 MarkUsed();
             }
 
+            MarkUsed();
+
             player.StopInPlace();
             inventorySystem.Cancel();
         }
@@ -193,6 +203,21 @@ public class ItemDropNode : MonoBehaviour
     }
 
     /*
+    * Sets the transparency of the outline material
+    */
+    private void SetAlpha(float alpha) {
+        materialRenderer.material.SetColor("_Color", new Color(1f, 1f, 1f, alpha));
+    }
+
+    /*
+    * Gets the alpha/transparency of the outline material
+    */
+    private float GetAlpha()
+    {
+        return materialRenderer.material.GetColor("_Color").a;
+    }
+    
+    /*
     * Marks this item as used if it is single use
     */
     private void MarkUsed() {
@@ -204,17 +229,40 @@ public class ItemDropNode : MonoBehaviour
     void OnMouseEnter() {
         if (ActiveItem != null) {
             materialRenderer.material = SelectedMaterial;
+            SetAlpha(HoverAlpha);
         }
     }
 
     void OnMouseExit()
     {
-        materialRenderer.material = originalMaterial;
+        if (NotifyPlayerDetector.TouchingPlayer) {
+            SetAlpha(NotifyAlpha);
+        } else {
+            SetAlpha(BaseAlpha);
+        }
     }
 
     void OnMouseUp() {
         if (inventorySystem.TargetDropNode == null && !(SingleUse && used)) {
             inventorySystem.TargetDropNode = this;
+        }
+    }
+
+    /*
+    * Occurs when the player is close enough to the trigger that causes the hint outline to show
+    */
+    void NearbyNotifyEntered() {
+        if (GetAlpha() != HoverAlpha) {
+            SetAlpha(NotifyAlpha);
+        }
+    }
+
+    /*
+    * Occurs when the player is far enough from the trigger that causes the hint outline to hide/reset
+    */
+    void NearbyNotifyExited() {
+        if (GetAlpha() != HoverAlpha) {
+            SetAlpha(BaseAlpha);
         }
     }
 }
