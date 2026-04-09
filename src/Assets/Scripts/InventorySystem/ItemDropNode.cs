@@ -77,7 +77,7 @@ public class ItemDropNode : MonoBehaviour
     }
 
     // Update is called once per frame
-    void LateUpdate()
+    void Update()
     {
         // Handle when the player is still in the collider and picks up the item
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
@@ -113,19 +113,14 @@ public class ItemDropNode : MonoBehaviour
     public bool ItemIncoming(GameObject prefab) {
         // Do we even allow this item in this node?
         if (AllowDeny.IsItemAllowed(prefab.name) && !(SingleUse && used)) {
-            if (ActiveItem != null) {
-                // Call some abitrary function that runs when one item is dragged onto the other
-                // ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
-
-                // Disabled item mixing for vertical slice
-                // Its producing some issues that will be tackled for beta
-                return false;
-            } else {
+            if (ActiveItem == null) {
                 inventorySystem.CarriedItem = prefab;
                 inventorySystem.HasMouseItem = false;
+
+                return true;
             }
 
-            return true;
+            return false;
         } else {
             Debug.Log("No, you cannot put that item there.");
 
@@ -237,7 +232,7 @@ public class ItemDropNode : MonoBehaviour
     }
 
     void OnMouseUp() {
-        if (inventorySystem.TargetDropNode == null && !(SingleUse && used)) {
+        if (!(inventorySystem.HasMouseItem && ActiveItem != null) && !(SingleUse && used)) {
             inventorySystem.TargetDropNode = this;
         }
     }

@@ -7,7 +7,7 @@ public class PlayerDetector : MonoBehaviour
 {
     public event Action PlayerTouched;
     public event Action PlayerLeft;
-    [NonSerialized] public bool TouchingPlayer;
+    public bool TouchingPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -27,7 +27,6 @@ public class PlayerDetector : MonoBehaviour
     }
 
     void OnTriggerExit2D(Collider2D other) {
-        Debug.Log(other);
         if (IsPlayer(other)) {
             TouchingPlayer = false;
 
