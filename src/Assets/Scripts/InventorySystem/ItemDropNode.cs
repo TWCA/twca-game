@@ -77,11 +77,11 @@ public class ItemDropNode : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
         // Handle when the player is still in the collider and picks up the item
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
-        if (InteractPlayerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
+        if (InteractPlayerDetector.TouchingPlayer) {
             InteractedWith();
         }
 
@@ -125,8 +125,6 @@ public class ItemDropNode : MonoBehaviour
                 inventorySystem.HasMouseItem = false;
             }
 
-            inventorySystem.TargetDropNode = this;
-
             return true;
         } else {
             Debug.Log("No, you cannot put that item there.");
@@ -142,7 +140,8 @@ public class ItemDropNode : MonoBehaviour
         PlayerControl player = PlayerControl.Instance;
 
         if (inventorySystem.TargetDropNode == this) {
-            if (ActiveItem != null) {
+            if (ActiveItem != null && inventorySystem.CarriedItem == null) {
+                Debug.Log("A");
                 StartCoroutine(TriggerInteractAnimation(() =>
                     {
                         inventorySystem.AddItem(ActiveItem);
@@ -150,9 +149,8 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                         ItemRemoved?.Invoke();
                     }));
-
-                MarkUsed();
             } else if (inventorySystem.CarriedItem) {
+                Debug.Log("B");
                 SetActiveItem(inventorySystem.CarriedItem);
 
                 StartCoroutine(TriggerInteractAnimation(() =>
@@ -162,8 +160,6 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                         ItemPlaced?.Invoke();
                     }));
-
-                MarkUsed();
             }
 
             MarkUsed();

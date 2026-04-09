@@ -14,17 +14,24 @@ public class PlayerDetector : MonoBehaviour
     {
     }
 
+    private bool IsPlayer(Collider2D other) {
+        return other.CompareTag("Player");
+    }
+
     void OnTriggerEnter2D(Collider2D other) {
-        PlayerControl playerControl = other.GetComponent<PlayerControl>();
-        if (playerControl && !TouchingPlayer) {
-            TouchingPlayer = playerControl;
+        if (IsPlayer(other) && !TouchingPlayer) {
+            TouchingPlayer = true;
+
             PlayerTouched?.Invoke();
         }
     }
 
-    void OnTriggerExit2D() {
-        TouchingPlayer = false;
+    void OnTriggerExit2D(Collider2D other) {
+        Debug.Log(other);
+        if (IsPlayer(other)) {
+            TouchingPlayer = false;
 
-        PlayerLeft?.Invoke();
+            PlayerLeft?.Invoke();
+        }
     }
 }
