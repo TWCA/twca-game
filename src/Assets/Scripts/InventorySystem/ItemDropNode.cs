@@ -231,7 +231,8 @@ public class ItemDropNode : MonoBehaviour
     /*
     * Marks this item as used if it is single use
     */
-    private void MarkUsed() {
+    private void MarkUsed()
+    {
         if (SingleUse) {
             used = true;
         }

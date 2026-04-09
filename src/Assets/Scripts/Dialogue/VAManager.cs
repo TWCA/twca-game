@@ -11,21 +11,128 @@ public class VAManager : MonoBehaviour
     private Queue<VACommand> queue = new Queue<VACommand>();
 
     private bool ignoringNextEnqueue = false;
-    private bool isProcessing = false;
-
+    private float queueDelayTime = 0;
+    
     private List<UnityAction> queueEmptyActions = new List<UnityAction>();
+    private List<UnityAction> audioStartedActions = new List<UnityAction>();
 
     public static VAManager Instance { get; private set; }
 
-    void Awake()
+    public void Awake()
     {
         Instance = this;
     }
 
-    // =========================
-    // COMMAND STRUCTURE
-    // =========================
-    public class VACommand
+    public void Update()
+    {
+        // wait for delays
+        if (queueDelayTime > 0)
+        {
+            queueDelayTime -= Time.deltaTime;
+            return;
+        }
+
+        // otherwise, dequeue a command
+        if (queue.Count > 0)
+        {
+            RunNextCommand();
+            return;
+        }
+
+        // otherwise, run all queue-empty callbacks safely
+        RunEmptyQueueCallbacks();
+    }
+
+    private void RunNextCommand()
+    {
+        VACommand cmd = queue.Dequeue();
+
+        if (cmd.Type == VACommand.CommandType.PlayAudio)
+        {
+            vaAudioSource.PlayOneShot(cmd.Clip);
+            queueDelayTime += cmd.Clip.length;
+            RunAudioCallbacks();
+        }
+        else if (cmd.Type == VACommand.CommandType.Delay)
+        {
+            queueDelayTime += cmd.Delay;
+        }
+    }
+
+    private void RunEmptyQueueCallbacks()
+    {
+        List<UnityAction> remainingActions = queueEmptyActions;
+        queueEmptyActions = new List<UnityAction>();
+
+        foreach (UnityAction action in remainingActions)
+            action();
+    }
+    
+    private void RunAudioCallbacks()
+    {
+        List<UnityAction> remainingActions = audioStartedActions;
+        audioStartedActions = new List<UnityAction>();
+
+        foreach (UnityAction action in remainingActions)
+            action();
+    }
+
+    public void Enqueue(string filepath)
+    {
+        if (ignoringNextEnqueue)
+        {
+            ignoringNextEnqueue = false;
+            return;
+        }
+
+        AudioClip audioClip = Resources.Load<AudioClip>(filepath);
+
+        if (audioClip == null)
+        {
+            Debug.LogError("Failed to load voice clip from path: " + filepath);
+            return;
+        }
+
+        queue.Enqueue(new VACommand(audioClip));
+    }
+
+    public void EnqueueDelay(float seconds)
+    {
+        queue.Enqueue(new VACommand(seconds));
+    }
+
+    public void IgnoreNextEnqueue()
+    {
+        ignoringNextEnqueue = true;
+    }
+
+    public void ClearQueue()
+    {
+        queueDelayTime = 0;
+        vaAudioSource.Stop();
+        queue.Clear();
+        RunEmptyQueueCallbacks();
+    }
+
+    public bool IsQueueEmpty()
+    {
+        return queueDelayTime <= 0 && queue.Count == 0;
+    }
+
+    public void OnQueueEmpty(UnityAction callback)
+    {
+        if (IsQueueEmpty())
+            callback();
+        else
+            queueEmptyActions.Add(callback);
+    }
+    
+    public void OnAudioStarted(UnityAction callback)
+    {
+        audioStartedActions.Add(callback);
+    }
+    
+    private class VACommand
     {
         public enum CommandType
         {
@@ -47,94 +154,6 @@ public class VAManager : MonoBehaviour
         {
             Type = CommandType.Delay;
             Delay = delay;
-        }
-    }
-
-    // =========================
-    // PUBLIC API
-    // =========================
-
-    public void Enqueue(string filepath)
-    {
-        if (ignoringNextEnqueue)
-        {
-            ignoringNextEnqueue = false;
-            return;
-        }
-
-        AudioClip audioClip = Resources.Load<AudioClip>(filepath);
-
-        if (audioClip == null)
-        {
-            Debug.LogError("Failed to load voice clip from path: " + filepath);
-            return;
-        }
-
-        queue.Enqueue(new VACommand(audioClip));
-        StartQueue();
-    }
-
-    public void EnqueueDelay(float seconds)
-    {
-        queue.Enqueue(new VACommand(seconds));
-        StartQueue();
-    }
-
-    public void IgnoreNextEnqueue()
-    {
-        ignoringNextEnqueue = true;
-    }
-
-    public void OnQueueEmpty(UnityAction callback)
-    {
-        if (!isProcessing)
-            callback();
-        else
-            queueEmptyActions.Add(callback);
-    }
-
-    // =========================
-    // CORE PROCESSING
-    // =========================
-
-    private void StartQueue()
-    {
-        if (!isProcessing)
-        {
-            StartCoroutine(ProcessQueue());
-        }
-    }
-
-    private IEnumerator ProcessQueue()
-    {
-        isProcessing = true;
-
-        while (queue.Count > 0)
-        {
-            VACommand cmd = queue.Dequeue();
-
-            if (cmd.Type == VACommand.CommandType.PlayAudio)
-            {
-                vaAudioSource.PlayOneShot(cmd.Clip);
-
-                // Wait for clip to finish
-                yield return new WaitForSeconds(cmd.Clip.length);
-            }
-            else if (cmd.Type == VACommand.CommandType.Delay)
-            {
-                yield return new WaitForSeconds(cmd.Delay);
-            }
-        }
-
-        isProcessing = false;
-
-        // Run all queue-empty callbacks safely
-        List<UnityAction> remainingActions = queueEmptyActions;
-        queueEmptyActions = new List<UnityAction>();
-
-        foreach (UnityAction action in remainingActions)
-        {
-            action();
         }
     }
 }

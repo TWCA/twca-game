@@ -41,6 +41,7 @@ public class DialogManager : MonoBehaviour
     private int waitingForTriggerCount = 0;
     private float visualOffset = 270;
     private bool areBehavioursDisabled = false;
+    private bool justSkipped = true;
 
     private System.Action onDialogFinished;
     private float delayAfterFinish;
@@ -205,8 +206,8 @@ public class DialogManager : MonoBehaviour
 
     public void EndDialog()
     {
-
         isRunning = false;
+
         DialogRoot.SetActive(false);
         AudioManager.Instance.FullAll();
 
@@ -229,6 +230,7 @@ public class DialogManager : MonoBehaviour
         onDialogFinished = null;
 
         isRunning = false;
+
         ClosePhoneUI();
         AudioManager.Instance.FullAll();
 
@@ -260,18 +262,26 @@ public class DialogManager : MonoBehaviour
         List<string> tags = story.currentTags;
 
         HandleDialogControl(tags);
+        HandleVoiceTags(tags);
+        
+        AddChoiceButton("(Skip)", () =>
+        {
+            VAManager.Instance.ClearQueue();
+            justSkipped = true;
+        });
 
-        VAManager.Instance.OnQueueEmpty(() =>
+        VAManager.Instance.OnAudioStarted(() =>
         {
             DisplayDialogLine(line, tags);
-            HandleVoiceTags(tags);
 
             if (tags.Exists(tag => tag.ToLower() == "waitfortrigger"))
                 waitingForTriggerCount++;
 
             // Wait for the VA line to stop playing
             if (waitingForTriggerCount <= 0)
+            {
                 VAManager.Instance.OnQueueEmpty(ContinueStory);
+            }
         });
     }
 
@@ -332,19 +342,22 @@ public class DialogManager : MonoBehaviour
         if (tags.Contains("ReturnToMainMenu"))
             StartCoroutine(TransitionController.Instance.SwitchScenes("MainMenu", ""));
 
-        string appTitle = GetNotificationAppTitle(tags);
-        Character character = GetCharacterTag(tags);
-
-        if (!(character == Character.Robin && isPhoneUp))
+        // find and queue delay
+        if (!justSkipped)
         {
-            Nullable<float> delay = ExtractDelayFromTags(tags);
+            string appTitle = GetNotificationAppTitle(tags);
+            Character character = GetCharacterTag(tags);
 
-            float defaultDelay = defaultNonTextDelay;
-            if (isPhoneUp && appTitle == null)
-                defaultDelay = defaultTextDelay;
+            if (!(character == Character.Robin && isPhoneUp) && appTitle == null)
+            {
+                Nullable<float> delay = ExtractDelayFromTags(tags);
 
-            VAManager.Instance.EnqueueDelay(delay ?? defaultDelay);
+                float defaultDelay = isPhoneUp ? defaultTextDelay : defaultNonTextDelay;
+                VAManager.Instance.EnqueueDelay(delay ?? defaultDelay);
+            }
         }
+
+        justSkipped = false;
     }
 
     private Nullable<float> ExtractDelayFromTags(List<string> tags)
@@ -511,6 +524,8 @@ public class DialogManager : MonoBehaviour
      */
     private void AddMessage(string text, Character character)
     {
+        if (!isPhoneUp) return;
+        
         GameObject obj = Instantiate(messageBubblePrefab, historyContent);
         MessageBubble bubble = obj.GetComponent<MessageBubble>();
         bubble.SetMessage(text, character);
@@ -526,6 +541,8 @@ public class DialogManager : MonoBehaviour
      */
     private void AddNotification(string appTitle, string body)
     {
+        if (!isPhoneUp) return;
+        
         GameObject obj = Instantiate(notificationBubblePrefab, historyContent);
         NotificationBubble bubble = obj.GetComponent<NotificationBubble>();
         bubble.SetMessage(appTitle, body);
