@@ -91,9 +91,13 @@ public class ItemDropNode : MonoBehaviour
     public void InitializeSprite() {
         if (ActiveItem != null) {
             SpriteRenderer activeItemSpriteRenderer = ActiveItem.GetComponent<SpriteRenderer>();
+            PickupObject activeItemPickupObject = ActiveItem.GetComponent<PickupObject>();
 
             if (ActiveSpriteOverride != null) {
                 SpriteRenderer.sprite = ActiveSpriteOverride;
+                OnActiveChange(true);
+            } else if (activeItemPickupObject.AlternateGroundSprite != null) {
+                SpriteRenderer.sprite = activeItemPickupObject.AlternateGroundSprite;
                 OnActiveChange(true);
             } else {
                 SpriteRenderer.sprite = activeItemSpriteRenderer.sprite;
