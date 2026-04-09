@@ -64,8 +64,6 @@ public class DialogManager : MonoBehaviour
             Debug.LogError("DialogManager: inkJson is not assigned!");
         else
             story = new Story(inkJson.text);
-
-        sam = GameObject.FindGameObjectWithTag("Sam");
     }
 
     private void Update()
@@ -334,7 +332,10 @@ public class DialogManager : MonoBehaviour
         }
 
         if (tags.Contains("disableSam"))
+        {
+            sam = GameObject.FindGameObjectWithTag("Sam");
             sam.SetActive(false);
+        }
 
         if (tags.Contains("enableSam"))
             sam.SetActive(true);
