@@ -141,7 +141,6 @@ public class ItemDropNode : MonoBehaviour
 
         if (inventorySystem.TargetDropNode == this) {
             if (ActiveItem != null && inventorySystem.CarriedItem == null) {
-                Debug.Log("A");
                 StartCoroutine(TriggerInteractAnimation(() =>
                     {
                         inventorySystem.AddItem(ActiveItem);
@@ -150,7 +149,6 @@ public class ItemDropNode : MonoBehaviour
                         ItemRemoved?.Invoke();
                     }));
             } else if (inventorySystem.CarriedItem) {
-                Debug.Log("B");
                 SetActiveItem(inventorySystem.CarriedItem);
 
                 StartCoroutine(TriggerInteractAnimation(() =>
