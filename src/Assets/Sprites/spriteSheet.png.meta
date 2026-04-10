@@ -811,7 +811,7 @@ TextureImporter:
         width: 30
         height: 23
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 1, y: 1, z: 1, w: 1}
       outline: []
       physicsShape: []
@@ -819,6 +819,48 @@ TextureImporter:
       bones: []
       spriteID: 9ffedbe6244fc838298f53046a9f9c22
       internalID: 1882475059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spriteSheet_0
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 176
+        width: 20
+        height: 40
+      alignment: 9
+      pivot: {x: 0.85, y: 0.55}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca82ea86a56a58e54a7c6f78b754a55d
+      internalID: 769316857
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: spriteSheet_1
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 174
+        width: 38
+        height: 42
+      alignment: 9
+      pivot: {x: 0.57894737, y: 0.5952381}
+      border: {x: 1, y: 1, z: 1, w: 1}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 43cf8accd842c6fb3af169e8712e0e98
+      internalID: 307517865
       vertices: []
       indices: 
       edges: []
@@ -859,6 +901,8 @@ TextureImporter:
       portal_0: -1330901461
       portal_1: 1757281287
       rocks: 1105027189
+      spriteSheet_0: 769316857
+      spriteSheet_1: 307517865
       stump: -1598216196
       tree_0: -1686938023
       tree_1: 1942155268
