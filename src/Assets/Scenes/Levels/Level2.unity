@@ -8181,6 +8181,10 @@ PrefabInstance:
       propertyPath: m_NormalizedViewPortRect.height
       value: 0.90654314
       objectReference: {fileID: 0}
+    - target: {fileID: 7316606289842739384, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: maxEmissionRate
+      value: 3000
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
