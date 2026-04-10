@@ -402,7 +402,7 @@ I can't cross the water right now. #Robin #Voice:VA/RobinLevelBarks/CantCrossWat
 -> END
 
 == bark_log_blocks_river ==
-It looks like that log is blocking the river. #Robin #Voice:LogBlockingRiver
+It looks like that log is blocking the river. #Robin #Voice:VA/RobinLevelBarks/LogBlockingRiver
 -> END
 
 == bark_jump_up ==

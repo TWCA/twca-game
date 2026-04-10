@@ -94,6 +94,12 @@ public class BarkManager : MonoBehaviour
 
                 break;
 
+            case Level.WalkWithSam:
+                if (TimeSinceDialog > 25.0 && timesTimeTraveled == 0)
+                    SuggestBark("bark_sam_follow");
+                
+                break;
+
             case Level.Level1:
                 if (timesTimeTraveled <= 1)
                 {
@@ -146,10 +152,26 @@ public class BarkManager : MonoBehaviour
 
                 break;
 
-            // Level5,
-            // Reunited,
-            // Return,
-            // Ending
+            case Level.Reunited:
+                if (TimeSinceDialog > 10.0 && dialogProgress >= 1)
+                    SuggestBark("bark_good_dog");
+
+                if (TimeSinceDialog > 15.0 && dialogProgress >= 1)
+                    SuggestBark("bark_sam_follow");
+
+                break;
+
+            case Level.Return:
+                if (TimeSinceDialog > 5.0 && dialogProgress > 0 && !jumpedUp)
+                    SuggestBark("bark_jump_up");
+
+                if (TimeSinceDialog > 10.0 && jumpedUp)
+                    SuggestBark("bark_good_dog");
+
+                if (TimeSinceDialog > 15.0 && dialogProgress > 2)
+                    SuggestBark("bark_sam_follow");
+
+                break;
         }
     }
 
