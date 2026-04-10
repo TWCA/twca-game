@@ -10,11 +10,14 @@ public class BarkManager : MonoBehaviour
     [SerializeField] private Level CurrentLevel;
 
     private float TimeOnLevel = 0;
-    private float TimeOnLevelWithoutDialog = 0;
     private float TimeSinceDialog = 0;
     private float TimeSinceBark = 0;
     private int BarksOnLevel = 0;
+    private int DialogProgress = 0;
     private Dictionary<string, int> PlayedBarks = new Dictionary<string, int>();
+
+    // story flags
+    [SerializeField] private bool kibbleCollected = false;
 
     private void Awake()
     {
@@ -32,10 +35,6 @@ public class BarkManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-    }
-
     void Update()
     {
         TimeOnLevel += Time.deltaTime;
@@ -47,8 +46,39 @@ public class BarkManager : MonoBehaviour
         }
         else
         {
-            TimeOnLevelWithoutDialog += Time.deltaTime;
             TimeSinceDialog += Time.deltaTime;
+        }
+
+        switch (CurrentLevel)
+        {
+            case Level.RobinsRoom:
+                if (TimeSinceDialog > 15.0 && DialogProgress >= 1)
+                    SuggestBark("bark_feed_sam");
+                break;
+
+            case Level.Kitchen:
+                if (!kibbleCollected)
+                {
+                    if (TimeSinceDialog > 15.0)
+                        SuggestBark("bark_kibble");
+                }
+                else
+                {
+                    if (TimeSinceDialog > 15.0)
+                        SuggestBark("bark_bowl");
+                }
+
+                break;
+            // WalkWithSam,
+            // Level1,
+            // Level2,
+            // Level3,
+            // Descent,
+            // Level4,
+            // Level5,
+            // Reunited,
+            // Return,
+            // Ending
         }
     }
 
@@ -56,44 +86,55 @@ public class BarkManager : MonoBehaviour
      * Checks if it's going to be annoying to play a bark
      * If it's not annoying plays it
      */
-    private bool SuggestBark(string knot, bool encourageRepeats)
+    private bool SuggestBark(string knot, RepeatMode repeatMode = RepeatMode.Discouraged)
     {
         if (DialogManager.Instance.IsDialogRunning()) return false;
 
         int timesPlayed = PlayedBarks.GetValueOrDefault(knot);
-        
+
         if (timesPlayed >= 3 && BarksOnLevel > 0)
             return false; // repeated too many times
 
         if (timesPlayed == 0)
         {
             // allow instantly unless we have played multiple lines have played in this level
-            if (BarksOnLevel > 1)
-                if (TimeSinceBark < 5.0) 
+            if (BarksOnLevel >= 2)
+            {
+                if (TimeSinceBark < 5.0)
                     return false;
+                else if (TimeSinceBark < 2.0)
+                    return false;
+            }
         }
         else // repeating line 
         {
-            if (encourageRepeats)
+            if (repeatMode == RepeatMode.Encouraged)
             {
                 // repeating but that's allowed
-                if (TimeSinceBark < 3.0) 
+                if (TimeSinceBark < 3.0)
                     return false;
             }
-            else if (BarksOnLevel > 1) // 2+ barks on this level
+            else if (repeatMode == RepeatMode.Disabled)
             {
-                if (TimeSinceBark < 120.0) 
-                    return false;
+                return false;
             }
-            else if (BarksOnLevel == 1) // 1 bark on this level
+            else // repeatMode == RepeatMode.Discouraged
             {
-                if (TimeSinceBark < 30.0) 
-                    return false;
-            }
-            else // 0 barks on level
-            {
-                if (TimeSinceBark < 15.0) 
-                    return false;
+                if (BarksOnLevel >= 2) // 2+ barks on this level
+                {
+                    if (TimeSinceBark < 120.0)
+                        return false;
+                }
+                else if (BarksOnLevel == 1) // 1 bark on this level
+                {
+                    if (TimeSinceBark < 30.0)
+                        return false;
+                }
+                else // 0 barks on level, only repeated in another level
+                {
+                    if (TimeSinceBark < 15.0)
+                        return false;
+                }
             }
         }
 
@@ -108,15 +149,16 @@ public class BarkManager : MonoBehaviour
     {
         CurrentLevel = level;
         Instance.TimeOnLevel = 0;
-        Instance.TimeOnLevelWithoutDialog = 0;
         Instance.TimeSinceDialog = 0;
         TimeSinceBark = 0;
         BarksOnLevel = 0;
+        DialogProgress = 0;
     }
 
     public void OnCollectedItem(GameObject node, GameObject item)
     {
-        // TODO
+        if (item.name == "Kibble")
+            kibbleCollected = true;
     }
 
     public void OnPlacedItem(GameObject node, GameObject item)
@@ -131,7 +173,7 @@ public class BarkManager : MonoBehaviour
 
     public void OnDialogTriggered()
     {
-        // TODO
+        DialogProgress++;
     }
 
     public void OnJumped(GameObject agent)
@@ -159,5 +201,12 @@ public class BarkManager : MonoBehaviour
         Reunited,
         Return,
         Ending
+    }
+
+    private enum RepeatMode
+    {
+        Encouraged,
+        Discouraged,
+        Disabled
     }
 }
