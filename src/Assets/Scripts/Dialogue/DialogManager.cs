@@ -203,6 +203,8 @@ public class DialogManager : MonoBehaviour
 
     public void EndDialog()
     {
+        ClearChoices();
+        
         isRunning = false;
 
         DialogRoot.SetActive(false);
@@ -251,8 +253,6 @@ public class DialogManager : MonoBehaviour
     {
         if (waitingForTriggerCount > 0) return;
 
-        ClearChoices();
-
         if (!story.canContinue)
         {
             if (story.currentChoices.Count > 0)
@@ -278,20 +278,24 @@ public class DialogManager : MonoBehaviour
         // continue when finished
         VAManager.Instance.OnQueueEmpty(ContinueStoryWithDelays);
 
-        AddChoiceButton("(Skip)", () =>
+        if (!HasChoiceContaining("(Skip)"))
         {
-            // act as if the line has started
-            VAManager.Instance.RunAudioStartedCallbacks();
-            
-            // cancel our callback after the line
-            VAManager.Instance.CancelOnQueueEmpty(ContinueStoryWithDelays);
-            
-            // clear the queue
-            VAManager.Instance.ClearQueue();
+            ClearChoices();
+            AddChoiceButton("(Skip)", () =>
+            {
+                // act as if the line has started
+                VAManager.Instance.RunAudioStartedCallbacks();
 
-            // continue story, skipping the next delay
-            ContinueStoryWithoutDelays();
-        });
+                // cancel our callback after the line
+                VAManager.Instance.CancelOnQueueEmpty(ContinueStoryWithDelays);
+
+                // clear the queue
+                VAManager.Instance.ClearQueue();
+
+                // continue story, skipping the next delay
+                ContinueStoryWithoutDelays();
+            });
+        }
     }
 
     /**
@@ -480,6 +484,7 @@ public class DialogManager : MonoBehaviour
             AddChoiceButton(choice.text, () =>
             {
                 story.ChooseChoiceIndex(choice.index);
+                ClearChoices();
                 ContinueStoryWithDelays();
             });
         }
@@ -530,6 +535,18 @@ public class DialogManager : MonoBehaviour
         button.onClick.AddListener(callback);
     }
 
+    private bool HasChoiceContaining(string query)
+    {
+        for (int i = choicesRoot.childCount - 1; i >= 0; i--)
+        {
+            GameObject button = choicesRoot.GetChild(i).gameObject;
+            Text label = button.GetComponentInChildren<Text>();
+            if (label.text.Contains(query))
+                return true;
+        }
+
+        return false;
+    }
 
     /**
      * Adds a conversation message to the screen.
