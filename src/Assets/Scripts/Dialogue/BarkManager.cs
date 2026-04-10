@@ -2,29 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BarkManager : MonoBehaviour
 {
     public static BarkManager Instance { get; private set; }
 
-    [SerializeField] private Level CurrentLevel;
+    [FormerlySerializedAs("CurrentLevel")] [SerializeField] private Level currentLevel;
 
     private float TimeOnLevel = 0;
     private float TimeSinceDialog = 0;
     private float TimeSinceBark = 0;
-    private int BarksOnLevel = 0;
-    private int DialogProgress = 0;
+    private float timeSinceTimeTravel = 0;
+    private int barksOnLevel = 0;
+    private int dialogProgress = 0;
     private Dictionary<string, int> PlayedBarks = new Dictionary<string, int>();
 
     // story flags
     [SerializeField] private bool kibbleCollected = false;
+    [SerializeField] private int timesTimeTraveled = 0;
 
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
             // update the current level and kill ourselves because there is already an instance
-            Instance.OnLevelChange(CurrentLevel);
+            Instance.OnLevelChange(currentLevel);
             Destroy(this.gameObject);
         }
         else
@@ -32,6 +35,13 @@ public class BarkManager : MonoBehaviour
             // we are the only one, we become the instance
             DontDestroyOnLoad(gameObject);
             Instance = this;
+
+
+            TimeManager.Instance.onTimeChanged += () =>
+            {
+                timeSinceTimeTravel = 0;
+                timesTimeTraveled++;
+            };
         }
     }
 
@@ -39,6 +49,7 @@ public class BarkManager : MonoBehaviour
     {
         TimeOnLevel += Time.deltaTime;
         TimeSinceBark += Time.deltaTime;
+        timeSinceTimeTravel += Time.deltaTime;
 
         if (DialogManager.Instance.IsDialogRunning())
         {
@@ -49,10 +60,10 @@ public class BarkManager : MonoBehaviour
             TimeSinceDialog += Time.deltaTime;
         }
 
-        switch (CurrentLevel)
+        switch (currentLevel)
         {
             case Level.RobinsRoom:
-                if (TimeSinceDialog > 15.0 && DialogProgress >= 1)
+                if (TimeSinceDialog > 15.0 && dialogProgress >= 1)
                     SuggestBark("bark_feed_sam");
                 break;
 
@@ -69,8 +80,19 @@ public class BarkManager : MonoBehaviour
                 }
 
                 break;
-            // WalkWithSam,
-            // Level1,
+            
+            case Level.Level1:
+                if (timesTimeTraveled <= 1)
+                {
+                    // have not traveled in level
+                    if (timeSinceTimeTravel > 15.0)
+                        SuggestBark("bark_reception");
+                } else {
+                    // have traveled in level
+                    if (timeSinceTimeTravel > 45.0 && TimeSinceDialog > 30.0)
+                        SuggestBark("bark_reception");
+                }
+                break;
             // Level2,
             // Level3,
             // Descent,
@@ -92,13 +114,13 @@ public class BarkManager : MonoBehaviour
 
         int timesPlayed = PlayedBarks.GetValueOrDefault(knot);
 
-        if (timesPlayed >= 3 && BarksOnLevel > 0)
+        if (timesPlayed >= 3 && barksOnLevel > 0)
             return false; // repeated too many times
 
         if (timesPlayed == 0)
         {
             // allow instantly unless we have played multiple lines have played in this level
-            if (BarksOnLevel >= 2)
+            if (barksOnLevel >= 2)
             {
                 if (TimeSinceBark < 5.0)
                     return false;
@@ -120,12 +142,12 @@ public class BarkManager : MonoBehaviour
             }
             else // repeatMode == RepeatMode.Discouraged
             {
-                if (BarksOnLevel >= 2) // 2+ barks on this level
+                if (barksOnLevel >= 2) // 2+ barks on this level
                 {
                     if (TimeSinceBark < 120.0)
                         return false;
                 }
-                else if (BarksOnLevel == 1) // 1 bark on this level
+                else if (barksOnLevel == 1) // 1 bark on this level
                 {
                     if (TimeSinceBark < 30.0)
                         return false;
@@ -141,18 +163,19 @@ public class BarkManager : MonoBehaviour
         DialogManager.Instance.StartDialogHeadless(knot);
         PlayedBarks.Add(knot, PlayedBarks.GetValueOrDefault(knot) + 1);
         TimeSinceBark = 0;
-        BarksOnLevel++;
+        barksOnLevel++;
         return true;
     }
 
     private void OnLevelChange(Level level)
     {
-        CurrentLevel = level;
+        currentLevel = level;
         Instance.TimeOnLevel = 0;
         Instance.TimeSinceDialog = 0;
         TimeSinceBark = 0;
-        BarksOnLevel = 0;
-        DialogProgress = 0;
+        barksOnLevel = 0;
+        dialogProgress = 0;
+        timeSinceTimeTravel = 0;
     }
 
     public void OnCollectedItem(GameObject node, GameObject item)
@@ -173,7 +196,7 @@ public class BarkManager : MonoBehaviour
 
     public void OnDialogTriggered()
     {
-        DialogProgress++;
+        dialogProgress++;
     }
 
     public void OnJumped(GameObject agent)
