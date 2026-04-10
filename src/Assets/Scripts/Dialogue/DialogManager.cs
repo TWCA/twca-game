@@ -204,7 +204,7 @@ public class DialogManager : MonoBehaviour
     public void EndDialog()
     {
         ClearChoices();
-        
+
         isRunning = false;
 
         DialogRoot.SetActive(false);
@@ -244,8 +244,8 @@ public class DialogManager : MonoBehaviour
     private void ContinueStoryWithDelays()
     {
         ContinueStory(false);
-    }    
-    
+    }
+
     private void ContinueStoryWithoutDelays()
     {
         ContinueStory(true);
@@ -261,11 +261,18 @@ public class DialogManager : MonoBehaviour
         if (!story.canContinue)
         {
             if (story.currentChoices.Count > 0)
+            {
                 RefreshChoices();
+            }
             else if (DialogRoot.activeSelf)
+            {
+                ClearChoices();
                 AddChoiceButton("(Put Down Phone)", EndDialog);
+            }
             else
+            {
                 EndDialog();
+            }
 
             return;
         }
