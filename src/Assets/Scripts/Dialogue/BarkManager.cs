@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
@@ -39,17 +40,19 @@ public class BarkManager : MonoBehaviour
             // we are the only one, we become the instance
             DontDestroyOnLoad(gameObject);
             Instance = this;
-
-
-            TimeManager.Instance.onTimeChanged += () =>
-            {
-                timeSinceTimeTravel = 0;
-                timesTimeTraveled++;
-            };
         }
     }
 
-    void Update()
+    void Start()
+    {
+        TimeManager.Instance.onTimeChanged += () =>
+        {
+            timeSinceTimeTravel = 0;
+            timesTimeTraveled++;
+        };
+    }
+
+    void FixedUpdate()
     {
         TimeOnLevel += Time.deltaTime;
         TimeSinceBark += Time.deltaTime;
@@ -120,7 +123,8 @@ public class BarkManager : MonoBehaviour
 
                 break;
 
-            // Level3,
+            case Level.Level3:
+                break;
             // Descent,
             // Level4,
             // Level5,
@@ -232,6 +236,12 @@ public class BarkManager : MonoBehaviour
         dialogProgress++;
     }
 
+    public void OnNearObstacle(GameObject agent, string name)
+    {
+        if(agent.tag == "Player" && name == "bush")
+            SuggestBark("bark_avoid_fire");
+    }
+    
     public void OnJumped(GameObject agent)
     {
         // TODO

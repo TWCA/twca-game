@@ -56,6 +56,12 @@ public class PathFollower : MonoBehaviour
         PathNetwork net = PathNetwork.Instance;
         bool isFuture = TimeManager.Instance.IsFuture();
 
+        (Vector2 position, int path) = net.NearestObstacle(transform.position, isFuture);
+        if (Vector2.Distance(position, transform.position) < 20.0)
+        {
+            BarkManager.Instance.OnNearObstacle(gameObject, net.GetPathName(path));
+        }
+
         if (IsPathfinding())
         {
             // check if the last section of the path is intact
