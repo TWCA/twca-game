@@ -153,7 +153,7 @@ public class BarkManager : MonoBehaviour
                 break;
 
             case Level.Reunited:
-                if (TimeSinceDialog > 10.0 && dialogProgress >= 1)
+                if (TimeSinceDialog > 8.0 && dialogProgress >= 1)
                     SuggestBark("bark_good_dog");
 
                 if (TimeSinceDialog > 15.0 && dialogProgress >= 1)
@@ -165,7 +165,7 @@ public class BarkManager : MonoBehaviour
                 if (TimeSinceDialog > 5.0 && dialogProgress > 0 && !jumpedUp)
                     SuggestBark("bark_jump_up");
 
-                if (TimeSinceDialog > 10.0 && jumpedUp)
+                if (TimeSinceDialog > 8.0 && jumpedUp)
                     SuggestBark("bark_good_dog");
 
                 if (TimeSinceDialog > 15.0 && dialogProgress > 2)
