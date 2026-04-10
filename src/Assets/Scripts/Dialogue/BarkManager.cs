@@ -77,7 +77,7 @@ public class BarkManager : MonoBehaviour
                     if (TimeSinceDialog > 15.0)
                         SuggestBark("bark_kibble");
                 }
-                else
+                else if(!samFed)
                 {
                     if (TimeSinceDialog > 15.0)
                         SuggestBark("bark_bowl");
@@ -108,14 +108,14 @@ public class BarkManager : MonoBehaviour
                     if (TimeOnLevel > 60.0)
                         SuggestBark("bark_gate_locked");
                     else if (TimeOnLevel > 30.0)
-                        SuggestBark("bark_gate");
+                        SuggestBark("bark_gate", RepeatMode.Disabled);
                 }
                 else if (keyCollected && !gateUnlocked)
                 {
                     if (TimeOnLevel > 240.0)
                         SuggestBark("bark_gate_locked");
                     else if (TimeOnLevel > 120.0)
-                        SuggestBark("bark_gate");
+                        SuggestBark("bark_gate", RepeatMode.Disabled);
                 }
 
                 break;
