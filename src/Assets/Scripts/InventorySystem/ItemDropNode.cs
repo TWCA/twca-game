@@ -121,9 +121,9 @@ public class ItemDropNode : MonoBehaviour
     /*
     * Handles when an item is dragged and dropped over a node
     */
-    public bool ItemIncoming(GameObject prefab) {
+    public bool ItemIncoming(GameObject itemPrefab) {
         // Do we even allow this item in this node?
-        if (AllowDeny.IsItemAllowed(prefab.name) && !(SingleUse && used)) {
+        if (AllowDeny.IsItemAllowed(itemPrefab.name) && !(SingleUse && used)) {
             if (ActiveItem != null) {
                 // Call some abitrary function that runs when one item is dragged onto the other
                 // ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
@@ -132,15 +132,17 @@ public class ItemDropNode : MonoBehaviour
                 // Its producing some issues that will be tackled for beta
                 return false;
             } else {
-                inventorySystem.CarriedItem = prefab;
+                inventorySystem.CarriedItem = itemPrefab;
                 inventorySystem.HasMouseItem = false;
             }
 
             inventorySystem.TargetDropNode = this;
 
             return true;
-        } else {
-            Debug.Log("No, you cannot put that item there.");
+        } else
+        {
+            BarkManager.Instance.OnPlacedItemFailed(gameObject, itemPrefab);
+            // Debug.Log("No, you cannot put that item there.");
 
             return false;
         }
@@ -157,6 +159,7 @@ public class ItemDropNode : MonoBehaviour
                 StartCoroutine(TriggerInteractAnimation(() =>
                     {
                         inventorySystem.AddItem(ActiveItem);
+                        BarkManager.Instance.OnCollectedItem(gameObject, ActiveItem);
                         ClearActiveItem();
                         InitializeSprite();
                         ItemRemoved?.Invoke();
@@ -169,6 +172,7 @@ public class ItemDropNode : MonoBehaviour
                 StartCoroutine(TriggerInteractAnimation(() =>
                     {
                         inventorySystem.RemoveItem(ActiveItem);
+                        BarkManager.Instance.OnPlacedItem(gameObject, ActiveItem);
                         
                         InitializeSprite();
                         ItemPlaced?.Invoke();

@@ -32,6 +32,35 @@ public class BarkManager : MonoBehaviour
     {
     }
 
+    public void OnCollectedItem(GameObject node, GameObject item)
+    {
+        // TODO
+    }  
+    
+    public void OnPlacedItem(GameObject node, GameObject item)
+    {
+        // TODO
+    }
+    public void OnPlacedItemFailed(GameObject node, GameObject item)
+    {
+        // TODO
+    }
+    
+    public void OnDialogTriggered()
+    {
+        // TODO
+    }
+    
+    public void OnJumped(GameObject agent)
+    {
+        // TODO
+    }
+
+    public void OnJumpedFailed(GameObject agent)
+    {
+        // TODO
+    }
+
     private enum Level
     {
         None,

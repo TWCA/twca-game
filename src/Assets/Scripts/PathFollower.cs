@@ -231,11 +231,13 @@ public class PathFollower : MonoBehaviour
                 (jumpStart, jumpEnd) = net.PathPointsGoingDirection(nearestPath, direction);
                 isJumping = true;
                 jumpDistanceTraveled = 0;
+                BarkManager.Instance.OnJumped(gameObject);
             }
             else
             {
                 // fail to jump
                 StopPathfinding();
+                BarkManager.Instance.OnJumpedFailed(gameObject);
                 return;
             }
         }
