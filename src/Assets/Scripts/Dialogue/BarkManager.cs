@@ -26,6 +26,11 @@ public class BarkManager : MonoBehaviour
     [SerializeField] private int timesTimeTraveled = 0;
     [SerializeField] private bool keyCollected = false;
     [SerializeField] private bool gateUnlocked = false;
+    [SerializeField] private bool triedToFillInFuture = false;
+    [SerializeField] private bool failedJump = false;
+    [SerializeField] private bool jumpedDown = false;
+
+    [SerializeField] private bool jumpedUp = false;
 
     private void Awake()
     {
@@ -80,7 +85,7 @@ public class BarkManager : MonoBehaviour
                     if (TimeSinceDialog > 15.0)
                         SuggestBark("bark_kibble");
                 }
-                else if(!samFed)
+                else if (!samFed)
                 {
                     if (TimeSinceDialog > 15.0)
                         SuggestBark("bark_bowl");
@@ -105,7 +110,6 @@ public class BarkManager : MonoBehaviour
                 break;
 
             case Level.Level2:
-
                 if (!keyCollected)
                 {
                     if (TimeOnLevel > 60.0)
@@ -124,8 +128,17 @@ public class BarkManager : MonoBehaviour
                 break;
 
             case Level.Level3:
+                if (TimeOnLevel > 60.0 && !TimeManager.Instance.IsFuture())
+                    SuggestBark("bark_fire_spread", RepeatMode.Disabled);
+
                 break;
-            // Descent,
+
+            case Level.Descent:
+                if (TimeOnLevel > 25.0 && !jumpedDown)
+                    SuggestBark("bark_could_jump");
+
+                break;
+
             // Level4,
             // Level5,
             // Reunited,
@@ -224,6 +237,19 @@ public class BarkManager : MonoBehaviour
 
         if (node.name == "GateNode" && item.name == "Key")
             gateUnlocked = true;
+
+        if (node.name == "UnevenBucketNode" && item.name == "BucketEmpty")
+            SuggestBark("bark_uneven_ground");
+
+        if (node.name == "FillUpPointFuture" && item.name == "BucketEmpty")
+        {
+            if (!triedToFillInFuture)
+                SuggestBark("bark_slow_fill");
+            else
+                SuggestBark("bark_slow_fill_hours");
+
+            triedToFillInFuture = true;
+        }
     }
 
     public void OnPlacedItemFailed(GameObject node, GameObject item)
@@ -238,18 +264,26 @@ public class BarkManager : MonoBehaviour
 
     public void OnNearObstacle(GameObject agent, string name)
     {
-        if(agent.tag == "Player" && name == "bush")
+        if (agent.tag == "Player" && name == "bush")
             SuggestBark("bark_avoid_fire");
     }
-    
+
     public void OnJumped(GameObject agent)
     {
-        // TODO
+        if (currentLevel == Level.Return)
+            jumpedUp = true;
+        else
+            jumpedDown = true;
     }
 
     public void OnJumpedFailed(GameObject agent)
     {
-        // TODO
+        if (!failedJump)
+            SuggestBark("bark_big_jump", RepeatMode.Encouraged);
+        else
+            SuggestBark("bark_jump_momentum", RepeatMode.Encouraged);
+
+        failedJump = true;
     }
 
     private enum Level
