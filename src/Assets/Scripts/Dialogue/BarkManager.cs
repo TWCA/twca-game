@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class BarkManager : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class BarkManager : MonoBehaviour
     [SerializeField] private bool triedToFillInFuture = false;
     [SerializeField] private bool failedJump = false;
     [SerializeField] private bool jumpedDown = false;
-
+    [SerializeField] private bool logCollected = false;
     [SerializeField] private bool jumpedUp = false;
 
     private void Awake()
@@ -139,7 +140,12 @@ public class BarkManager : MonoBehaviour
 
                 break;
 
-            // Level4,
+            case Level.Level4:
+                if (TimeOnLevel > 25.0 && !logCollected)
+                    SuggestBark("bark_log_blocks_river");
+
+                break;
+
             // Level5,
             // Reunited,
             // Return,
@@ -228,6 +234,9 @@ public class BarkManager : MonoBehaviour
 
         if (item.name == "Key")
             keyCollected = true;
+
+        if (item.name.ToLower().Contains("log"))
+            logCollected = true;
     }
 
     public void OnPlacedItem(GameObject node, GameObject item)
@@ -254,7 +263,13 @@ public class BarkManager : MonoBehaviour
 
     public void OnPlacedItemFailed(GameObject node, GameObject item)
     {
-        // TODO
+        if (item.name.ToLower().Contains("log"))
+        {
+            if (Random.Range(0, 2) < 1)
+                SuggestBark("bark_fast_water1", RepeatMode.Encouraged);
+            else
+                SuggestBark("bark_fast_water2", RepeatMode.Encouraged);
+        }
     }
 
     public void OnDialogTriggered()
@@ -266,6 +281,15 @@ public class BarkManager : MonoBehaviour
     {
         if (agent.tag == "Player" && name == "bush")
             SuggestBark("bark_avoid_fire");
+
+        bool waterLevel = currentLevel == Level.Level4 || currentLevel == Level.Level5;
+        if (agent.tag == "Player" && waterLevel)
+        {
+            if (Random.Range(0, 2) < 1)
+                SuggestBark("bark_fast_water1");
+            else
+                SuggestBark("bark_cant_cross");
+        }
     }
 
     public void OnJumped(GameObject agent)
