@@ -146,10 +146,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.44230765
+    x: 0.26311058
     y: 0
-    width: 0.68997663
-    height: 0.50340134
+    width: 0.4741451
+    height: 0.5051079
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -340,7 +340,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -1160,8 +1160,8 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2000
-      minScalar: 10
+      scalar: 0
+      minScalar: 0
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -5133,7 +5133,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rainParticleSystem: {fileID: 9194941017122940838}
-  maxEmissionRate: 300
+  maxEmissionRate: 3000
 --- !u!1001 &1507466965273371196
 PrefabInstance:
   m_ObjectHideFlags: 0
