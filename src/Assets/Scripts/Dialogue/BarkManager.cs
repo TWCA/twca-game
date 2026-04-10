@@ -8,7 +8,8 @@ public class BarkManager : MonoBehaviour
 {
     public static BarkManager Instance { get; private set; }
 
-    [FormerlySerializedAs("CurrentLevel")] [SerializeField] private Level currentLevel;
+    [FormerlySerializedAs("CurrentLevel")] [SerializeField]
+    private Level currentLevel;
 
     private float TimeOnLevel = 0;
     private float TimeSinceDialog = 0;
@@ -20,7 +21,10 @@ public class BarkManager : MonoBehaviour
 
     // story flags
     [SerializeField] private bool kibbleCollected = false;
+    [SerializeField] private bool samFed = false;
     [SerializeField] private int timesTimeTraveled = 0;
+    [SerializeField] private bool keyCollected = false;
+    [SerializeField] private bool gateUnlocked = false;
 
     private void Awake()
     {
@@ -80,20 +84,42 @@ public class BarkManager : MonoBehaviour
                 }
 
                 break;
-            
+
             case Level.Level1:
                 if (timesTimeTraveled <= 1)
                 {
                     // have not traveled in level
                     if (timeSinceTimeTravel > 15.0)
                         SuggestBark("bark_reception");
-                } else {
+                }
+                else
+                {
                     // have traveled in level
                     if (timeSinceTimeTravel > 45.0 && TimeSinceDialog > 30.0)
                         SuggestBark("bark_reception");
                 }
+
                 break;
-            // Level2,
+
+            case Level.Level2:
+
+                if (!keyCollected)
+                {
+                    if (TimeOnLevel > 60.0)
+                        SuggestBark("bark_gate_locked");
+                    else if (TimeOnLevel > 30.0)
+                        SuggestBark("bark_gate");
+                }
+                else if (keyCollected && !gateUnlocked)
+                {
+                    if (TimeOnLevel > 240.0)
+                        SuggestBark("bark_gate_locked");
+                    else if (TimeOnLevel > 120.0)
+                        SuggestBark("bark_gate");
+                }
+
+                break;
+
             // Level3,
             // Descent,
             // Level4,
@@ -182,11 +208,18 @@ public class BarkManager : MonoBehaviour
     {
         if (item.name == "Kibble")
             kibbleCollected = true;
+
+        if (item.name == "Key")
+            keyCollected = true;
     }
 
     public void OnPlacedItem(GameObject node, GameObject item)
     {
-        // TODO
+        if (node.name == "DogBowlDropNode" && item.name == "Kibble")
+            samFed = true;
+
+        if (node.name == "GateNode" && item.name == "Key")
+            gateUnlocked = true;
     }
 
     public void OnPlacedItemFailed(GameObject node, GameObject item)
