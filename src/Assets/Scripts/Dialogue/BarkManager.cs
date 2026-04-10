@@ -60,19 +60,24 @@ public class BarkManager : MonoBehaviour
 
     void FixedUpdate()
     {
+        // count time passing
         TimeOnLevel += Time.deltaTime;
         TimeSinceBark += Time.deltaTime;
         timeSinceTimeTravel += Time.deltaTime;
 
         if (DialogManager.Instance.IsDialogRunning())
-        {
             TimeSinceDialog = 0;
-        }
         else
-        {
             TimeSinceDialog += Time.deltaTime;
-        }
 
+        PlayLevelSpecificBarks();
+    }
+
+    /**
+     * Plays barks if the player takes too long to progress in a level
+     */
+    private void PlayLevelSpecificBarks()
+    {
         switch (currentLevel)
         {
             case Level.RobinsRoom:
@@ -97,7 +102,7 @@ public class BarkManager : MonoBehaviour
             case Level.WalkWithSam:
                 if (TimeSinceDialog > 25.0 && timesTimeTraveled == 0)
                     SuggestBark("bark_sam_follow");
-                
+
                 break;
 
             case Level.Level1:
@@ -238,6 +243,9 @@ public class BarkManager : MonoBehaviour
         return true;
     }
 
+    /**
+     * Called then we transition into a new level
+     */
     private void OnLevelChange(Level level)
     {
         currentLevel = level;
@@ -249,6 +257,9 @@ public class BarkManager : MonoBehaviour
         timeSinceTimeTravel = 0;
     }
 
+    /**
+     * Called when we pick up an item
+     */
     public void OnCollectedItem(GameObject node, GameObject item)
     {
         if (item.name == "Kibble")
@@ -261,6 +272,9 @@ public class BarkManager : MonoBehaviour
             logCollected = true;
     }
 
+    /**
+     * Called when we place down an item
+     */
     public void OnPlacedItem(GameObject node, GameObject item)
     {
         if (node.name == "DogBowlDropNode" && item.name == "Kibble")
@@ -283,6 +297,9 @@ public class BarkManager : MonoBehaviour
         }
     }
 
+    /**
+     * Called when try placing an item, but it doesn't work
+     */
     public void OnPlacedItemFailed(GameObject node, GameObject item)
     {
         if (item.name.ToLower().Contains("log"))
@@ -294,18 +311,26 @@ public class BarkManager : MonoBehaviour
         }
     }
 
+    /**
+     * Called when the dialog is advanced by a trigger, reset for every scene
+     */
     public void OnDialogTriggered()
     {
         dialogProgress++;
     }
 
+    /**
+     * Called when any agent is within 20 pixels of a named path they can not currently cross
+     */
     public void OnNearObstacle(GameObject agent, string name)
     {
-        if (agent.tag == "Player" && name == "bush")
+        if (!agent.CompareTag("Player")) return;
+
+        if (name == "bush")
             SuggestBark("bark_avoid_fire");
 
         bool waterLevel = currentLevel == Level.Level4 || currentLevel == Level.Level5;
-        if (agent.tag == "Player" && waterLevel)
+        if (waterLevel)
         {
             if (Random.Range(0, 2) < 1)
                 SuggestBark("bark_fast_water1");
@@ -314,16 +339,26 @@ public class BarkManager : MonoBehaviour
         }
     }
 
+    /**
+     * Called when an agent jumps
+     */
     public void OnJumped(GameObject agent)
     {
+        if (!agent.CompareTag("Player")) return;
+        
         if (currentLevel == Level.Return)
             jumpedUp = true;
         else
             jumpedDown = true;
     }
 
+    /**
+     * Called when an agent failed to jump
+     */
     public void OnJumpedFailed(GameObject agent)
     {
+        if (!agent.CompareTag("Player")) return;
+        
         if (!failedJump)
             SuggestBark("bark_big_jump", RepeatMode.Encouraged);
         else
