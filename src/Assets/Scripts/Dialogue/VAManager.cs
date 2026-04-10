@@ -51,7 +51,7 @@ public class VAManager : MonoBehaviour
         {
             vaAudioSource.PlayOneShot(cmd.Clip);
             queueDelayTime += cmd.Clip.length;
-            RunAudioCallbacks();
+            RunAudioStartedCallbacks();
         }
         else if (cmd.Type == VACommand.CommandType.Delay)
         {
@@ -59,7 +59,7 @@ public class VAManager : MonoBehaviour
         }
     }
 
-    private void RunEmptyQueueCallbacks()
+    public void RunEmptyQueueCallbacks()
     {
         List<UnityAction> remainingActions = queueEmptyActions;
         queueEmptyActions = new List<UnityAction>();
@@ -68,7 +68,7 @@ public class VAManager : MonoBehaviour
             action();
     }
     
-    private void RunAudioCallbacks()
+    public void RunAudioStartedCallbacks()
     {
         List<UnityAction> remainingActions = audioStartedActions;
         audioStartedActions = new List<UnityAction>();
@@ -121,15 +121,22 @@ public class VAManager : MonoBehaviour
 
     public void OnQueueEmpty(UnityAction callback)
     {
-        if (IsQueueEmpty())
-            callback();
-        else
-            queueEmptyActions.Add(callback);
+        queueEmptyActions.Add(callback);
+    }
+    
+    public void CancelOnQueueEmpty(UnityAction callback)
+    {
+        queueEmptyActions.Remove(callback);
     }
     
     public void OnAudioStarted(UnityAction callback)
     {
         audioStartedActions.Add(callback);
+    }
+    
+    public void CancelOnAudioStarted(UnityAction callback)
+    {
+        audioStartedActions.Remove(callback);
     }
     
     private class VACommand
