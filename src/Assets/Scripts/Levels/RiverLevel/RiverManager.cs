@@ -49,7 +49,7 @@ public class RiverManager : MonoBehaviour
                 NightAnimator.runtimeAnimatorController = RiverNightP3;
 
                 Destroy(SecondRiverBlock.gameObject);
-                pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP2"), false);
+                pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP2"), true);
 
                 pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP3-A"), true);
                 pathNetwork.SetPathFutureTraversable(pathNetwork.GetNamedPath("nightP3-B"), true);

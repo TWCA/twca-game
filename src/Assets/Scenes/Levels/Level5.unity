@@ -5631,6 +5631,14 @@ PrefabInstance:
       propertyPath: m_NormalizedViewPortRect.height
       value: 0.898064
       objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9194941017122940838, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: ShapeModule.m_Rotation.x
       value: 0
@@ -10010,7 +10018,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[10].pastTraversable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3537925540223150068, guid: ad03c53c14e0d51a08b66578ca741af0, type: 3}
       propertyPath: paths.Array.data[11].pastTraversable
