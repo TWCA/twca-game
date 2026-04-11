@@ -13,6 +13,7 @@ public class DialogTrigger : MonoBehaviour
             if (DialogManager.Instance != null)
             {
                 DialogManager.Instance.ResumeDialogue();
+                BarkManager.Instance.OnDialogTriggered();
                 hasTriggered = true;
             }
         }

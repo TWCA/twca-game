@@ -92,6 +92,37 @@ public class PathNetwork : MonoBehaviour
 
         return (nearestPointOverall, nearestPath);
     }
+    
+    /**
+     * Find the nearest named path
+     */
+    public (Vector2 Position, int Path) NearestObstacle(Vector2 position, bool isFuture)
+    {
+        int nearestPath = -1;
+        Vector2 nearestPointOverall = Vector2.zero;
+        float nearestDistance = Single.PositiveInfinity;
+
+        for (int i = 0; i < paths.Count; i++)
+        {
+            // skip paths that are not named
+            if (paths[i].name == "") continue;
+            
+            // skip paths that are traversable
+            if (paths[i].Traversable(isFuture)) continue;
+
+            Vector2 nearestPoint = NearestPointOnPath(i, position);
+            float distance = Vector2.Distance(position, nearestPoint);
+
+            if (distance < nearestDistance)
+            {
+                nearestPath = i;
+                nearestPointOverall = nearestPoint;
+                nearestDistance = distance;
+            }
+        }
+
+        return (nearestPointOverall, nearestPath);
+    }
 
     /**
      * Find the nearest point on a single path from a position (but any time)

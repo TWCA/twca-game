@@ -56,6 +56,12 @@ public class PathFollower : MonoBehaviour
         PathNetwork net = PathNetwork.Instance;
         bool isFuture = TimeManager.Instance.IsFuture();
 
+        (Vector2 position, int path) = net.NearestObstacle(transform.position, isFuture);
+        if (path != -1 && Vector2.Distance(position, transform.position) < 20.0)
+        {
+            BarkManager.Instance.OnNearObstacle(gameObject, net.GetPathName(path));
+        }
+
         if (IsPathfinding())
         {
             // check if the last section of the path is intact
@@ -157,7 +163,7 @@ public class PathFollower : MonoBehaviour
     {
         if (!IsPathfinding())
             return Vector2.zero;
-        
+
         Vector2 targetPosition = GetPathfindingNextPointTowardsGoal();
         return (targetPosition - (Vector2)transform.position).normalized;
     }
@@ -177,12 +183,11 @@ public class PathFollower : MonoBehaviour
     public Vector2 WalkTowards(Vector2 targetDirection)
     {
         if (isJumping) return Vector2.zero;
-        
         if (targetDirection == Vector2.zero)
         {
-            if(isPathfindingToWalk)
+            if (isPathfindingToWalk)
                 StopPathfinding();
-            
+
             return Vector2.zero;
         }
 
@@ -191,7 +196,7 @@ public class PathFollower : MonoBehaviour
 
         if (IsPathfinding())
             return Vector2.zero;
-        
+
         Vector2 goalPosition = (Vector2)transform.position + targetDirection.normalized * walkingLookAheadLength;
 
         PathNetwork net = PathNetwork.Instance;
@@ -206,7 +211,7 @@ public class PathFollower : MonoBehaviour
 
         return Vector2.zero;
     }
-    
+
 
     /**
      * Handles moving the player and detecting when a jump begins
@@ -231,11 +236,13 @@ public class PathFollower : MonoBehaviour
                 (jumpStart, jumpEnd) = net.PathPointsGoingDirection(nearestPath, direction);
                 isJumping = true;
                 jumpDistanceTraveled = 0;
+                BarkManager.Instance.OnJumped(gameObject);
             }
             else
             {
                 // fail to jump
                 StopPathfinding();
+                BarkManager.Instance.OnJumpedFailed(gameObject);
                 return;
             }
         }
@@ -252,7 +259,7 @@ public class PathFollower : MonoBehaviour
         // stop half finised paths created using WASD control from making us backtrack
         if (isPathfindingToWalk)
             StopPathfinding();
-    
+
         jumpDistanceTraveled += currentSpeed * Time.deltaTime * 0.75f;
         Vector2 jumpGroundPosition = Vector2.MoveTowards(jumpStart, jumpEnd, jumpDistanceTraveled);
 
