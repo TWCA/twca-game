@@ -81,7 +81,7 @@ public class ItemDropNode : MonoBehaviour
     {
         // Handle when the player is still in the collider and picks up the item
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
-        if (InteractPlayerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
+        if (InteractPlayerDetector.TouchingPlayer) {
             InteractedWith();
         }
 
@@ -121,9 +121,9 @@ public class ItemDropNode : MonoBehaviour
     /*
     * Handles when an item is dragged and dropped over a node
     */
-    public bool ItemIncoming(GameObject prefab) {
+    public bool ItemIncoming(GameObject itemPrefab) {
         // Do we even allow this item in this node?
-        if (AllowDeny.IsItemAllowed(prefab.name) && !(SingleUse && used)) {
+        if (AllowDeny.IsItemAllowed(itemPrefab.name) && !(SingleUse && used)) {
             if (ActiveItem != null) {
                 // Call some abitrary function that runs when one item is dragged onto the other
                 // ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
@@ -132,15 +132,17 @@ public class ItemDropNode : MonoBehaviour
                 // Its producing some issues that will be tackled for beta
                 return false;
             } else {
-                inventorySystem.CarriedItem = prefab;
+                inventorySystem.CarriedItem = itemPrefab;
                 inventorySystem.HasMouseItem = false;
+
+                return true;
             }
 
-            inventorySystem.TargetDropNode = this;
-
             return true;
-        } else {
-            Debug.Log("No, you cannot put that item there.");
+        } else
+        {
+            BarkManager.Instance.OnPlacedItemFailed(gameObject, itemPrefab);
+            // Debug.Log("No, you cannot put that item there.");
 
             return false;
         }
@@ -153,28 +155,26 @@ public class ItemDropNode : MonoBehaviour
         PlayerControl player = PlayerControl.Instance;
 
         if (inventorySystem.TargetDropNode == this) {
-            if (ActiveItem != null) {
+            if (ActiveItem != null && inventorySystem.CarriedItem == null) {
                 StartCoroutine(TriggerInteractAnimation(() =>
                     {
                         inventorySystem.AddItem(ActiveItem);
+                        BarkManager.Instance.OnCollectedItem(gameObject, ActiveItem);
                         ClearActiveItem();
                         InitializeSprite();
                         ItemRemoved?.Invoke();
                     }));
-
-                MarkUsed();
             } else if (inventorySystem.CarriedItem) {
                 SetActiveItem(inventorySystem.CarriedItem);
 
                 StartCoroutine(TriggerInteractAnimation(() =>
                     {
                         inventorySystem.RemoveItem(ActiveItem);
+                        BarkManager.Instance.OnPlacedItem(gameObject, ActiveItem);
                         
                         InitializeSprite();
                         ItemPlaced?.Invoke();
                     }));
-
-                MarkUsed();
             }
 
             MarkUsed();
@@ -255,7 +255,7 @@ public class ItemDropNode : MonoBehaviour
     }
 
     void OnMouseUp() {
-        if (inventorySystem.TargetDropNode == null && !(SingleUse && used)) {
+        if (!(inventorySystem.HasMouseItem && ActiveItem != null) && !(SingleUse && used)) {
             inventorySystem.TargetDropNode = this;
         }
     }

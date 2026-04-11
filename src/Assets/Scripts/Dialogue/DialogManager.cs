@@ -235,6 +235,11 @@ public class DialogManager : MonoBehaviour
 
         EnableBehaviours();
     }
+    
+    public bool IsDialogRunning()
+    {
+        return isRunning;
+    }
 
     private void ContinueStoryWithDelays()
     {
@@ -245,7 +250,7 @@ public class DialogManager : MonoBehaviour
     {
         ContinueStory(true);
     }
-
+    
     /**
      * Displays any remaining dialog lines, and the displays a choice.
      */
@@ -500,7 +505,7 @@ public class DialogManager : MonoBehaviour
     /**
      * Disables things like player movement while using the phone
      */
-    public void DisableBehaviours()
+    private void DisableBehaviours()
     {
         areBehavioursDisabled = true;
         UpdateDisabledBehaviours();
@@ -509,7 +514,7 @@ public class DialogManager : MonoBehaviour
     /**
      * Enables normal behavour
      */
-    public void EnableBehaviours()
+    private void EnableBehaviours()
     {
         areBehavioursDisabled = false;
         UpdateDisabledBehaviours();

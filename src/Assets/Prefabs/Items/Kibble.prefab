@@ -13,9 +13,21 @@ PrefabInstance:
       value: Kibble
       objectReference: {fileID: 0}
     - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: m_Size.x
+      value: 32
+      objectReference: {fileID: 0}
+    - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: m_Size.y
+      value: 36
+      objectReference: {fileID: 0}
+    - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 1608802488, guid: 2c858e1f6d7b64a1393c97d6ce618771, type: 3}
+      objectReference: {fileID: -1155568431, guid: 22395c2e8ec2a614ab9fea6d6a53d7e5, type: 3}
+    - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: NiceName
       value: Dog Kibble
