@@ -60,8 +60,6 @@ public class SettingsLoader : MonoBehaviour
             {
                 value = DefaultValue;
             }
-
-            Debug.Log(value);
         }
 
         public void Set(float newValue)
