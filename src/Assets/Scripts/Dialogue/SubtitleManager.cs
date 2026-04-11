@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class SubtitleManager : MonoBehaviour
 {
     public static SubtitleManager Instance { get; private set; }
-    public float TextSpeed = 2.0f;
+    public float TextSpeed = 3.0f;
 
     [SerializeField] private GameObject SubtitleRoot;
     [SerializeField] private Image Background;

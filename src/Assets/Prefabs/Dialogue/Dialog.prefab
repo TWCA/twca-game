@@ -524,6 +524,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa682910dad402fe5a883cac57807e2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TextSpeed: 3
   SubtitleRoot: {fileID: 3378926992589810570}
   Background: {fileID: 8981870395625013755}
   Name: {fileID: 4828446299083206638}
