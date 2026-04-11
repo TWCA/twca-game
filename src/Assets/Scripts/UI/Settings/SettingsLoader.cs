@@ -6,22 +6,28 @@ using UnityEngine;
 public class SettingsLoader : MonoBehaviour
 {
     public static SettingsLoader Instance { get; private set; }
-    [SerializeField]
-    public Setting[] settings;
+    [SerializeField] public Setting[] settings;
 
-    SettingsLoader() {}
+    SettingsLoader()
+    {
+    }
 
-    void Awake() {
+    void Awake()
+    {
         Instance = this;
 
-        foreach (Setting setting in settings) {
+        foreach (Setting setting in settings)
+        {
             setting.Load();
         }
     }
 
-    public Setting GetSetting(string name) {
-        foreach (Setting setting in settings) {
-            if (setting.Name == name) {
+    public Setting GetSetting(string name)
+    {
+        foreach (Setting setting in settings)
+        {
+            if (setting.Name == name)
+            {
                 return setting;
             }
         }
@@ -30,34 +36,44 @@ public class SettingsLoader : MonoBehaviour
     }
 
     /*
-    * Only support for floats for now, I will fix later with generics
-    */
+     * Only support for floats for now, I will fix later with generics
+     */
     [Serializable]
-    public class Setting {
+    public class Setting
+    {
         public string Name;
         public float DefaultValue;
         public event Action Updated;
         private float value;
 
-        Setting() {
-
+        Setting()
+        {
         }
 
-        public void Load() {
-            if (PlayerPrefs.HasKey(Name)) {
+        public void Load()
+        {
+            if (PlayerPrefs.HasKey(Name))
+            {
                 value = PlayerPrefs.GetFloat(Name);
-            } else {
+            }
+            else
+            {
                 value = DefaultValue;
             }
+
+            Debug.Log(value);
         }
 
-        public void Set(float newValue) {
+        public void Set(float newValue)
+        {
             value = newValue;
             PlayerPrefs.SetFloat(Name, newValue);
-            Updated.Invoke();
+            if (Updated != null)
+                Updated.Invoke();
         }
 
-        public float Get() {
+        public float Get()
+        {
             return value;
         }
     }

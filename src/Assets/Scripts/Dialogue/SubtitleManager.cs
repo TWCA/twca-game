@@ -20,6 +20,9 @@ public class SubtitleManager : MonoBehaviour
     private float currentMessageTime = 0;
     private string subtitleName;
     private string subtitleMessage;
+    
+    private SettingsLoader settingsLoader;
+    private SettingsLoader.Setting subtitlesSetting;
 
     void Awake()
     {
@@ -33,6 +36,9 @@ public class SubtitleManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             Instance = this;
         }
+        
+        SettingsLoader settingsLoader = SettingsLoader.Instance;
+        subtitlesSetting = settingsLoader.GetSetting("Subtitles");
     }
 
     void Update()
@@ -63,6 +69,8 @@ public class SubtitleManager : MonoBehaviour
 
     public void ShowMessage(string name, string message, float time)
     {
+        if (subtitlesSetting.Get() <= 0.5f) return;
+        
         showingMessage = true;
         currentMessageTime = 0;
         totalMessageTime = time;

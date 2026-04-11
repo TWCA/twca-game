@@ -137,7 +137,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   settings:
   - Name: MasterVolume
-    DefaultValue: 50
+    DefaultValue: 80
+  - Name: Subtitles
+    DefaultValue: 1
 --- !u!114 &5815377275426892432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,8 +179,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d1b4a07fbdda78768173e172777d85f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FadeOutTime: 2
-  FadeInTime: 1
 --- !u!1 &5501483572454794932
 GameObject:
   m_ObjectHideFlags: 0
