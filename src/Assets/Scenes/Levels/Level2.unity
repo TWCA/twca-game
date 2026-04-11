@@ -10408,6 +10408,26 @@ PrefabInstance:
       propertyPath: m_NormalizedViewPortRect.height
       value: 0.9521708
       objectReference: {fileID: 0}
+    - target: {fileID: 7316606289842739384, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: maxEmissionRate
+      value: 3000
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0.024809161
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 0.99999994
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.height
+      value: 0.9521708
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

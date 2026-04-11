@@ -183,7 +183,11 @@ public class PathFollower : MonoBehaviour
     public Vector2 WalkTowards(Vector2 targetDirection)
     {
         if (isJumping) return Vector2.zero;
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> main
         if (targetDirection == Vector2.zero)
         {
             if (isPathfindingToWalk)

@@ -12,7 +12,14 @@ public class RainController : MonoBehaviour
         if (rainParticleSystem == null)
             rainParticleSystem = GetComponent<ParticleSystem>();
 
+        var main = rainParticleSystem.main;
+        main.playOnAwake = false;
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+
         emissionModule = rainParticleSystem.emission;
+        StopAndClearRain();
+
+        AnchorRainInWorld();
     }
 
     private void OnEnable()
@@ -40,30 +47,59 @@ public class RainController : MonoBehaviour
     private void OnTimeChanged()
     {
         UpdateRain();
+    }
 
-        if (TimeManager.Instance != null &&
-            Mathf.Clamp01(TimeManager.Instance.GetRainStrength()) <= 0f)
+    private void AnchorRainInWorld()
+    {
+        CameraFollow cameraFollow = GetComponentInParent<CameraFollow>();
+        if (cameraFollow == null) return;
+
+        transform.SetParent(null, true);
+
+        Vector2 boundsCenter = (cameraFollow.minBounds + cameraFollow.maxBounds) * 0.5f;
+        Vector2 boundsSize = cameraFollow.maxBounds - cameraFollow.minBounds;
+
+        Camera camera = cameraFollow.GetComponent<Camera>();
+        if (camera != null && camera.orthographic)
         {
-            rainParticleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            boundsSize.x += camera.orthographicSize * camera.aspect * 2f;
+            boundsSize.y += camera.orthographicSize * 2f;
         }
+
+        transform.position = new Vector3(boundsCenter.x, boundsCenter.y, transform.position.z);
+
+        var shape = rainParticleSystem.shape;
+        shape.scale = new Vector3(boundsSize.x, boundsSize.y, shape.scale.z);
+    }
+
+    private void StopAndClearRain()
+    {
+        emissionModule.rateOverTime = 0f;
+
+        if (rainParticleSystem.isPlaying || rainParticleSystem.particleCount > 0)
+            rainParticleSystem.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
     }
 
     private void UpdateRain()
     {
-        if (TimeManager.Instance == null) return;
+        if (TimeManager.Instance == null)
+        {
+            StopAndClearRain();
+            return;
+        }
 
         float strength = Mathf.Clamp01(TimeManager.Instance.GetRainStrength());
-        emissionModule.rateOverTime = maxEmissionRate * strength;
 
         if (strength > 0f)
         {
+            emissionModule.rateOverTime = maxEmissionRate * strength;
+
             if (!rainParticleSystem.isPlaying)
                 rainParticleSystem.Play();
         }
         else
         {
-            if (rainParticleSystem.isPlaying)
-                rainParticleSystem.Stop(false, ParticleSystemStopBehavior.StopEmitting);
+            StopAndClearRain();
         }
     }
 }
