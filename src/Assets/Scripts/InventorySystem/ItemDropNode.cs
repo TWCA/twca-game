@@ -142,7 +142,6 @@ public class ItemDropNode : MonoBehaviour
         } else
         {
             BarkManager.Instance.OnPlacedItemFailed(gameObject, itemPrefab);
-            // Debug.Log("No, you cannot put that item there.");
 
             return false;
         }
