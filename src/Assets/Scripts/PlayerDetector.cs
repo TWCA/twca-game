@@ -7,24 +7,30 @@ public class PlayerDetector : MonoBehaviour
 {
     public event Action PlayerTouched;
     public event Action PlayerLeft;
-    [NonSerialized] public bool TouchingPlayer;
+    public bool TouchingPlayer;
 
     // Start is called before the first frame update
     void Start()
     {
     }
 
+    private bool IsPlayer(Collider2D other) {
+        return other.CompareTag("Player");
+    }
+
     void OnTriggerEnter2D(Collider2D other) {
-        PlayerControl playerControl = other.GetComponent<PlayerControl>();
-        if (playerControl && !TouchingPlayer) {
-            TouchingPlayer = playerControl;
+        if (IsPlayer(other) && !TouchingPlayer) {
+            TouchingPlayer = true;
+
             PlayerTouched?.Invoke();
         }
     }
 
-    void OnTriggerExit2D() {
-        TouchingPlayer = false;
+    void OnTriggerExit2D(Collider2D other) {
+        if (IsPlayer(other)) {
+            TouchingPlayer = false;
 
-        PlayerLeft?.Invoke();
+            PlayerLeft?.Invoke();
+        }
     }
 }

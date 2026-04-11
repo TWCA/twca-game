@@ -81,7 +81,7 @@ public class ItemDropNode : MonoBehaviour
     {
         // Handle when the player is still in the collider and picks up the item
         // (otherwise InteractedWith() wouldn't be called since it only is called once when the player enters the collider)
-        if (InteractPlayerDetector.TouchingPlayer && (inventorySystem.CarriedItem || inventorySystem.TargetDropNode == this)) {
+        if (InteractPlayerDetector.TouchingPlayer) {
             InteractedWith();
         }
 
@@ -134,9 +134,9 @@ public class ItemDropNode : MonoBehaviour
             } else {
                 inventorySystem.CarriedItem = itemPrefab;
                 inventorySystem.HasMouseItem = false;
-            }
 
-            inventorySystem.TargetDropNode = this;
+                return true;
+            }
 
             return true;
         } else
@@ -155,7 +155,7 @@ public class ItemDropNode : MonoBehaviour
         PlayerControl player = PlayerControl.Instance;
 
         if (inventorySystem.TargetDropNode == this) {
-            if (ActiveItem != null) {
+            if (ActiveItem != null && inventorySystem.CarriedItem == null) {
                 StartCoroutine(TriggerInteractAnimation(() =>
                     {
                         inventorySystem.AddItem(ActiveItem);
@@ -164,8 +164,6 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                         ItemRemoved?.Invoke();
                     }));
-
-                MarkUsed();
             } else if (inventorySystem.CarriedItem) {
                 SetActiveItem(inventorySystem.CarriedItem);
 
@@ -177,8 +175,6 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                         ItemPlaced?.Invoke();
                     }));
-
-                MarkUsed();
             }
 
             MarkUsed();
@@ -259,7 +255,7 @@ public class ItemDropNode : MonoBehaviour
     }
 
     void OnMouseUp() {
-        if (inventorySystem.TargetDropNode == null && !(SingleUse && used)) {
+        if (!(inventorySystem.HasMouseItem && ActiveItem != null) && !(SingleUse && used)) {
             inventorySystem.TargetDropNode = this;
         }
     }
