@@ -38,7 +38,7 @@ public class SubtitleManager : MonoBehaviour
     void Update()
     {
         float targetAlpha = showingMessage ? 1 : 0;
-        float fadeRate = showingMessage ? 5.0f : 2.0f;
+        float fadeRate = showingMessage ? 5.0f : 1.0f;
         currentAlpha = Mathf.MoveTowards(currentAlpha, targetAlpha, Time.deltaTime * fadeRate);
 
         Color color = new Color(1, 1, 1, currentAlpha);
