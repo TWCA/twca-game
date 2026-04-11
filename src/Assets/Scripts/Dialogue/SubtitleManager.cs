@@ -1,0 +1,71 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class SubtitleManager : MonoBehaviour
+{
+    public static SubtitleManager Instance { get; private set; }
+    public float TextSpeed = 2.0f;
+
+    [SerializeField] private GameObject SubtitleRoot;
+    [SerializeField] private Image Background;
+    [SerializeField] private Text Name;
+    [SerializeField] private Text Message;
+
+    private bool showingMessage = false;
+    private float currentAlpha = 0;
+    private float totalMessageTime = 0;
+    private float currentMessageTime = 0;
+    private string subtitleName;
+    private string subtitleMessage;
+
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            DontDestroyOnLoad(gameObject);
+            Instance = this;
+        }
+    }
+
+    void Update()
+    {
+        float targetAlpha = showingMessage ? 1 : 0;
+        currentAlpha = Mathf.MoveTowards(currentAlpha, targetAlpha, Time.deltaTime * 4.0f);
+
+        Color color = new Color(1, 1, 1, currentAlpha);
+        Background.color = color;
+        Name.color = color;
+        Message.color = color;
+
+        if (showingMessage)
+        {
+            currentMessageTime = Mathf.MoveTowards(currentMessageTime, totalMessageTime, Time.deltaTime);
+
+            if (currentMessageTime >= totalMessageTime)
+                showingMessage = false;
+
+            float progress = Mathf.Min(1, currentMessageTime / totalMessageTime * TextSpeed);
+            int displayedLength = (int)(subtitleMessage.Length * progress);
+
+            Name.text = subtitleName;
+            Message.text = subtitleMessage.Substring(0, displayedLength);
+        }
+    }
+
+    public void ShowMessage(string name, string message, float time)
+    {
+        showingMessage = true;
+        currentMessageTime = 0;
+        totalMessageTime = time;
+        subtitleName = "(" + name + ")";
+        subtitleMessage = message;
+    }
+}

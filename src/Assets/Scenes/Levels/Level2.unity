@@ -3747,7 +3747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1325194795318638107, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2524496936366676522, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
       propertyPath: m_SizeDelta.y
@@ -3764,6 +3764,14 @@ PrefabInstance:
     - target: {fileID: 3827177549712450176, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
       propertyPath: m_Name
       value: Dialog
+      objectReference: {fileID: 0}
+    - target: {fileID: 5194895586947131043, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559871872701201728, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10398,7 +10406,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.024809161
+      value: 0.03018868
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
@@ -10406,27 +10414,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.9521708
+      value: 0.9413915
       objectReference: {fileID: 0}
     - target: {fileID: 7316606289842739384, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: maxEmissionRate
       value: 3000
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.y
-      value: 0.024809161
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.width
-      value: 0.99999994
-      objectReference: {fileID: 0}
-    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
-      propertyPath: m_NormalizedViewPortRect.height
-      value: 0.9521708
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
