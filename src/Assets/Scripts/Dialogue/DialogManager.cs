@@ -250,17 +250,7 @@ public class DialogManager : MonoBehaviour
     {
         ContinueStory(true);
     }
-
-    private void ContinueStoryWithDelays()
-    {
-        ContinueStory(false);
-    }
-
-    private void ContinueStoryWithoutDelays()
-    {
-        ContinueStory(true);
-    }
-
+    
     /**
      * Displays any remaining dialog lines, and the displays a choice.
      */
