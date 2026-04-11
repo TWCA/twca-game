@@ -176,6 +176,8 @@ public class PathFollower : MonoBehaviour
      */
     public Vector2 WalkTowards(Vector2 targetDirection)
     {
+        if (isJumping) return Vector2.zero;
+        
         if (targetDirection == Vector2.zero)
         {
             if(isPathfindingToWalk)
@@ -256,7 +258,11 @@ public class PathFollower : MonoBehaviour
 
         float jumpGap = Vector2.Distance(jumpStart, jumpEnd);
         if (jumpDistanceTraveled >= jumpGap)
+        {
+            transform.position = jumpEnd + (jumpEnd - jumpStart).normalized;
             isJumping = false;
+            return;
+        }
 
         float halfGap = jumpGap * 0.5f;
         float jumpHeight = Squared(halfGap * gravity) - Squared((jumpDistanceTraveled - halfGap) * gravity);
