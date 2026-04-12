@@ -7,6 +7,8 @@ public class PickupObject : MonoBehaviour
     public bool AllowStacking = true; // Can the object be stacked? No support for stack size maximums for now, not sure if needed.
     public string NiceName; // The name of the item that faces the user
     public Sprite AlternateGroundSprite;
+    public AudioClip pickup;
+    public AudioClip putdown;
     
     [NonSerialized] public GameObject PickupObjectPrefab;
     private InventorySystem inventorySystem;

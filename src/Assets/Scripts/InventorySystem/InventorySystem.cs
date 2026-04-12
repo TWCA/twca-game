@@ -76,7 +76,7 @@ public class InventorySystem : MonoBehaviour
         }
 
         gameObject.SetActive(true);
-        PlaySound(prefab);
+        AudioManager.Instance.oneShotSource.PlayOneShot(prefab.GetComponent<PickupObject>().pickup);
         return true;
     }
 
@@ -90,8 +90,9 @@ public class InventorySystem : MonoBehaviour
         {
             InventoryItem inventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
             inventoryItem.UpdateItemCount(inventoryItem.ItemCount - 1);
-
+            AudioManager.Instance.oneShotSource.PlayOneShot(prefab.GetComponent<PickupObject>().putdown);
             if (items.Count == 0) {
+                
                 gameObject.SetActive(false);
             }
         }
@@ -134,14 +135,6 @@ public class InventorySystem : MonoBehaviour
         HasMouseItem = false;
     }
 
-    public void PlaySound(GameObject gameobject)
-    {
-        AudioClip clip = Resources.Load<AudioClip>(gameobject.name + "Clip");
-        if (clip != null)
-        {
-            AudioManager.Instance.oneShotSource.PlayOneShot(clip);
-        }
-    }
 
     /*
     * Cancels all actions for picking up / dropping items

@@ -29,6 +29,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: pickup
+      value: 
+      objectReference: {fileID: 8300000, guid: 2f5a1fa6e2c50e94483a759c6bd744f8, type: 3}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: putdown
+      value: 
+      objectReference: {fileID: 8300000, guid: 421bf8606408328488e490ba9a00bc58, type: 3}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: NiceName
       value: Dog Kibble
       objectReference: {fileID: 0}
