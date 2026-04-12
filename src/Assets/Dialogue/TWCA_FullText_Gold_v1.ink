@@ -254,7 +254,7 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
     ... #Robin
     
     I just remembered! #Robin #Voice:VA/FoundSam/IJustRemembered
-    {partyPlanned: I got invited out to see my friends, Sam! And you're invited too! #Robin #Voice:VA/FoundSam/You'reInvitedTooSam}
+    {partyPlanned: I got invited out to see my friends, Sam! And you're invited too! #Robin #Voice:VA/FoundSam/You'reInvitedTooSam #waitForTrigger}
     {not (dialog1chat or dialog2chat): I think Mom called the police, so I'll probably be in trouble when we get back. #Robin #Voice:VA/FoundSam/IThinkMomCalledThePolice #waitForTrigger}
     {(dialog1chat or dialog2chat) and not partyPlanned: I've been a bit of a bad friend towards the guys, I should send them a text when I get back. #Robin #Voice:VA/FoundSam/I'veBeenABadFriend  #waitForTrigger}
 
@@ -264,7 +264,7 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
 == last_notif ==
     Ding! #notificationSound #Delay:0.5
     Oh! #Robin #Voice:VA/FoundSam/OhNotif #Delay:0.5
-    Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought #Delay:1.0 #waitForTrigger
+    Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought #Delay:1.0
     I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
     Woof! #Sam #Voice:VA/SamBarks/Bark3
     I'm glad you agree let's go home #Robin #Voice:VA/FoundSam/ImGladYouAgree
