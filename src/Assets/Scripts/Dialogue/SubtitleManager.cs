@@ -89,6 +89,9 @@ public class SubtitleManager : MonoBehaviour
     private void MoveToCamera()
     {
         GameObject camera = GameObject.FindWithTag("MainCamera");
+        
+        if (camera == null) return;
+        
         Vector3 position = camera.transform.position;
         position.z = SubtitleRoot.transform.position.z;
         SubtitleRoot.transform.position = position;
