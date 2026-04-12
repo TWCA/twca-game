@@ -36,7 +36,10 @@ public class SubtitleManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             Instance = this;
         }
+    }
 
+    private void Start()
+    {
         SettingsLoader settingsLoader = SettingsLoader.Instance;
         subtitlesSetting = settingsLoader.GetSetting("Subtitles");
     }
