@@ -467,95 +467,91 @@ Report: Baby born inside Rogers Place during Oilers game #Notification:News #Voi
 
 // Barks Start
 == bark_feed_sam ==
-I should go to the kitchen, I need to feed Sam.
+I should go to the kitchen, I need to feed Sam. #Robin #Voice:VA/RobinLevelBarks/TimeToGoToTheKitchen
 -> END
 
 == bark_kibble ==
-Sam's kibble is there in the corner.
+Sam's kibble is there in the corner. #Robin #Voice:VA/RobinLevelBarks/Kibble
 -> END
 
 == bark_bowl ==
-Where did I put Sam's bowl again?
+Where did I put Sam's bowl again? #Robin #Voice:VA/RobinLevelBarks/Bowl
 -> END
 
 == bark_reception ==
-I wonder what's happening online. I might get reception somewhere else.
+I wonder what's happening online. I might get reception somewhere else. #Robin #Voice:VA/RobinLevelBarks/Reception
 -> END
 
 == bark_gate ==
-I need to get past that gate.
+I need to get past that gate. #Robin #Voice:VA/RobinLevelBarks/GetPastGate
 -> END
 
 == bark_gate_locked ==
-Why does the gate have to be locked.
+Why does the gate have to be locked. #Robin #Voice:VA/RobinLevelBarks/GateLocked
 -> END
 
 == bark_fire_spread ==
-What if the fire spreads.
+What if the fire spreads. #Robin #Voice:VA/RobinLevelBarks/FireSpreads
 -> END
 
 == bark_avoid_fire ==
-I don't want to go near those flames.
+I don't want to go near those flames. #Robin #Voice:VA/RobinLevelBarks/DontWannaGoNearFlames
 -> END
 
 == bark_uneven_ground ==
-The ground isn't flat here, the bucket just falls.
+The ground isn't flat here, the bucket just falls. #Robin #Voice:VA/RobinLevelBarks/GroundNotFlat
 -> END
 
 == bark_slow_fill ==
-The bucket is filling... vveeerrryyy slllloooowwwwlllyyy.
+The bucket is filling... vveeerrryyy slllloooowwwwlllyyy. #Voice:VA/RobinLevelBarks/CoupleHoursBucket #TODO
 -> END
 
 == bark_slow_fill_hours ==
-It will take a couple hours for this bucket to fill.
+It will take a couple hours for this bucket to fill. #Robin #Voice:VA/RobinLevelBarks/CoupleHoursBucket
 -> END
 
 == bark_could_jump ==
-I think I could jump over that ledge.
+I think I could jump over that ledge. #Robin #Voice:VA/RobinLevelBarks/ThinkICouldJumpOverLedge
 -> END
 
 == bark_big_jump ==
-That's a pretty big jump.
+That's a pretty big jump. #Robin #Voice:VA/RobinLevelBarks/ThatsABigJump
 -> END
 
 == bark_jump_momentum ==
-I need to get moving faster.
+I need to get moving faster. #Robin #Voice:VA/RobinLevelBarks/NeedToRunFaster
 -> END
 
 == bark_fast_water1 ==
-The water is too fast, I don't want to get near it.
+The water is too fast, I don't want to get near it. #Robin #Voice:VA/RobinLevelBarks/WaterTooFastNotNearIt
 -> END
 
 == bark_fast_water2 ==
-The water is too fast, it will just wash away.
+The water is too fast, it will just wash away. #Robin #Voice:VA/RobinLevelBarks/WashAway
 -> END
 
 == bark_cant_cross ==
-I can't cross the water right now.
+I can't cross the water right now. #Robin #Voice:VA/RobinLevelBarks/CantCrossWaterRn
 -> END
 
 == bark_log_blocks_river ==
-It looks like that log is blocking the river.
--> END
-
-== bark_hear_barking ==
-Is that barking?
+It looks like that log is blocking the river. #Robin #Voice:VA/RobinLevelBarks/LogBlockingRiver
 -> END
 
 == bark_jump_up ==
-I think I could jump up that.
+I think I could jump up that. #Robin #Voice:VA/RobinLevelBarks/JumpUpThat
 -> END
 
 == bark_sam_follow ==
-I'm sure Sam will follow me.
+I'm sure Sam will follow me. #Robin #Voice:VA/RobinLevelBarks/SamWillFollow
 -> END
 
 == bark_get_home ==
-I need to get home
+I need to get home #Robin #Voice:VA/RobinLevelBarks/NeedToGetHome
 -> END
 
 == bark_good_dog ==
-Who's a good dog?
+Who's a good dog? #Robin #Voice:VA/RobinLevelBarks/WhosAGoodDog
 -> END
 
 // Barks End
