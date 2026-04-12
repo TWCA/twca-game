@@ -334,7 +334,8 @@ public class DialogManager : MonoBehaviour
         {
             Character character = GetCharacterTag(tags);
             string name = CharacterToName(character);
-            SubtitleManager.Instance.ShowMessage(name, line, duration);
+            if (name != null)
+                SubtitleManager.Instance.ShowMessage(name, line, duration);
         }
     }
 
@@ -465,7 +466,7 @@ public class DialogManager : MonoBehaviour
             case Character.Police:
                 return "Sherif";
             default:
-                return "Unknown";
+                return null;
         }
     }
 
@@ -481,7 +482,7 @@ public class DialogManager : MonoBehaviour
          * #Voice:VA/InterLevel/GreatToHear
          */
         float duration = 0;
-        
+
         foreach (string tag in tags)
         {
             if (tag.StartsWith("Voice:"))
@@ -493,7 +494,7 @@ public class DialogManager : MonoBehaviour
                 VAManager.Instance.IgnoreNextEnqueue();
             }
         }
-        
+
         return duration;
     }
 
