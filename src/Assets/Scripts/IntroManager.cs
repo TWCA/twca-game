@@ -18,7 +18,7 @@ public class IntroManager : MonoBehaviour
 	private void Awake()
 	{
 		if (PlayerPrefs.HasKey("seenIntro"))
-			if (PlayerPrefs.GetBool("seenIntro"))
+			if (PlayerPrefs.GetInt("seenIntro") == 1)
 				SceneManager.LoadScene(targetScene);
 
 		twcaSprite.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
@@ -75,7 +75,7 @@ public class IntroManager : MonoBehaviour
 				if (hikeSprite.color.a <= 0)
 				{
 					SceneManager.LoadScene(targetScene);
-					PlayerPrefs.SetBool("seenIntro", true);
+					PlayerPrefs.SetInt("seenIntro", 1);
 				}
 				break;
 		}
