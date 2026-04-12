@@ -366,12 +366,12 @@ Fall of Berlin Wall was a result of an "clerical error" by an officer. #Notifica
 -> thisisneat
 
 == reddit8 ==
-Why do the banks keep denying my attempt at mortgage fraud? #Notification:Reddit #Voice:VA/Notifications/BanksDeny
+Why do the banks keep denying my attempt at mortgage fraud? #Notification:Readit #Voice:VA/Notifications/BanksDeny
 //Couldn't tell ya. 
 ->END
 
 == reddit9 ==
-A fan struck in the head by a puck over the glass at Oilers game! #Notification:Reddit #Voice:VA/Notifications/StruckAtOilersGame
+A fan struck in the head by a puck over the glass at Oilers game! #Notification:Readit #Voice:VA/Notifications/StruckAtOilersGame
 // Ouch.
 ->END
 
