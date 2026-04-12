@@ -233,7 +233,7 @@ public class DialogManager : MonoBehaviour
 
         EnableBehaviours();
     }
-    
+
     public bool IsDialogRunning()
     {
         return isRunning;
@@ -248,7 +248,7 @@ public class DialogManager : MonoBehaviour
     {
         ContinueStory(true);
     }
-    
+
     /**
      * Displays any remaining dialog lines, and the displays a choice.
      */
@@ -619,6 +619,9 @@ public class DialogManager : MonoBehaviour
     private void MoveToCamera()
     {
         GameObject camera = GameObject.FindWithTag("MainCamera");
+
+        if (camera == null) return;
+
         Vector3 position = camera.transform.position;
         position.z = DialogRoot.transform.position.z;
         position.y -= visualOffset;
