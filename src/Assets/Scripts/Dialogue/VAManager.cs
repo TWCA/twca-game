@@ -77,12 +77,12 @@ public class VAManager : MonoBehaviour
             action();
     }
 
-    public void Enqueue(string filepath)
+    public float Enqueue(string filepath)
     {
         if (ignoringNextEnqueue)
         {
             ignoringNextEnqueue = false;
-            return;
+            return 0;
         }
 
         AudioClip audioClip = Resources.Load<AudioClip>(filepath);
@@ -90,10 +90,12 @@ public class VAManager : MonoBehaviour
         if (audioClip == null)
         {
             Debug.LogError("Failed to load voice clip from path: " + filepath);
-            return;
+            return 0;
         }
 
         queue.Enqueue(new VACommand(audioClip));
+
+        return audioClip.length;
     }
 
     public void EnqueueDelay(float seconds)

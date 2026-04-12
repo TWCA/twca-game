@@ -323,7 +323,7 @@ MonoBehaviour:
   twcaSprite: {fileID: 2130085777}
   hikeSprite: {fileID: 143519861}
   totalTwcaHoldTime: 0.5
-  totalHikeHoldTime: 2
+  totalHikeHoldTime: 1
   targetScene: MainMenu
 --- !u!4 &580257609
 Transform:
@@ -381,7 +381,7 @@ VideoPlayer:
   m_AspectRatio: 2
   m_DataSource: 1
   m_TimeUpdateMode: 0
-  m_PlaybackSpeed: 1
+  m_PlaybackSpeed: 1.6
   m_AudioOutputMode: 2
   m_TargetAudioSources: []
   m_DirectAudioVolumes: []
@@ -622,7 +622,7 @@ MonoBehaviour:
   m_AssetsPPU: 1
   m_RefResolutionX: 480
   m_RefResolutionY: 270
-  m_CropFrame: 3
+  m_CropFrame: 4
   m_GridSnapping: 2
   m_FilterMode: 0
   m_UpscaleRT: 0
@@ -707,10 +707,10 @@ Camera:
   m_LensShift: {x: 0, y: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.044979077
-    y: 0.49628252
-    width: 0.50209206
-    height: 0.5018587
+    x: 0
+    y: 0.033707865
+    width: 0.99999994
+    height: 0.9343399
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60

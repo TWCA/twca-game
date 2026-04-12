@@ -280,10 +280,10 @@ public class DialogManager : MonoBehaviour
 
         // handle line
         HandleDialogControl(tags, skipNextDelay);
-        HandleVoiceTags(tags);
+        float duration = HandleVoiceTags(tags);
 
         // display when audio starts
-        VAManager.Instance.OnAudioStarted(() => DisplayDialogLine(line, tags));
+        VAManager.Instance.OnAudioStarted(() => DisplayDialogLine(line, tags, duration));
 
         // continue when finished
         VAManager.Instance.OnQueueEmpty(ContinueStoryWithDelays);
@@ -312,9 +312,10 @@ public class DialogManager : MonoBehaviour
      * Displays a dialog as a message or notification.
      * Also triggers voice acting lines to play.
      */
-    private void DisplayDialogLine(string line, List<string> tags)
+    private void DisplayDialogLine(string line, List<string> tags, float duration)
     {
-        if (line.Length > 0 && isPhoneUp)
+        if (line.Length <= 0) return;
+        if (isPhoneUp)
         {
             string appTitle = GetNotificationAppTitle(tags);
 
@@ -327,6 +328,12 @@ public class DialogManager : MonoBehaviour
             {
                 AddNotification(appTitle, line);
             }
+        }
+        else
+        {
+            Character character = GetCharacterTag(tags);
+            string name = CharacterToName(character);
+            SubtitleManager.Instance.ShowMessage(name, line, duration);
         }
     }
 
@@ -440,28 +447,53 @@ public class DialogManager : MonoBehaviour
         return Character.None;
     }
 
+    private string CharacterToName(Character character)
+    {
+        switch (character)
+        {
+            case Character.Robin:
+                return "Robin";
+            case Character.Sam:
+                return "Sam";
+            case Character.Mom:
+                return "Mom";
+            case Character.Francis:
+                return "Francis";
+            case Character.Lorenzo:
+                return "Lorenzo";
+            case Character.Police:
+                return "Sherif";
+            default:
+                return "Unknown";
+        }
+    }
+
     /**
     * Checks if the dialog line is tagged with a voice line.
     * If this is the case the VA line should be played alongside the text.
     */
-    private void HandleVoiceTags(List<string> tags)
+    private float HandleVoiceTags(List<string> tags)
     {
         /*
          * Example tags:
          * #Voice:VA/Notifications/EdmontonValleyZoo
          * #Voice:VA/InterLevel/GreatToHear
          */
+        float duration = 0;
+        
         foreach (string tag in tags)
         {
             if (tag.StartsWith("Voice:"))
             {
-                VAManager.Instance.Enqueue(tag.Replace("Voice:", "").Trim());
+                duration += VAManager.Instance.Enqueue(tag.Replace("Voice:", "").Trim());
             }
             else if (tag == "IgnoreNextVoice")
             {
                 VAManager.Instance.IgnoreNextEnqueue();
             }
         }
+        
+        return duration;
     }
 
     /**
