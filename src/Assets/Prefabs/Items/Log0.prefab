@@ -23,11 +23,23 @@ PrefabInstance:
     - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1096976583, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
+      objectReference: {fileID: -1620320335, guid: 22395c2e8ec2a614ab9fea6d6a53d7e5, type: 3}
     - target: {fileID: 990996692200902691, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: m_WasSpriteAssigned
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: NiceName
+      value: Log
+      objectReference: {fileID: 0}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: AllowStacking
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: AlternateGroundSprite
+      value: 
+      objectReference: {fileID: -1096976583, guid: a18bdb3a99404d7c49c5c41e455687c5, type: 3}
     - target: {fileID: 7201299096094867918, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

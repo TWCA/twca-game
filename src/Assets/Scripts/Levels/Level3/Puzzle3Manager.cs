@@ -9,6 +9,7 @@ public class Puzzle3Manager : MonoBehaviour
     public ItemDropNode BurningBush;
     public GameObject FullBucket;
     public TimePortal TimePortal;
+    public ParticleSystem BushFire;
 
     // Start is called before the first frame update
     void Start()
@@ -36,5 +37,6 @@ public class Puzzle3Manager : MonoBehaviour
         PathNetwork pathNetwork = PathNetwork.Instance;
 
         pathNetwork.SetPathPastTraversable(pathNetwork.GetNamedPath("bush"), true);
+        BushFire.Stop();
     }
 }

@@ -32,18 +32,19 @@ public class PathFollower : MonoBehaviour
     [Range(0.0f, 0.5f)] public float turnAssistThreshold = 0.1f;
 
     /** How close we have to be to walking perpendicular to the path with WASD before we just stop moving. Between zero and one. */
-    [Range(0.0f, 0.5f)] public float perpendicularMovementThreshold = 0.1f;
+    [Range(0.0f, 1.0f)] public float perpendicularThreshold = 0.1f;
 
     public event Action DonePathing;
 
     private float currentSpeed;
     private bool movedLastFrame;
     private Vector2 jumpStart, jumpEnd;
-    private bool isJumping = false;
+    private bool isJumping;
     private float jumpDistanceTraveled;
 
     private List<int> plannedPath;
     private Vector2 plannedEndPosition = Vector2.zero;
+    private bool isPathfindingToWalk;
 
     public PathFollower()
     {
@@ -54,6 +55,12 @@ public class PathFollower : MonoBehaviour
     {
         PathNetwork net = PathNetwork.Instance;
         bool isFuture = TimeManager.Instance.IsFuture();
+
+        (Vector2 position, int path) = net.NearestObstacle(transform.position, isFuture);
+        if (path != -1 && Vector2.Distance(position, transform.position) < 20.0)
+        {
+            BarkManager.Instance.OnNearObstacle(gameObject, net.GetPathName(path));
+        }
 
         if (IsPathfinding())
         {
@@ -107,7 +114,8 @@ public class PathFollower : MonoBehaviour
         return currentSpeed;
     }
 
-    public void SetCurrentSpeed(float value) {
+    public void SetCurrentSpeed(float value)
+    {
         currentSpeed = value;
     }
 
@@ -125,6 +133,7 @@ public class PathFollower : MonoBehaviour
         bool isFuture = TimeManager.Instance.IsFuture();
         (plannedPath, _, plannedEndPosition) =
             AStarPathfinder.CalculatePathBetweenPositions(transform.position, target, isFuture);
+        isPathfindingToWalk = false;
         return plannedPath != null;
     }
 
@@ -152,6 +161,9 @@ public class PathFollower : MonoBehaviour
 
     public Vector2 GetPathfindingDirection()
     {
+        if (!IsPathfinding())
+            return Vector2.zero;
+
         Vector2 targetPosition = GetPathfindingNextPointTowardsGoal();
         return (targetPosition - (Vector2)transform.position).normalized;
     }
@@ -168,92 +180,38 @@ public class PathFollower : MonoBehaviour
      * Moves this entity along a direction (or as close as possible) in the path network.
      * This will cancel any attempt to pathfind.
      */
-    public Vector2 WalkTowards(Vector2 targetDirection, float delta)
+    public Vector2 WalkTowards(Vector2 targetDirection)
     {
-        StopPathfinding();
+        if (isJumping) return Vector2.zero;
+        if (targetDirection == Vector2.zero)
+        {
+            if (isPathfindingToWalk)
+                StopPathfinding();
 
-        Vector2 goalPosition = GetWalkingGoal(targetDirection);
-
-        if (goalPosition.Equals(transform.position))
             return Vector2.zero;
-
-        Vector2 targetPosition = GetNextPointTowardsGoal(goalPosition);
-
-        // Draw line from player to goal position
-        //Debug.DrawLine(transform.position, targetPosition, Color.green);
-
-        MoveAndHandleJumps(targetPosition);
-
-        return (targetPosition - (Vector2)transform.position).normalized;
-    }
-
-    /**
-     * Does pathfinding and calculates the next point that needs to be pathfound to.
-     * Indented to be used for WASD control.
-     */
-    public Vector2 GetNextPointTowardsGoal(Vector2 goalPosition)
-    {
-        PathNetwork net = PathNetwork.Instance;
-        bool isFuture = TimeManager.Instance.IsFuture();
-
-        (List<int> walkPath, _, Vector2 walkEndPosition) =
-            AStarPathfinder.CalculatePathBetweenPositions(transform.position, goalPosition, isFuture);
-
-        if (walkPath.Count >= 2)
-            if (Vector2.Distance(transform.position, net.GetNodePosition(walkPath[1])) < currentSpeed * Time.deltaTime)
-                walkPath.RemoveAt(0);
-
-        if (walkPath.Count > 2)
-            return net.GetNodePosition(walkPath[1]);
-        else
-            return walkEndPosition;
-    }
-
-    /**
-     * Finds an ideal goal location when walking with WASD.
-     * This location is a small distance in-front of the player defined by "walkingLookAheadLength".
-     * The location is adjusted near turns to make them easier to take.
-     */
-    public Vector2 GetWalkingGoal(Vector2 targetDirection)
-    {
-        PathNetwork net = PathNetwork.Instance;
-        bool isFuture = TimeManager.Instance.IsFuture();
-
-        (_, int nearestPath) = net.NearestPointOnPaths(transform.position, isFuture);
-        (Vector2 start, Vector2 end) = net.PathPointsGoingDirection(nearestPath, targetDirection);
-        Vector2 pathDirection = (end - start).normalized;
-
-        // measure how close our targetDirection is to walking down the path
-        // 1.0 -> path perfectly matches target
-        // 0.0 -> path is perpendicular to target
-        float alignment = Vector2.Dot(pathDirection, targetDirection);
-        
-        float distanceFromStartOfPath = Vector2.Distance(transform.position, start);
-        float distanceFromEndOfPath = Vector2.Distance(transform.position, end);
-
-        // if we are trying to walk perpendicular to the path, don't move
-        if (alignment < perpendicularMovementThreshold &&
-            distanceFromStartOfPath > perpendicularMovementThreshold &&
-            distanceFromEndOfPath > perpendicularMovementThreshold)
-            return transform.position;
-
-        if (distanceFromStartOfPath > walkingLookAheadLength)
-        {
-            // try to turn when not satisfied if we haven't turned in a while
-            if (alignment < 1.0f - turnAssistThreshold)
-                targetDirection -= pathDirection * (alignment * turnAssistStrength);
         }
-        else
-        {
-            // try to keep going if we just turned
-            if (alignment < 1.0f - turnAssistThreshold)
-                targetDirection += pathDirection * (alignment * turnAssistStrength);
-        }
+
+        if (!isPathfindingToWalk)
+            StopPathfinding();
+
+        if (IsPathfinding())
+            return Vector2.zero;
 
         Vector2 goalPosition = (Vector2)transform.position + targetDirection.normalized * walkingLookAheadLength;
 
-        return goalPosition;
+        PathNetwork net = PathNetwork.Instance;
+        bool isFuture = TimeManager.Instance.IsFuture();
+        (Vector2 nearestToGoal, _) = net.NearestPointOnPaths(goalPosition, isFuture);
+
+        if (Vector2.Distance(goalPosition, nearestToGoal) > walkingLookAheadLength * (1 - perpendicularThreshold))
+            return Vector2.zero;
+
+        PathfindTo(goalPosition);
+        isPathfindingToWalk = true;
+
+        return Vector2.zero;
     }
+
 
     /**
      * Handles moving the player and detecting when a jump begins
@@ -278,11 +236,13 @@ public class PathFollower : MonoBehaviour
                 (jumpStart, jumpEnd) = net.PathPointsGoingDirection(nearestPath, direction);
                 isJumping = true;
                 jumpDistanceTraveled = 0;
+                BarkManager.Instance.OnJumped(gameObject);
             }
             else
             {
                 // fail to jump
                 StopPathfinding();
+                BarkManager.Instance.OnJumpedFailed(gameObject);
                 return;
             }
         }
@@ -296,12 +256,20 @@ public class PathFollower : MonoBehaviour
      */
     private void MoveDuringJump()
     {
+        // stop half finised paths created using WASD control from making us backtrack
+        if (isPathfindingToWalk)
+            StopPathfinding();
+
         jumpDistanceTraveled += currentSpeed * Time.deltaTime * 0.75f;
         Vector2 jumpGroundPosition = Vector2.MoveTowards(jumpStart, jumpEnd, jumpDistanceTraveled);
 
         float jumpGap = Vector2.Distance(jumpStart, jumpEnd);
         if (jumpDistanceTraveled >= jumpGap)
+        {
+            transform.position = jumpEnd + (jumpEnd - jumpStart).normalized;
             isJumping = false;
+            return;
+        }
 
         float halfGap = jumpGap * 0.5f;
         float jumpHeight = Squared(halfGap * gravity) - Squared((jumpDistanceTraveled - halfGap) * gravity);

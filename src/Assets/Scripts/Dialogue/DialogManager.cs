@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Ink.Runtime;
-using UnityEditor.PackageManager;
 using UnityEngine.Events;
 
 public enum Character
@@ -35,7 +34,7 @@ public class DialogManager : MonoBehaviour
     public GameObject DialogRoot;
 
     private Story story;
-    [SerializeField] private GameObject sam;
+    private GameObject sam;
 
     private bool isRunning = false;
     private bool isPhoneUp = false;
@@ -126,7 +125,7 @@ public class DialogManager : MonoBehaviour
         OpenToKnot(knot, onFinished);
         OpenPhoneUI();
         DisableBehaviours();
-        ContinueStory();
+        ContinueStoryWithDelays();
     }
 
     /**
@@ -137,7 +136,7 @@ public class DialogManager : MonoBehaviour
     {
         delayAfterFinish = _delayAfterFinish;
         OpenToKnot(knot, onFinished);
-        ContinueStory();
+        ContinueStoryWithDelays();
     }
 
     /**
@@ -157,7 +156,7 @@ public class DialogManager : MonoBehaviour
     {
         waitingForTriggerCount -= 1;
         if (waitingForTriggerCount == 0)
-            VAManager.Instance.OnQueueEmpty(ContinueStory);
+            VAManager.Instance.OnQueueEmpty(ContinueStoryWithDelays);
     }
 
     /**
@@ -204,8 +203,10 @@ public class DialogManager : MonoBehaviour
 
     public void EndDialog()
     {
-        
+        ClearChoices();
+
         isRunning = false;
+
         DialogRoot.SetActive(false);
         AudioManager.Instance.FullAll();
 
@@ -228,29 +229,50 @@ public class DialogManager : MonoBehaviour
         onDialogFinished = null;
 
         isRunning = false;
+
         ClosePhoneUI();
         AudioManager.Instance.FullAll();
 
         EnableBehaviours();
     }
+    
+    public bool IsDialogRunning()
+    {
+        return isRunning;
+    }
 
+    private void ContinueStoryWithDelays()
+    {
+        ContinueStory(false);
+    }
+
+    private void ContinueStoryWithoutDelays()
+    {
+        ContinueStory(true);
+    }
+    
     /**
      * Displays any remaining dialog lines, and the displays a choice.
      */
-    private void ContinueStory()
+    private void ContinueStory(bool skipNextDelay)
     {
         if (waitingForTriggerCount > 0) return;
-
-        ClearChoices();
 
         if (!story.canContinue)
         {
             if (story.currentChoices.Count > 0)
+            {
                 RefreshChoices();
+            }
             else if (DialogRoot.activeSelf)
+            {
+                ClearChoices();
                 AddChoiceButton("(Put Down Phone)", EndDialog);
+            }
             else
+            {
                 EndDialog();
+            }
 
             return;
         }
@@ -258,20 +280,34 @@ public class DialogManager : MonoBehaviour
         string line = story.Continue().Trim();
         List<string> tags = story.currentTags;
 
-        HandleDialogControl(tags);
+        // handle line
+        HandleDialogControl(tags, skipNextDelay);
+        HandleVoiceTags(tags);
 
-        VAManager.Instance.OnQueueEmpty(() =>
+        // display when audio starts
+        VAManager.Instance.OnAudioStarted(() => DisplayDialogLine(line, tags));
+
+        // continue when finished
+        VAManager.Instance.OnQueueEmpty(ContinueStoryWithDelays);
+
+        if (!HasChoiceContaining("(Skip)"))
         {
-            DisplayDialogLine(line, tags);
-            HandleVoiceTags(tags);
+            ClearChoices();
+            AddChoiceButton("(Skip)", () =>
+            {
+                // act as if the line has started
+                VAManager.Instance.RunAudioStartedCallbacks();
 
-            if (tags.Exists(tag => tag.ToLower() == "waitfortrigger"))
-                waitingForTriggerCount++;
+                // cancel our callback after the line
+                VAManager.Instance.CancelOnQueueEmpty(ContinueStoryWithDelays);
 
-            // Wait for the VA line to stop playing
-            if (waitingForTriggerCount <= 0)
-                VAManager.Instance.OnQueueEmpty(ContinueStory);
-        });
+                // clear the queue
+                VAManager.Instance.ClearQueue();
+
+                // continue story, skipping the next delay
+                ContinueStoryWithoutDelays();
+            });
+        }
     }
 
     /**
@@ -299,8 +335,11 @@ public class DialogManager : MonoBehaviour
     /**
      * Handle control related tags, such as voice and UI control
      */
-    private void HandleDialogControl(List<string> tags)
+    private void HandleDialogControl(List<string> tags, bool skipNextDelay)
     {
+        if (tags.Exists(tag => tag.ToLower() == "waitfortrigger"))
+            waitingForTriggerCount++;
+
         if (tags.Contains("openPhone"))
             OpenPhoneUI();
 
@@ -323,26 +362,30 @@ public class DialogManager : MonoBehaviour
         }
 
         if (tags.Contains("disableSam"))
+        {
+            sam = GameObject.FindGameObjectWithTag("Sam");
             sam.SetActive(false);
+        }
 
         if (tags.Contains("enableSam"))
             sam.SetActive(true);
-                
+
         if (tags.Contains("ReturnToMainMenu"))
             StartCoroutine(TransitionController.Instance.SwitchScenes("MainMenu", ""));
 
-        string appTitle = GetNotificationAppTitle(tags);
-        Character character = GetCharacterTag(tags);
-
-        if (!(character == Character.Robin && isPhoneUp))
+        if (!skipNextDelay)
         {
-            Nullable<float> delay = ExtractDelayFromTags(tags);
+            // find and queue delay
+            string appTitle = GetNotificationAppTitle(tags);
+            Character character = GetCharacterTag(tags);
 
-            float defaultDelay = defaultNonTextDelay;
-            if (isPhoneUp && appTitle == null)
-                defaultDelay = defaultTextDelay;
+            if (!(character == Character.Robin && isPhoneUp) && appTitle == null)
+            {
+                Nullable<float> delay = ExtractDelayFromTags(tags);
 
-            VAManager.Instance.EnqueueDelay(delay ?? defaultDelay);
+                float defaultDelay = isPhoneUp ? defaultTextDelay : defaultNonTextDelay;
+                VAManager.Instance.EnqueueDelay(delay ?? defaultDelay);
+            }
         }
     }
 
@@ -453,7 +496,8 @@ public class DialogManager : MonoBehaviour
             AddChoiceButton(choice.text, () =>
             {
                 story.ChooseChoiceIndex(choice.index);
-                ContinueStory();
+                ClearChoices();
+                ContinueStoryWithDelays();
             });
         }
     }
@@ -461,7 +505,7 @@ public class DialogManager : MonoBehaviour
     /**
      * Disables things like player movement while using the phone
      */
-    public void DisableBehaviours()
+    private void DisableBehaviours()
     {
         areBehavioursDisabled = true;
         UpdateDisabledBehaviours();
@@ -470,7 +514,7 @@ public class DialogManager : MonoBehaviour
     /**
      * Enables normal behavour
      */
-    public void EnableBehaviours()
+    private void EnableBehaviours()
     {
         areBehavioursDisabled = false;
         UpdateDisabledBehaviours();
@@ -503,6 +547,18 @@ public class DialogManager : MonoBehaviour
         button.onClick.AddListener(callback);
     }
 
+    private bool HasChoiceContaining(string query)
+    {
+        for (int i = choicesRoot.childCount - 1; i >= 0; i--)
+        {
+            GameObject button = choicesRoot.GetChild(i).gameObject;
+            Text label = button.GetComponentInChildren<Text>();
+            if (label.text.Contains(query))
+                return true;
+        }
+
+        return false;
+    }
 
     /**
      * Adds a conversation message to the screen.
@@ -510,6 +566,8 @@ public class DialogManager : MonoBehaviour
      */
     private void AddMessage(string text, Character character)
     {
+        if (!isPhoneUp) return;
+
         GameObject obj = Instantiate(messageBubblePrefab, historyContent);
         MessageBubble bubble = obj.GetComponent<MessageBubble>();
         bubble.SetMessage(text, character);
@@ -525,6 +583,8 @@ public class DialogManager : MonoBehaviour
      */
     private void AddNotification(string appTitle, string body)
     {
+        if (!isPhoneUp) return;
+
         GameObject obj = Instantiate(notificationBubblePrefab, historyContent);
         NotificationBubble bubble = obj.GetComponent<NotificationBubble>();
         bubble.SetMessage(appTitle, body);
