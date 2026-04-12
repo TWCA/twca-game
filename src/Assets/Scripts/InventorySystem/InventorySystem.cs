@@ -76,7 +76,7 @@ public class InventorySystem : MonoBehaviour
         }
 
         gameObject.SetActive(true);
-
+        PlaySound(prefab);
         return true;
     }
 
@@ -134,6 +134,15 @@ public class InventorySystem : MonoBehaviour
         HasMouseItem = false;
     }
 
+    public void PlaySound(GameObject gameobject)
+    {
+        AudioClip clip = Resources.Load<AudioClip>(gameobject.name + "Clip");
+        if (clip != null)
+        {
+            AudioManager.Instance.oneShotSource.PlayOneShot(clip);
+        }
+    }
+
     /*
     * Cancels all actions for picking up / dropping items
     */
@@ -148,7 +157,7 @@ public class InventorySystem : MonoBehaviour
 
     /*
     * Object that represents an Item in the inventory and its UI elements
-    * Used for properly insantiating items in the scene
+    * Used for properly instantiating items in the scene
     */
     private class Item
     {
@@ -174,4 +183,6 @@ public class InventorySystem : MonoBehaviour
             this.uiObject = newItemUIObject;
         }
     }
+
+   
 }
