@@ -199,6 +199,7 @@ public class DialogManager : MonoBehaviour
 
         isRunning = true;
         onDialogFinished = onFinished;
+        waitingForTriggerCount = 0;
     }
 
     public void EndDialog()
