@@ -334,8 +334,18 @@ public class DialogManager : MonoBehaviour
         {
             Character character = GetCharacterTag(tags);
             string name = CharacterToName(character);
+
             if (name != null)
-                SubtitleManager.Instance.ShowMessage(name, line, duration);
+            {
+                name = "(" + name + ")";
+            }
+            else
+            {
+                name = "";
+                line = "*" + line + "*";
+            }
+
+            SubtitleManager.Instance.ShowMessage(name, line, duration);
         }
     }
 
