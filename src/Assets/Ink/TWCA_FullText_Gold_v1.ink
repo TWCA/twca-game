@@ -56,7 +56,7 @@ If you're up Robin, I left you some toast on the table. #Mom #Voice:VA/IntroScen
  - I've got a lot of work so I'll be out late tonight, either make yourself something or order in some takeout. #Mom #Voice:VA/IntroScene/OutLateTonight
  Can you also take your dog out? He's been pestering me all morning and I'm very busy. #Mom #Voice:VA/IntroScene/TakeDogOut
  I will #Robin #Voice:VA/IntroScene/IWill
- Enjoy your lazing around today! #Mom #Voice:VA/IntroScene/EnjoyYourLazingRound
+ Enjoy your lazing around today! #Mom #Voice:VA/IntroScene/EnjoyYourLazingAround
  Alright let's get you your breakfast. #Robin #Voice:VA/IntroScene/LetsGetYouBreakfast2 #closePhone #enableBehaviours
  Arf! #Sam #Voice:VA/SamBarks/Bark7
 -> END
@@ -82,7 +82,7 @@ If you're up Robin, I left you some toast on the table. #Mom #Voice:VA/IntroScen
  Bit of a scary topic on the news today... #Robin #Voice:VA/IntroScene/BitOfAScaryTopic
  Maybe that article was right, I didn't realize I was out here that long. #Robin #Voice:VA/IntroScene/MaybeThatArticleWasRight
  I'm sure that was a long enough walk for you Sam! #Robin #Voice:VA/IntroScene/I'mSureThatWasEnough
- ... #Robin
+ ... #Robin #Delay:0.3
  Sam? #Robin #Voice:VA/IntroScene/Sam #enableBehaviours
  -> END
 // Intro End
@@ -96,7 +96,7 @@ Hi Robin, just checking in on you, it's been a while since we last talked! #Fran
 
  * I've had better days #Robin #Voice:VA/InterLevel/I'veHadBetterDays
    ~ badDay = true
-   Oh? What's up? #Francis #Voice:VA/InterLevel/SomethingHappening #Voice:VA/InterLevel/OhWhat'sUp
+   Oh? What's up? #Francis #Voice:VA/InterLevel/OhWhat'sUp
    * * Sam's gone missing, and I haven't found him yet #Robin #Voice:VA/InterLevel/Sam'sGoneMissing
        ~ dogmentioned = true
        Sorry to hear that Robin! Is there anything I can do? #Francis #Voice:VA/InterLevel/SorryToHear
@@ -352,8 +352,8 @@ Fox slept on my outdoor couch. #Notification:Readit #Voice:VA/Notifications/FoxO
 ->animalreply
 
 == reddit5 ==
-Fell through my ceiling. Trying to fix it before the wife wakes up. #Notification:Readit #Voice:VA/Notifications/BeforeTheWifeWakesUp
-//Looks like a bomb went off! #RERECORD
+Fell through my ceiling. Trying to fix it before the wife wakes up. #Notification:Readit #Voice:VA/Notifications/FellThroughCeiling
+//Looks like a bomb went off! 
 -> END
 
 == reddit6 ==
@@ -366,15 +366,20 @@ Fall of Berlin Wall was a result of an "clerical error" by an officer. #Notifica
 -> thisisneat
 
 == reddit8 ==
-Why do the banks keep denying my attempt at mortgage fraud? #Notification:Reddit #Voice:VA/Notifications/MortgageFraud
-//Couldn't tell ya. #RERECORD
+Why do the banks keep denying my attempt at mortgage fraud? #Notification:Reddit #Voice:VA/Notifications/BanksDeny
+//Couldn't tell ya. 
+->END
+
+== reddit9 ==
+A fan struck in the head by a puck over the glass at Oilers game! #Notification:Reddit #Voice:VA/Notifications/StruckAtOilersGame
+// Ouch.
 ->END
 
 == insta1 ==
 // Oh, someone sent me something?
 #Voice:VA/Notifications/SomeoneSentMeSomething
 // I would record this as "User sent you a post.", unless you want all names spoken, in which I'// switch this one
-{~@lonelygoose3|@richard.gestral|@hollow_hannah_night|@serena.stardust} sent you a post. #Notification:Instancegram
+{~@lonelygoose3|@richard.gestral|@hollow_hannah_night|@serena.stardust} sent you a post. #Notification:Instancegram 
 ->END
 
 == insta2 ==
@@ -382,16 +387,16 @@ Why do the banks keep denying my attempt at mortgage fraud? #Notification:Reddit
 ->END
 
 == insta3 ==
-{~@poluxsi|@regularold.ow|@makobarrett|@naytiba_eve} has liked your post. #RERECORD (Either x liked your post, or someone has liked your post.)
+{~@poluxsi|@regularold.ow|@makobarrett|@naytiba_eve} has liked your post. #Notification:Instancegram #Voice:VA/Notifications/SomeoneLikedMyPost (Either x liked your post, or someone has liked your post.)
 -> END
 
 == insta4 ==
-Here's a reel you might like! #RERECORD
+Here's a reel you might like! #Notification:Instancegram #Voice:VA/Notifications/Here'sAReel
 ->END
 
 == news1 ==
 Stuck semi-truck closed High Level bridge. #Notification:News #Voice:VA/Notifications/StuckSemiTruck
-// Man, this news clipping seems to be everywhere #RERECORD
+// Man, this news clipping seems to be everywhere 
 ->END
 
 == news2 ==
@@ -428,15 +433,19 @@ Arborist rescues cat from 8-storey-tall tree in east Ottawa #Notification:News #
 -> animalreply
 
 == news10 ==
-Banff National Park breaks visitation record - again #RERECORD
+Banff National Park breaks visitation record - again #Notification:News #Voice:VA/Notifications/Banff
 //I miss going out to the mountains.
 -> END
 
 == news11 ==
-Canada slips further down in World Happiness rankings, due in part to social media use. #Notification:News #Voice:VA/Notifications/WorldHappinessRanking
-//Of course, it's always the phone! #RERECORD
+Canada slips further down in World Happiness rankings, due in part to social media use. #Notification:News #Voice:VA/Notifications/CanadaWorldRankings
+//Of course, it's always the phone! 
 -> END
 
+== news12 ==
+Report: Baby born inside Rogers Place during Oilers game #Notification:News #Voice:VA/Notifications/HopefullyHe'sAFan
+//Hopefully he's a fan
+-> END
 // Repeatable responses
 == ohboy ==
 // Oh boy..

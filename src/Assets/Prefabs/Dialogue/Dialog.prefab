@@ -423,7 +423,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdd5eae0bf294aa46a5fa5603837afd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inkJson: {fileID: 4900000, guid: f4a2571683efa03e2bec3d61d7feeeff, type: 3}
+  inkJson: {fileID: 4900000, guid: 2755f35270a968048b3bcb0924980855, type: 3}
   historyContent: {fileID: 2524496936366676522}
   historyScrollRect: {fileID: 1881344275447968118}
   messageBubblePrefab: {fileID: 5832807629750126268, guid: ec21cfab6eea010f3b7210760eceb2f6, type: 3}
@@ -431,6 +431,8 @@ MonoBehaviour:
   choicesRoot: {fileID: 5440588336162526642}
   choiceButtonPrefab: {fileID: 7965663957685251200, guid: e0a2fdf5e2d3b74438f32217595ff1e3, type: 3}
   timeText: {fileID: 5012982325940108286}
+  defaultTextDelay: 0.9
+  defaultNonTextDelay: 0.2
   DialogRoot: {fileID: 1325194795318638107}
 --- !u!1 &3984534065456638548
 GameObject:
