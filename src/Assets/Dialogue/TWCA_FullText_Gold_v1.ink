@@ -75,7 +75,7 @@ If you're up Robin, I left you some toast on the table. #Mom #Voice:VA/IntroScen
  
 == first_notif ==
  Hold on one second Sam, I have to check this notification. #Voice:VA/IntroScene/HoldOnSam #disableBehaviours
- Dangers of social media, with screen time awareness on the decrease! #Notification:News #openPhone Voice:VA/IntroScene/DangersOfSocialMedia //It's a little on the nose, but I prefer it being like this than the stuck semi
+ Dangers of social media, with screen time awareness on the decrease! #Notification:News #openPhone #Voice:VA/IntroScene/DangersOfSocialMedia //It's a little on the nose, but I prefer it being like this than the stuck semi
  -> END
  
 == after_first_notif ==
