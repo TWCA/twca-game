@@ -10,7 +10,7 @@ public class Gate : MonoBehaviour
     [SerializeField] private string gatePathName = "Level2Gate";
     [SerializeField] private bool unlockPast = true;
     [SerializeField] private bool unlockFuture = true;
-
+    private AudioSource creak;
     private bool unlocked = false;
 
     private void Start()
@@ -27,6 +27,7 @@ public class Gate : MonoBehaviour
         {
             gateSpriteRenderer.sprite = closedSprite;
         }
+        creak = gameObject.GetComponent<AudioSource>();
     }
 
     private void OnDestroy()
@@ -72,6 +73,7 @@ public class Gate : MonoBehaviour
         if (gateSpriteRenderer != null && openSprite != null)
         {
             gateSpriteRenderer.sprite = openSprite;
+            creak.Play();
         }
 
         Debug.Log($"{name}: Gate unlocked with item '{placedItemName}'.");

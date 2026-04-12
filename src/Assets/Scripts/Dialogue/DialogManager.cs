@@ -205,8 +205,6 @@ public class DialogManager : MonoBehaviour
     {
         ClearChoices();
 
-        isRunning = false;
-
         DialogRoot.SetActive(false);
         AudioManager.Instance.FullAll();
 
@@ -377,8 +375,11 @@ public class DialogManager : MonoBehaviour
         if (tags.Contains("enableSam"))
             sam.SetActive(true);
 
-        if (tags.Contains("ReturnToMainMenu"))
+        if (tags.Contains("returnToMainMenu"))
+        {
+            PlayerPrefs.SetInt("justFinished", 1);
             StartCoroutine(TransitionController.Instance.SwitchScenes("MainMenu", ""));
+        }
 
         if (!skipNextDelay)
         {
@@ -560,10 +561,13 @@ public class DialogManager : MonoBehaviour
         GameObject player = GameObject.FindWithTag("Player");
         PlayerControl playerControl = player.GetComponent<PlayerControl>();
 
-        playerControl.enabled = !areBehavioursDisabled;
+        if (playerControl != null)
+        {
+            playerControl.enabled = !areBehavioursDisabled;
 
-        if (areBehavioursDisabled)
-            playerControl.StopInPlace();
+            if (areBehavioursDisabled)
+                playerControl.StopInPlace();
+        }
     }
 
     /**
@@ -653,6 +657,9 @@ public class DialogManager : MonoBehaviour
     private void MoveToCamera()
     {
         GameObject camera = GameObject.FindWithTag("MainCamera");
+
+        if (camera == null) return;
+
         Vector3 position = camera.transform.position;
         position.z = DialogRoot.transform.position.z;
         position.y -= visualOffset;
