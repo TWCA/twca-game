@@ -20,7 +20,7 @@ public class SubtitleManager : MonoBehaviour
     private float currentMessageTime = 0;
     private string subtitleName;
     private string subtitleMessage;
-    
+
     private SettingsLoader settingsLoader;
     private SettingsLoader.Setting subtitlesSetting;
 
@@ -36,7 +36,7 @@ public class SubtitleManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
             Instance = this;
         }
-        
+
         SettingsLoader settingsLoader = SettingsLoader.Instance;
         subtitlesSetting = settingsLoader.GetSetting("Subtitles");
     }
@@ -66,15 +66,31 @@ public class SubtitleManager : MonoBehaviour
             Message.text = subtitleMessage.Substring(0, displayedLength);
         }
     }
+    
+    private void LateUpdate()
+    {
+        MoveToCamera();
+    }
 
     public void ShowMessage(string name, string message, float time)
     {
         if (subtitlesSetting.Get() <= 0.5f) return;
-        
+
         showingMessage = true;
         currentMessageTime = 0;
         totalMessageTime = time;
         subtitleName = "(" + name + ")";
         subtitleMessage = message;
+    }
+
+    /**
+     * Move the dialog UI to th main camera's position.
+     */
+    private void MoveToCamera()
+    {
+        GameObject camera = GameObject.FindWithTag("MainCamera");
+        Vector3 position = camera.transform.position;
+        position.z = SubtitleRoot.transform.position.z;
+        SubtitleRoot.transform.position = position;
     }
 }

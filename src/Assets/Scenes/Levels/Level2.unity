@@ -3747,7 +3747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1325194795318638107, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2524496936366676522, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
       propertyPath: m_SizeDelta.y
@@ -10406,7 +10406,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.03018868
+      value: 0.033707865
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
@@ -10414,7 +10414,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.9413915
+      value: 0.9343399
       objectReference: {fileID: 0}
     - target: {fileID: 7316606289842739384, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: maxEmissionRate
