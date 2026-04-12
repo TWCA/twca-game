@@ -237,7 +237,7 @@ public class BarkManager : MonoBehaviour
         }
 
         DialogManager.Instance.StartDialogHeadless(knot);
-        PlayedBarks.Add(knot, PlayedBarks.GetValueOrDefault(knot) + 1);
+        PlayedBarks[knot] = PlayedBarks.GetValueOrDefault(knot) + 1;
         TimeSinceBark = 0;
         barksOnLevel++;
         return true;
@@ -345,7 +345,7 @@ public class BarkManager : MonoBehaviour
     public void OnJumped(GameObject agent)
     {
         if (!agent.CompareTag("Player")) return;
-        
+
         if (currentLevel == Level.Return)
             jumpedUp = true;
         else
@@ -358,7 +358,7 @@ public class BarkManager : MonoBehaviour
     public void OnJumpedFailed(GameObject agent)
     {
         if (!agent.CompareTag("Player")) return;
-        
+
         if (!failedJump)
             SuggestBark("bark_big_jump", RepeatMode.Encouraged);
         else

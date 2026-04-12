@@ -11,7 +11,7 @@ public class MusicPlayer : MonoBehaviour
     [SerializeField] private float playOnOpenVolume = 1.0f;
 
     private bool fadingOut = false;
-    private string nextTrack;
+    private string nextTrack = "";
     private float nextTrackVolume;
 
     private void Awake()
@@ -71,5 +71,17 @@ public class MusicPlayer : MonoBehaviour
         musicSource.loop = false;
         musicSource.volume = volume;
         musicSource.Play();
+    }
+
+    public void loopTrack()
+    {
+        musicSource.loop = true;
+        musicSource.Play();
+    }
+
+    public void stopPlayer()
+    {
+        fadingOut = true;
+        musicSource.loop = false;
     }
 }

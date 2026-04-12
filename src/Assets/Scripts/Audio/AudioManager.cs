@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class AudioManager : MonoBehaviour
@@ -24,12 +25,15 @@ public class AudioManager : MonoBehaviour
     private Vector3 previousPosition;
     public List<AudioClip> Birds;
     private bool playingChickadee, playingOwls = false;
-    public bool halfVol, fadeout = false;
+    public bool halfVol, fadeout, InCabin = false;
+
     void Awake()
     {
         _instance = this;
-        FullAll();
         
+        FullAll();
+
+       
     }
 
     void Start()
@@ -44,6 +48,12 @@ public class AudioManager : MonoBehaviour
             else
                 playTimeBackward();
         };
+        Scene currentScene = SceneManager.GetActiveScene();
+        
+        if (currentScene.name.Trim() == "RobinsRoom" || currentScene.name.Trim() == "Cabin")
+        {
+            InCabin = true;
+        }
     }
 
     // Update is called once per frame
@@ -55,48 +65,60 @@ public class AudioManager : MonoBehaviour
             playSteps();
         previousPosition = transform.position;
 
-        float rainStrength = TimeManager.Instance.GetRainStrength();
-        
-        if (rainStrength <= 0) // no rain
+        if (!InCabin)
         {
-            stopRain();
-            stopThunder();
-            playInsects();
-            
+            float rainStrength = TimeManager.Instance.GetRainStrength();
+            if (rainStrength <= 0) // no rain
+            {
+                stopRain();
+                stopThunder();
+                playInsects();
+
+            }
+            else if (rainStrength > 0 && rainStrength <= 0.5) // light rain
+            {
+                playRain();
+                stopThunder();
+                stopInsect();
+            }
+            else // if rainStrength > 0.5 // heavy rain
+            {
+                playRain();
+                playThunder();
+                stopInsect();
+
+            }
+
+            float lighting = TimeManager.Instance.GetLightingTime();
+
+            if (lighting <= 0.2) // day
+            {
+                playChickadee();
+
+                stopOwls();
+            }
+            else if (lighting < 0.8) // dawn
+            {
+                playChickadee();
+                playOwls();
+
+            }
+            else // if rainStrength >= 0.8 // night
+            {
+                stopChickadee();
+                playOwls();
+            }
         }
-        else if (rainStrength > 0 && rainStrength <= 0.5) // light rain
-        {
-            playRain();
-            stopThunder();
-            stopInsect();
-        }
-        else // if rainStrength > 0.5 // heavy rain
-        {
-            playRain();
-            playThunder();
-            stopInsect();
-            
-        }
-        
-        float lighting = TimeManager.Instance.GetLightingTime();
-        
-        if (lighting <= 0.2) // day
-        {
-            playChickadee();
-            
-            stopOwls();
-        }
-        else if (lighting < 0.8) // dawn
-        {
-            playChickadee();
-            playOwls();
-            
-        }
-        else // if rainStrength >= 0.8 // night
+        else
         {
             stopChickadee();
-            playOwls();
+            stopInsect();
+            stopThunder();
+            stopOwls();
+            stopRain();
+
         }
+        
 
     }
 
@@ -238,7 +260,7 @@ public class AudioManager : MonoBehaviour
         halfVolume(rainSource);
         halfVolume(thunderSource);
         halfVolume(owlsSource);
-        halfVolume(chickadeeSource);
+        chickadeeSource.volume = 0.3f;
         halfVol = true;
         
     }
@@ -248,7 +270,7 @@ public class AudioManager : MonoBehaviour
         fullVolume(rainSource);
         fullVolume(thunderSource);
         fullVolume(owlsSource);
-        fullVolume(chickadeeSource);
+        chickadeeSource.volume = 0.6f;
         halfVol = false;
     }
 
@@ -293,7 +315,7 @@ public class AudioManager : MonoBehaviour
         StartCoroutine(FadeIn(thunderSource, 2f, 0.8f));
         StartCoroutine(FadeIn(insectSource, 2f, 0.6f));
         StartCoroutine(FadeIn(owlsSource, 2f, 0.8f));
-        StartCoroutine(FadeIn(chickadeeSource, 2f, 0.8f));
+        StartCoroutine(FadeIn(chickadeeSource, 2f, 0.6f));
         StartCoroutine(FadeIn(rainSource, 2f, 0.8f));  
     }
 }
