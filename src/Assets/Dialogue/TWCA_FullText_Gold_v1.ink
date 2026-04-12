@@ -246,16 +246,16 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
 == walk_home ==
     You would not believe what I've been through getting here Sam. #Robin #Voice:VA/FoundSam/WhatIveBeenThrough
     Woof? #Sam #Voice:VA/SamBarks/Bark1 #waitForTrigger
-    I started slipping through time and had to figure how to get through the forest. #Robin #Voice:VA/FoundSam/JourneyExplanationPart1 #waitForTrigger
-    And I redirected a river with a log, and jumped some pretty large gaps and even managed to put out a fire! #Robin #Voice:VA/FoundSam/JourneyExplanationPart2
-    Arf! #Sam #Voice:VA/SamBarks/Bark4 #waitForTrigger
-    Yeah, I'm a little tired. #Robin #Voice:VA/FoundSam/ALittleTired
+    I started slipping through time and had to figure how to get through the forest. #Robin #Voice:VA/FoundSam/JourneyExplanationPart1
+    And I redirected a river with a log, and jumped some pretty large gaps and even managed to put out a fire! #Robin #Voice:VA/FoundSam/JourneyExplanationPart2 #waitForTrigger
+    Arf! #Sam #Voice:VA/SamBarks/Bark4
+    Yeah, I'm a little tired. #Robin #Voice:VA/FoundSam/ALittleTired #waitForTrigger
     ... #Robin
     
     I just remembered! #Robin #Voice:VA/FoundSam/IJustRemembered
-    {partyPlanned: I got invited out to see my friends, Sam! And you're invited too! #Robin #Voice:VA/FoundSam/You'reInvitedTooSam}
-    {not (dialog1chat or dialog2chat): I think Mom called the police, so I'll probably be in trouble when we get back. #Robin #Voice:VA/FoundSam/IThinkMomCalledThePolice}
-    {(dialog1chat or dialog2chat) and not partyPlanned: I've been a bit of a bad friend towards the guys, I should send them a text when I get back. #Robin #Voice:VA/FoundSam/I'veBeenABadFriend}
+    {partyPlanned: I got invited out to see my friends, Sam! And you're invited too! #Robin #Voice:VA/FoundSam/You'reInvitedTooSam #waitForTrigger}
+    {not (dialog1chat or dialog2chat): I think Mom called the police, so I'll probably be in trouble when we get back. #Robin #Voice:VA/FoundSam/IThinkMomCalledThePolice #waitForTrigger}
+    {(dialog1chat or dialog2chat) and not partyPlanned: I've been a bit of a bad friend towards the guys, I should send them a text when I get back. #Robin #Voice:VA/FoundSam/I'veBeenABadFriend  #waitForTrigger}
 
     //Would prefer to have a notification light for this part, but if not remove added line
     ->last_notif
