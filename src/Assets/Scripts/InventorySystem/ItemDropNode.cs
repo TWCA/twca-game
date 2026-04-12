@@ -124,23 +124,15 @@ public class ItemDropNode : MonoBehaviour
     public bool ItemIncoming(GameObject itemPrefab) {
         // Do we even allow this item in this node?
         if (AllowDeny.IsItemAllowed(itemPrefab.name) && !(SingleUse && used)) {
-            if (ActiveItem != null) {
-                // Call some abitrary function that runs when one item is dragged onto the other
-                // ActiveItem.GetComponent<PickupObject>().DraggedOnto(prefab);
-
-                // Disabled item mixing for vertical slice
-                // Its producing some issues that will be tackled for beta
-                return false;
-            } else {
+            if (ActiveItem == null) {
                 inventorySystem.CarriedItem = itemPrefab;
                 inventorySystem.HasMouseItem = false;
 
                 return true;
             }
 
-            return true;
-        } else
-        {
+            return false;
+        } else {
             BarkManager.Instance.OnPlacedItemFailed(gameObject, itemPrefab);
 
             return false;
