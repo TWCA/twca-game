@@ -261,11 +261,8 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
     ->last_notif
 
 == last_notif ==
+    Ding! #notificationSound #Delay:0.5
     Oh! #Robin #Voice:VA/FoundSam/OhNotif #Delay:0.5
-    Blah blah blah #Notifcation:News #RERECORD //Record as mumbling maybe? Or just skip recording if we end up not doing this
-    ->END
-    
-== after_last_notif ==
     Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought #Delay:1.0 #waitForTrigger
     I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
     Woof! #Sam #Voice:VA/SamBarks/Bark3
@@ -292,7 +289,7 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
     
 // After or during credits I'd put these
 == after_credits ==
-    #RERECORD //This whole section for credits with Mom & Robin
+    //This whole section for credits with Mom & Robin
     {partyPlanned: So I hear you planned a little get together with your friends? #Mom #Voice:VA/ArriveHome/PlannedALittleGetTogether}
     {partyPlanned: Oh yeah, they heard I was having a hard time finding Sam.  #Robin #Voice:VA/ArriveHome/TheyHeardIWasHavingAHardTime}
     {partyPlanned: Glad to see you're socializing a bit! #Mom #Voice:VA/ArriveHome/GladToSeeYou'reSocializing}
