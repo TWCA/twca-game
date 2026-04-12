@@ -1118,6 +1118,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   situation: 0
   futureVersion: {fileID: 0}
+--- !u!114 &472798668 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8645497442717055847, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
+  m_PrefabInstance: {fileID: 472798663}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472798664}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f52388df528faaf51bff718773708cee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &492276084
 GameObject:
   m_ObjectHideFlags: 0
@@ -7696,8 +7707,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FillUpPointInitial: {fileID: 880909975}
   FillUpPointFuture: {fileID: 282041945}
-  BurningBush: {fileID: 0}
-  FullBucket: {fileID: 212373334936704344, guid: 7e063a3ff37f36062a661227f55435a6, type: 3}
+  BurningBush: {fileID: 472798668}
+  FullBucket: {fileID: 653100337}
   TimePortal: {fileID: 1056293028}
   BushFire: {fileID: 0}
 --- !u!1001 &1281600973
