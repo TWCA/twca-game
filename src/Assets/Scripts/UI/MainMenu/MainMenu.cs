@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MainMenu : SubMenu
 {
-    public Button playButton, settingsButton, exitButton;
+    public Button playButton, settingsButton, creditsButton, exitButton;
     public Text versionText;
     public string targetScene;
 
@@ -17,11 +17,19 @@ public class MainMenu : SubMenu
         versionText.text = "Version " + Application.version;
         //MusicPlayer.Instance.loopTrack();
         HookButtons();
+        
+        if (PlayerPrefs.HasKey("justFinished") && PlayerPrefs.GetInt("justFinished") == 1)
+        {
+            PlayerPrefs.SetInt("justFinished", 0);
+            DialogManager.Instance.StartDialogHeadless("after_credits");
+            CreditsClick();
+        }
     }
 
     private void HookButtons() {
         HookButton(playButton, PlayClick);
         HookButton(settingsButton, SettingsClick);
+        HookButton(creditsButton, CreditsClick);
         HookButton(exitButton, ExitClick);
     }
 
@@ -34,6 +42,13 @@ public class MainMenu : SubMenu
         MenuController menuController = MenuController.Instance;
 
         menuController.ShowNext<Settings>();
+    }
+
+    private void CreditsClick()
+    {
+        MenuController menuController = MenuController.Instance;
+
+        menuController.ShowNext<Credits>();
     }
 
     private void ExitClick() {

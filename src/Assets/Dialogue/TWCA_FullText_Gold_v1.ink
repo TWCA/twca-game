@@ -287,9 +287,9 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
     I love you, Mom. #Robin #Voice:VA/ArriveHome/ILoveYouMom
     I love you too, sweetie. #Mom #Voice:VA/ArriveHome/ILoveYouTooSweetie
     ... #Delay:3.0
-    The End #goToCredits
+    The End #returnToMainMenu
     ... #Delay:2.0
-    -> after_credits
+    -> END
     
 // After or during credits I'd put these
 == after_credits ==
@@ -303,8 +303,6 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
     {not partyPlanned: They mentioned that they were hoping to hangout with you some day soon. #Mom #Voice:VA/ArriveHome/MentionedTheyWereHoping}
     {not partyPlanned: Yeah, I'd like that. I'll message then soon and plan something #Robin #Voice:VA/ArriveHome/I'dLikeThat}
     {not (dialog1chat or dialog2chat): I suppose I'll have to call that police officer back and tell him you returned safe and sound. #Mom #Voice:VA/ArriveHome/I'llHaveToCallThePoliceOfficer}
-    ... #Delay:3.0
-    The End #returnToMainMenu
     ->END
 
 //Dialogs End

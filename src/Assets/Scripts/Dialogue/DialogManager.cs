@@ -368,11 +368,11 @@ public class DialogManager : MonoBehaviour
         if (tags.Contains("enableSam"))
             sam.SetActive(true);
 
-        if (tags.Contains("goToCredits"))
-            StartCoroutine(TransitionController.Instance.SwitchScenes("Credits", ""));
-
         if (tags.Contains("returnToMainMenu"))
+        {
+            PlayerPrefs.SetInt("justFinished", 1);
             StartCoroutine(TransitionController.Instance.SwitchScenes("MainMenu", ""));
+        }
 
         if (!skipNextDelay)
         {
@@ -529,10 +529,13 @@ public class DialogManager : MonoBehaviour
         GameObject player = GameObject.FindWithTag("Player");
         PlayerControl playerControl = player.GetComponent<PlayerControl>();
 
-        playerControl.enabled = !areBehavioursDisabled;
+        if (playerControl != null)
+        {
+            playerControl.enabled = !areBehavioursDisabled;
 
-        if (areBehavioursDisabled)
-            playerControl.StopInPlace();
+            if (areBehavioursDisabled)
+                playerControl.StopInPlace();
+        }
     }
 
     /**
