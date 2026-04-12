@@ -230,7 +230,7 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
 
 //Meet Sam
 == meet_sam ==
-    Bark! #Sam #Voice:VA/SamBarks/Bark7 #Delay:0.9
+    Bark! #Sam #Voice:VA/SamBarks/Bark7 #Delay:0.3 #disableSam
     Is that barking? #Robin #Voice:VA/RobinLevelBarks/IsThatBarking #waitForTrigger
     Arf! #Sam #Voice:VA/SamBarks/Bark3 #enableSam
     Sam! There you are! #Robin #Voice:VA/FoundSam/SamThereYouAre
@@ -239,7 +239,7 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
     I'm sorry I lost track of time and left you on your own. #Robin #Voice:VA/FoundSam/LeftYouOnYourOwn
     But we're together again now, so let's head home. #Robin #Voice:VA/FoundSam/TogetherAgain
     Arf! #Sam #Voice:VA/SamBarks/Bark6
-    ->END
+    -> END
 
 
 //Walk
