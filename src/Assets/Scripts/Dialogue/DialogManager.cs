@@ -205,8 +205,6 @@ public class DialogManager : MonoBehaviour
     {
         ClearChoices();
 
-        isRunning = false;
-
         DialogRoot.SetActive(false);
         AudioManager.Instance.FullAll();
 
