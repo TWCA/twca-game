@@ -181,7 +181,8 @@ Hey Robin, you weren't in class the other day, and I've just been wondering how 
 Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupScene/PartySoon
 {!badDay: We know you've been away for a little while, but we'd like to see you again #Lorenzo #Voice:VA/GroupScene/WedReallyLikeToSeeYouAgain}
 {badDay: We know it's been a rough time for you, so we'd like to raise your spirits a bit! :D #Lorenzo #VA/GroupScene/RaiseYourSpirits}
-{dogmentioned: {dialog1chat: If you found Sam, bring him to the party! #Francis  #Voice:VA/GroupScene/BringHimToTheParty - else: Bring Sam too, once you find him! #Lorenzo #Voice:VA/GroupScene/BringSamToo}}
+{dogmentioned: {dialog1chat: If you found Sam, bring him to the party! #Francis #Voice:VA/GroupScene/BringHimToTheParty}}
+{dogmentioned: {!dialog1chat: Bring Sam too, once you find him! #Lorenzo #Voice:VA/GroupScene/BringSamToo}}
 
 * {dogmentioned} I still haven't found him #Robin #Voice:VA/GroupScene/StillHaventFoundHim
     Tell us where you are Robin, we can help #Francis #Voice:VA/GroupScene/TellUsWhereYouAre
