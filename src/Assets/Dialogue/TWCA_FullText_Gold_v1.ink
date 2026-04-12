@@ -387,7 +387,7 @@ A fan struck in the head by a puck over the glass at Oilers game! #Notification:
 ->END
 
 == insta3 ==
-{~@poluxsi|@regularold.ow|@makobarrett|@naytiba_eve} has liked your post. #Notification:Instancegram #Voice:VA/Notifications/SomeoneLikedMyPost (Either x liked your post, or someone has liked your post.)
+{~@poluxsi|@regularold.ow|@makobarrett|@naytiba_eve} has liked your post. #Notification:Instancegram #Voice:VA/Notifications/SomeoneLikedMyPost
 -> END
 
 == insta4 ==
