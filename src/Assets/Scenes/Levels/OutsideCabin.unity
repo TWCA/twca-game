@@ -2909,10 +2909,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2691518382046586492, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
-      propertyPath: inkJson
-      value: 
-      objectReference: {fileID: 4900000, guid: 2755f35270a968048b3bcb0924980855, type: 3}
-    - target: {fileID: 2691518382046586492, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
       propertyPath: disableWhileDialog.Array.size
       value: 0
       objectReference: {fileID: 0}
@@ -6859,15 +6855,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.2554859
+      value: 0.033644862
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 1
+      value: 0.99999994
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.4893221
+      value: 0.93259346
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

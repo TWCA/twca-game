@@ -79,7 +79,7 @@ If you're up Robin, I left you some toast on the table. #Mom #Voice:VA/IntroScen
  -> END
  
 == after_first_notif ==
- Bit of a scary topic on the news today... #Robin #Voice:VA/IntroScene/BitOfAScaryTopic
+ Bit of a scary topic on the news today... #Robin #Voice:VA/IntroScene/BitOfAScaryTopic #disableBehaviours
  Maybe that article was right, I didn't realize I was out here that long. #Robin #Voice:VA/IntroScene/MaybeThatArticleWasRight
  I'm sure that was a long enough walk for you Sam! #Robin #Voice:VA/IntroScene/I'mSureThatWasEnough
  ... #Robin #Delay:0.3
