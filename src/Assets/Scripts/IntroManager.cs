@@ -17,10 +17,6 @@ public class IntroManager : MonoBehaviour
 
 	private void Awake()
 	{
-		if (PlayerPrefs.HasKey("seenIntro"))
-			if (PlayerPrefs.GetInt("seenIntro") == 1)
-				SceneManager.LoadScene(targetScene);
-
 		twcaSprite.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 		hikeSprite.color = new Color(1.0f, 1.0f, 1.0f, 0.0f);
 
@@ -73,10 +69,7 @@ public class IntroManager : MonoBehaviour
 					Mathf.MoveTowards(hikeSprite.color.a, 0, Time.deltaTime * 0.8f));
 
 				if (hikeSprite.color.a <= 0)
-				{
 					SceneManager.LoadScene(targetScene);
-					PlayerPrefs.SetInt("seenIntro", 1);
-				}
 				break;
 		}
 	}
