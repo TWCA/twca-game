@@ -368,7 +368,10 @@ public class DialogManager : MonoBehaviour
         if (tags.Contains("enableSam"))
             sam.SetActive(true);
 
-        if (tags.Contains("ReturnToMainMenu"))
+        if (tags.Contains("goToCredits"))
+            StartCoroutine(TransitionController.Instance.SwitchScenes("Credits", ""));
+
+        if (tags.Contains("returnToMainMenu"))
             StartCoroutine(TransitionController.Instance.SwitchScenes("MainMenu", ""));
 
         if (!skipNextDelay)

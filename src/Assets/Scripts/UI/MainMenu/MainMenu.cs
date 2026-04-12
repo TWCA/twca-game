@@ -26,7 +26,7 @@ public class MainMenu : SubMenu
     }
 
     private void PlayClick() {
-        SceneManager.LoadScene(targetScene);
+        StartCoroutine(TransitionController.Instance.SwitchScenes(targetScene, ""));
         MusicPlayer.Instance.stopPlayer();
     }
 
