@@ -73,10 +73,11 @@ public class InventorySystem : MonoBehaviour
         } else {
             Item newItem = new Item(prefab);
             items.Add(newItem);
+            
         }
 
         gameObject.SetActive(true);
-
+        AudioManager.Instance.oneShotSource.PlayOneShot(prefab.GetComponent<PickupObject>().pickup);
         return true;
     }
 
@@ -88,10 +89,12 @@ public class InventorySystem : MonoBehaviour
 
         if (existingItem != null)
         {
+            AudioManager.Instance.oneShotSource.PlayOneShot(prefab.GetComponent<PickupObject>().putdown);
             InventoryItem inventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
             inventoryItem.UpdateItemCount(inventoryItem.ItemCount - 1);
-
+            
             if (items.Count == 0) {
+                
                 gameObject.SetActive(false);
             }
         }
@@ -134,6 +137,7 @@ public class InventorySystem : MonoBehaviour
         HasMouseItem = false;
     }
 
+
     /*
     * Cancels all actions for picking up / dropping items
     */
@@ -148,7 +152,7 @@ public class InventorySystem : MonoBehaviour
 
     /*
     * Object that represents an Item in the inventory and its UI elements
-    * Used for properly insantiating items in the scene
+    * Used for properly instantiating items in the scene
     */
     private class Item
     {
@@ -174,4 +178,6 @@ public class InventorySystem : MonoBehaviour
             this.uiObject = newItemUIObject;
         }
     }
+
+   
 }

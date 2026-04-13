@@ -35,7 +35,9 @@ public class MainMenu : SubMenu
 
     private void PlayClick() {
         StartCoroutine(TransitionController.Instance.SwitchScenes(targetScene, ""));
-        MusicPlayer.Instance.stopPlayer();
+        //MusicPlayer.Instance.stopPlayer();
+        MusicPlayer.Instance.PlayOnce("Music/MorningEdge", 1f);
+        //MusicPlayer.Instance.loopTrack();
     }
 
     private void SettingsClick() {
