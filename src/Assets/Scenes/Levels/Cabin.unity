@@ -896,6 +896,10 @@ PrefabInstance:
       propertyPath: AllowDeny.InteractionObjects.Array.data[0]
       value: 
       objectReference: {fileID: 537990157711792668, guid: d1c60d5ebf4e2bc459206a5031d28ef1, type: 3}
+    - target: {fileID: 8591946189529635029, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
+      propertyPath: m_Radius
+      value: 25
+      objectReference: {fileID: 0}
     - target: {fileID: 8645497442717055847, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: SingleUse
       value: 1
@@ -1340,6 +1344,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2526098843139019801, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
+      propertyPath: knot
+      value: motherintro
+      objectReference: {fileID: 0}
+    - target: {fileID: 2526098843139019801, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
+      propertyPath: delaySeconds
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5379357951889160781, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
+      propertyPath: m_Name
+      value: ItemDropNode
+      objectReference: {fileID: 0}
     - target: {fileID: 4267484377463088540, guid: 255cef4db7d2ffa57932de5be4837c98, type: 3}
       propertyPath: m_LocalScale.x
       value: 1
@@ -1396,18 +1412,6 @@ PrefabInstance:
       propertyPath: ActiveItem
       value: 
       objectReference: {fileID: 7893675085338751653, guid: fb0188a658384b746b2a3ad69e1ae8b3, type: 3}
-    - target: {fileID: 2526098843139019801, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
-      propertyPath: knot
-      value: motherintro
-      objectReference: {fileID: 0}
-    - target: {fileID: 2526098843139019801, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
-      propertyPath: delaySeconds
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5379357951889160781, guid: 50f4bfe0ee097ca4da2ab1fe49ecf335, type: 3}
-      propertyPath: m_Name
-      value: ItemDropNode
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2080,6 +2084,18 @@ PrefabInstance:
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.width
+      value: 0.9993425
+      objectReference: {fileID: 0}
+    - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
+      propertyPath: m_NormalizedViewPortRect.height
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y

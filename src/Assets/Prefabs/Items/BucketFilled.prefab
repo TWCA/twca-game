@@ -42,7 +42,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: AllowStacking
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: AlternateGroundSprite

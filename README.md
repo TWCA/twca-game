@@ -1,5 +1,5 @@
 # A Hike Through Time
-Come meet Robin, and their dog Sam. Explore the forest around Great Creek and take A Hike Through Time! This game was made at the University of Alberta by TWCA (Team Without a Cool Acronym). Read the walkthough if you get lost, or learn about how the game was made. Feel free to report any issues on Github.
+Come meet Robin, and their dog Sam. Explore the forest around Great Creek and take A Hike Through Time! This game was made at the University of Alberta by TWCA (Team Without a Cool Acronym). Read the walkthough if you get lost, or learn about how the game was made. Feel free to report any issues on Github. All voice acting clips can be downloaded [here](https://drive.google.com/drive/folders/19SdCdiADcRM2bpm-FP-Sr87-Q-dPIrcR?usp=sha...).
 
 ## Running the game
 #### In the web

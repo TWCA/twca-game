@@ -47,9 +47,7 @@ public class PickupObject : MonoBehaviour
         if (itemDropNode != null && inventorySystem.CarriedItem == null) {
             bool accepted = itemDropNode.ItemIncoming(PickupObjectPrefab);
 
-            if (!accepted) {
-                inventorySystem.AddItem(PickupObjectPrefab);
-            } else {
+            if (accepted) {
                 player.PathfindTo(itemDropNode.gameObject.transform.position);
             }
         }
