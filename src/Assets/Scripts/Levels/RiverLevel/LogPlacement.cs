@@ -5,7 +5,6 @@ using UnityEngine;
 public class LogPlacement : MonoBehaviour
 {
     private AudioSource river;
-    private bool placed = false;
     private ItemDropNode node;
     private bool AlreadyThere = false;
     // Start is called before the first frame update
@@ -13,33 +12,34 @@ public class LogPlacement : MonoBehaviour
     {
         river = gameObject.GetComponent<AudioSource>();
         node = gameObject.GetComponent<ItemDropNode>();
+
         if (node.ActiveItem != null)
         {
-            if (node.ActiveItem.name[0..3].ToString() == "Log")
+            if (node.ActiveItem != null)
             {
                 AlreadyThere = true;
             }
         }
-       
+
+        node.ItemPlaced += OnPlaced;
+        node.ItemRemoved += OnRemoved;
+    }
+
+    void OnPlaced() {
+        if (!AlreadyThere) {
+            river.Play();
+        }
+    }
+
+    void OnRemoved() {
+        if (AlreadyThere) {
+            AlreadyThere = false;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (node.ActiveItem != null && !AlreadyThere)
-        {
-            if (node.ActiveItem.name[0..3].ToString() == "Log" && placed == false)
-            {
-                river.Play();
-                placed = true;
-            }
-        }
-        if (AlreadyThere)
-        {
-            if (node.ActiveItem == null || node.ActiveItem.name[0..3].ToString() != "Log")
-            {
-                AlreadyThere = false;
-            }
-        }
+
     }
 }
