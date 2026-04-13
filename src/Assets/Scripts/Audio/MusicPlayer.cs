@@ -39,10 +39,12 @@ public class MusicPlayer : MonoBehaviour
             if (musicSource.volume < Time.deltaTime * 2)
             {
                 fadingOut = false;
+                Debug.Log("Stoped fading out");
                 musicSource.Stop();
                 if (nextTrack.Trim().Length > 0)
                 {
                     PlayOnce(nextTrack, nextTrackVolume);
+                    Debug.Log("Playing Next Track: "+ nextTrack);
                     nextTrack = "";
                 }
             }
@@ -55,16 +57,20 @@ public class MusicPlayer : MonoBehaviour
         {
             fadingOut = true;
             nextTrack = filePath;
+            Debug.Log("source playing");
             nextTrackVolume = volume;
             return;
+            
         }
-        
-        AudioClip clip = Resources.Load<AudioClip>(filePath.Trim());
+        AudioClip clip = null;
+        clip = Resources.Load<AudioClip>(filePath.Trim());
 
         if (clip == null)
         {
             Debug.LogWarning("Failed to load voice clip from path: " + filePath);
             return;
+        }else{
+            Debug.Log("Clip loaded.");
         }
 
         musicSource.clip = clip;

@@ -29,6 +29,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: pickup
+      value: 
+      objectReference: {fileID: 8300000, guid: 8896fa25c9eaa914ba8308fe417371bb, type: 3}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: putdown
+      value: 
+      objectReference: {fileID: 8300000, guid: 8896fa25c9eaa914ba8308fe417371bb, type: 3}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: AllowStacking
       value: 0
       objectReference: {fileID: 0}

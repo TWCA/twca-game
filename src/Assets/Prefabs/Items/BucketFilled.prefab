@@ -29,6 +29,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: pickup
+      value: 
+      objectReference: {fileID: 8300000, guid: ddbd621cf9b2627448dc129a41fd9d80, type: 3}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
+      propertyPath: putdown
+      value: 
+      objectReference: {fileID: 8300000, guid: ddbd621cf9b2627448dc129a41fd9d80, type: 3}
+    - target: {fileID: 3054084485680338735, guid: ee86283cb43e5a4c999a73c9ea42af9b, type: 3}
       propertyPath: NiceName
       value: Water Bucket
       objectReference: {fileID: 0}
