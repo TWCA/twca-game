@@ -74,7 +74,7 @@ If you're up Robin, I left you some toast on the table. #Mom #Voice:VA/IntroScen
  -> END
  
 == first_notif ==
- Hold on one second Sam, I have to check this notification. #Voice:VA/IntroScene/HoldOnSam #disableBehaviours
+ Hold on one second Sam, I have to check this notification. #Robin #Voice:VA/IntroScene/HoldOnSam #disableBehaviours
  Dangers of social media, with screen time awareness on the decrease! #Notification:News #openPhone #Voice:VA/IntroScene/DangersOfSocialMedia //It's a little on the nose, but I prefer it being like this than the stuck semi
  -> END
  
@@ -101,7 +101,7 @@ Hi Robin, just checking in on you, it's been a while since we last talked! #Fran
        ~ dogmentioned = true
        Sorry to hear that Robin! Is there anything I can do? #Francis #Voice:VA/InterLevel/SorryToHear
        No, I'm sure that I'll find him soon, I'm okay #Robin #Voice:VA/InterLevel/IllFindHim
-       Alright then, good luck then! :D #Friend #Voice:VA/InterLevel/GoodLuck
+       Alright then, good luck then! :D #Francis #Voice:VA/InterLevel/GoodLuck
        Oh and, #Francis #Voice:VA/InterLevel/OkIKnow #IgnoreNextVoice -> checkup_end_pos 
    * * It's just been a bit busy lately #Robin #Voice:VA/InterLevel/ItsBeenBusy
        Fair enough. Anyways, just wanted to check in, make sure you're doing well! #Francis #Voice:VA/InterLevel/FairEnough
@@ -264,7 +264,7 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
 == last_notif ==
     Ding! #notificationSound #Delay:0.5
     Oh! #Robin #Voice:VA/FoundSam/OhNotif #Delay:0.5
-    Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought #Delay:1.0 #waitForTrigger
+    Actually, on second thought, I think I'm good for a little while. #Robin #Voice:VA/FoundSam/OnSecondThought #Delay:1.0
     I'd rather not lose you again, Sam, one time is enough for me. #Robin #Voice:VA/FoundSam/IdRatherNotLoseYouAgain
     Woof! #Sam #Voice:VA/SamBarks/Bark3
     I'm glad you agree let's go home #Robin #Voice:VA/FoundSam/ImGladYouAgree
@@ -502,7 +502,7 @@ The ground isn't flat here, the bucket just falls. #Robin #Voice:VA/RobinLevelBa
 -> END
 
 == bark_slow_fill ==
-The bucket is filling... vveeerrryyy slllloooowwwwlllyyy. #Voice:VA/RobinLevelBarks/CoupleHoursBucket #TODO
+The bucket is filling... vveeerrryyy slllloooowwwwlllyyy. #Robin #Voice:VA/RobinLevelBarks/CoupleHoursBucket #TODO
 -> END
 
 == bark_slow_fill_hours ==
