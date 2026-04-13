@@ -28,6 +28,7 @@ public class DialogManager : MonoBehaviour
     public Transform choicesRoot;
     public GameObject choiceButtonPrefab;
     public Text timeText;
+    public Text nameText;
     public float defaultTextDelay = 0.9f;
     public float defaultNonTextDelay = 0.2f;
 
@@ -41,6 +42,7 @@ public class DialogManager : MonoBehaviour
     private int waitingForTriggerCount = 0;
     private float visualOffset = 270;
     private bool areBehavioursDisabled = false;
+    private string chatName = null;
 
     private System.Action onDialogFinished;
     private float delayAfterFinish;
@@ -104,6 +106,7 @@ public class DialogManager : MonoBehaviour
             currentMinute = Mathf.Floor(currentMinute);
 
             timeText.text = currentHour + ":" + currentMinute + postfix;
+            nameText.text = chatName;
         }
     }
 
@@ -200,6 +203,7 @@ public class DialogManager : MonoBehaviour
         isRunning = true;
         onDialogFinished = onFinished;
         waitingForTriggerCount = 0;
+        chatName = null;
     }
 
     public void EndDialog()
@@ -323,6 +327,17 @@ public class DialogManager : MonoBehaviour
             if (appTitle == null)
             {
                 Character character = GetCharacterTag(tags);
+
+                if (chatName == null && character != Character.Robin && character != Character.Sam && character != Character.None)
+                {
+                    chatName = CharacterToName(character);
+                }
+
+                if (tags.Contains("groupChat"))
+                {
+                    chatName = "Francis & Lorenzo";
+                }
+
                 AddMessage(line, character);
             }
             else
