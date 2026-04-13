@@ -1,109 +1,168 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class VAManager : MonoBehaviour
 {
-    [SerializeField] public AudioSource VA;
-    public List<AudioClip> Scene1Robin;
-    public List<AudioClip> Scene1Friend;
-    private List<AudioClip> queue = new List<AudioClip>();
-    private AudioClip lastQueue;
+    [SerializeField] public AudioSource vaAudioSource;
 
+    // Command Queue (supports audio + delay)
+    private Queue<VACommand> queue = new Queue<VACommand>();
+
+    private bool ignoringNextEnqueue = false;
+    private float queueDelayTime = 0;
     
+    private List<UnityAction> queueEmptyActions = new List<UnityAction>();
+    private List<UnityAction> audioStartedActions = new List<UnityAction>();
+
     public static VAManager Instance { get; private set; }
 
-    void Awake()
+    public void Awake()
     {
         Instance = this;
     }
+
+    public void Update()
+    {
+        // wait for delays
+        if (queueDelayTime > 0)
+        {
+            queueDelayTime -= Time.deltaTime;
+            return;
+        }
+
+        // otherwise, dequeue a command
+        if (queue.Count > 0)
+        {
+            RunNextCommand();
+            return;
+        }
+
+        // otherwise, run all queue-empty callbacks safely
+        RunEmptyQueueCallbacks();
+    }
+
+    private void RunNextCommand()
+    {
+        VACommand cmd = queue.Dequeue();
+
+        if (cmd.Type == VACommand.CommandType.PlayAudio)
+        {
+            vaAudioSource.PlayOneShot(cmd.Clip);
+            queueDelayTime += cmd.Clip.length;
+            RunAudioStartedCallbacks();
+        }
+        else if (cmd.Type == VACommand.CommandType.Delay)
+        {
+            queueDelayTime += cmd.Delay;
+        }
+    }
+
+    public void RunEmptyQueueCallbacks()
+    {
+        List<UnityAction> remainingActions = queueEmptyActions;
+        queueEmptyActions = new List<UnityAction>();
+
+        foreach (UnityAction action in remainingActions)
+            action();
+    }
     
-    // Start is called before the first frame update
-    void Start()
+    public void RunAudioStartedCallbacks()
     {
-        lastQueue = Scene1Friend[0];
+        List<UnityAction> remainingActions = audioStartedActions;
+        audioStartedActions = new List<UnityAction>();
+
+        foreach (UnityAction action in remainingActions)
+            action();
     }
 
-    // Update is called once per frame
-    void Update()
+    public float Enqueue(string filepath)
     {
-        Queue();
+        if (ignoringNextEnqueue)
+        {
+            ignoringNextEnqueue = false;
+            return 0;
+        }
+
+        AudioClip audioClip = Resources.Load<AudioClip>(filepath);
+
+        if (audioClip == null)
+        {
+            Debug.LogError("Failed to load voice clip from path: " + filepath);
+            return 0;
+        }
+
+        queue.Enqueue(new VACommand(audioClip));
+
+        return audioClip.length;
     }
 
-    public void startScene()
+    public void EnqueueDelay(float seconds)
     {
-        VA.PlayOneShot(Scene1Friend[0]);
-
-    }
-    public void Queue()
-    {
-        if (!(queue.Count == 0 ) && !VA.isPlaying)
-        {
-            //lastQueue = Scene1Robin[0];
-            if ((lastQueue == Scene1Friend[6] || lastQueue == Scene1Friend[8]) && queue[0] == Scene1Friend[7])
-            {
-                queue.RemoveAt(0);
-                return;
-            }
-            VA.PlayOneShot(queue[0]);
-            lastQueue = queue[0];
-            queue.RemoveAt(0);
-            
-        }
+        queue.Enqueue(new VACommand(seconds));
     }
 
-    public void Enqueue(string tag)
+    public void IgnoreNextEnqueue()
     {
-        if (tag == "R1B")
+        ignoringNextEnqueue = true;
+    }
+
+    public void ClearQueue()
+    {
+        queueDelayTime = 0;
+        vaAudioSource.Stop();
+        queue.Clear();
+        RunEmptyQueueCallbacks();
+    }
+
+    public bool IsQueueEmpty()
+    {
+        return queueDelayTime <= 0 && queue.Count == 0;
+    }
+
+    public void OnQueueEmpty(UnityAction callback)
+    {
+        queueEmptyActions.Add(callback);
+    }
+    
+    public void CancelOnQueueEmpty(UnityAction callback)
+    {
+        queueEmptyActions.Remove(callback);
+    }
+    
+    public void OnAudioStarted(UnityAction callback)
+    {
+        audioStartedActions.Add(callback);
+    }
+    
+    public void CancelOnAudioStarted(UnityAction callback)
+    {
+        audioStartedActions.Remove(callback);
+    }
+    
+    private class VACommand
+    {
+        public enum CommandType
         {
-            queue.Add(Scene1Robin[0]);
-        } 
-        if (tag == "R1C")
-        {
-            queue.Add(Scene1Robin[1]);
+            PlayAudio,
+            Delay
         }
-        if (tag == "R2A")
+
+        public CommandType Type;
+        public AudioClip Clip;
+        public float Delay;
+
+        public VACommand(AudioClip clip)
         {
-            queue.Add(Scene1Robin[2]);
+            Type = CommandType.PlayAudio;
+            Clip = clip;
         }
-        if (tag == "R2B")
+
+        public VACommand(float delay)
         {
-            queue.Add(Scene1Robin[3]);
-        }
-        if (tag == "R3A")
-        {
-            queue.Add(Scene1Robin[4]);
-        }
-        if (tag == "RF2")
-        {
-            queue.Add(Scene1Robin[5]);
-        }
-        if (tag == "F2A")
-        {
-            queue.Add(Scene1Friend[1]);
-        }
-        if (tag == "F2B")
-        {
-            queue.Add(Scene1Friend[2]);
-            queue.Add(Scene1Friend[6]);
-        }
-        if (tag == "F3A")
-        {
-            queue.Add(Scene1Friend[3]);
-        }
-        if (tag == "F3B")
-        {
-            queue.Add(Scene1Friend[4]);
-        }
-        if (tag == "F4A")
-        {
-            queue.Add(Scene1Friend[5]);
-            queue.Add(Scene1Friend[8]);
-        }
-        
-        if (tag == "FF")
-        {
-            queue.Add(Scene1Friend[7]);
+            Type = CommandType.Delay;
+            Delay = delay;
         }
     }
 }

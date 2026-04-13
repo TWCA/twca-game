@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - FadeTexture
+  - UITemplate
+  - InventoryUIRoot
+  - DialogUIRoot
+  - Sam
   layers:
   - Default
   - TransparentFX

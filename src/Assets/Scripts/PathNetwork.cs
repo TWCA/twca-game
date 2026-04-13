@@ -33,7 +33,11 @@ public class PathNetwork : MonoBehaviour
     {
         if (renderDirty)
         {
-            PathRenderer.Instance.DrawTraversablePaths();
+            if (PathRenderer.Instance != null)
+            {
+                PathRenderer.Instance.DrawTraversablePaths();
+            }
+
             UpdateNodeNeighbors();
             renderDirty = false; 
         }
@@ -74,6 +78,37 @@ public class PathNetwork : MonoBehaviour
         {
             // skip paths from another time
             if (!paths[i].Traversable(isFuture)) continue;
+
+            Vector2 nearestPoint = NearestPointOnPath(i, position);
+            float distance = Vector2.Distance(position, nearestPoint);
+
+            if (distance < nearestDistance)
+            {
+                nearestPath = i;
+                nearestPointOverall = nearestPoint;
+                nearestDistance = distance;
+            }
+        }
+
+        return (nearestPointOverall, nearestPath);
+    }
+    
+    /**
+     * Find the nearest named path
+     */
+    public (Vector2 Position, int Path) NearestObstacle(Vector2 position, bool isFuture)
+    {
+        int nearestPath = -1;
+        Vector2 nearestPointOverall = Vector2.zero;
+        float nearestDistance = Single.PositiveInfinity;
+
+        for (int i = 0; i < paths.Count; i++)
+        {
+            // skip paths that are not named
+            if (paths[i].name == "") continue;
+            
+            // skip paths that are traversable
+            if (paths[i].Traversable(isFuture)) continue;
 
             Vector2 nearestPoint = NearestPointOnPath(i, position);
             float distance = Vector2.Distance(position, nearestPoint);
@@ -483,6 +518,15 @@ public class PathNetwork : MonoBehaviour
     {
         return paths[path].Traversable(isFuture);
     }
+    
+    /**
+     * Checks if a path requires the player to jump
+     */
+    public bool DoesPathRequireJump(int path)
+    {
+        return paths[path].requireJump;
+    }
+
 
     /**
      * Gets named path. Returns -1 if not found, or if there are multiple matches.
@@ -523,6 +567,16 @@ public class PathNetwork : MonoBehaviour
         return paths[path].name;
     }
 
+    public void SetPathPastTraversable(int path, bool traversable) {
+        paths[path].pastTraversable = traversable;
+        renderDirty = true;
+    }
+
+    public void SetPathFutureTraversable(int path, bool traversable) {
+        paths[path].futureTraversable = traversable;
+        renderDirty = true;
+    }
+
     private void UpdateNodeNeighbors()
     {
         foreach (PathNode node in nodes)
@@ -560,6 +614,7 @@ public class PathNetwork : MonoBehaviour
         public string name;
         public bool pastTraversable = true;
         public bool futureTraversable = true;
+        public bool requireJump = false;
 
         public Path(int nodeA, int nodeB)
         {

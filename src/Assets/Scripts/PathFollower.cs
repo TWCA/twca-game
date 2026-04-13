@@ -4,61 +4,124 @@ using UnityEngine;
 
 public class PathFollower : MonoBehaviour
 {
-    /** Pixels per second. */
-    public float speed = 40f;
+    /** Measured in px/s */
+    public float minSpeed = 50f;
 
-    /** The distance in pixels to another path where you may switch. */
-    public float intersectionSize = 12f;
+    /** Measured in px/s */
+    public float maxSpeed = 120f;
 
-    /** The max angle in degrees between target walk direction and the path/ */
-    [Range(0.0f, 90.0f)] public float maxPathError = 60f;
+    /** Measured in px/s */
+    public float minJumpSpeed = 110f;
 
-    [Range(0.0f, 1.0f)] public float pathLerpRate = 0.9f;
+    /** Measured in px/s² */
+    public float acceleration = 50f;
+
+    /** Measured in px/s² */
+    public float deceleration = 500f;
+
+    /** Measured in px/s² */
+    public float gravity = 0.14f;
+
+    /** How far ahead of the player do we pathfind to when walking with WASD */
+    [Range(5.0f, 100f)] public float walkingLookAheadLength = 25f;
+
+    /** How much the WASD system should help us to turn when it is detected. Between zero and one.*/
+    [Range(0.0f, 0.9f)] public float turnAssistStrength = 0.5f;
+
+    /** How close we have to be to turning before the WASD system helps us turn easier. Between zero and one. */
+    [Range(0.0f, 0.5f)] public float turnAssistThreshold = 0.1f;
+
+    /** How close we have to be to walking perpendicular to the path with WASD before we just stop moving. Between zero and one. */
+    [Range(0.0f, 1.0f)] public float perpendicularThreshold = 0.1f;
 
     public event Action DonePathing;
 
+    private float currentSpeed;
+    private bool movedLastFrame;
+    private Vector2 jumpStart, jumpEnd;
+    private bool isJumping;
+    private float jumpDistanceTraveled;
+
     private List<int> plannedPath;
     private Vector2 plannedEndPosition = Vector2.zero;
+    private bool isPathfindingToWalk;
+
+    public PathFollower()
+    {
+        currentSpeed = minSpeed;
+    }
 
     public void FixedUpdate()
     {
-        if (!IsPathfinding()) return;
-
         PathNetwork net = PathNetwork.Instance;
         bool isFuture = TimeManager.Instance.IsFuture();
 
-        // check if the last section of the path is intact
-        if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], isFuture))
-            StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
+        (Vector2 position, int path) = net.NearestObstacle(transform.position, isFuture);
+        if (path != -1 && Vector2.Distance(position, transform.position) < 20.0)
+        {
+            BarkManager.Instance.OnNearObstacle(gameObject, net.GetPathName(path));
+        }
 
-        // check if the last section of the path is intact
-        if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], isFuture))
-            StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
+        if (IsPathfinding())
+        {
+            // check if the last section of the path is intact
+            if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], isFuture))
+                StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
 
-        // check path is still valid
-        if (!AStarPathfinder.CheckPathStillValid(plannedPath, isFuture))
-            // if invalid try to recalculate path
-            if (!PathfindTo(plannedEndPosition))
-                // if failed stop pathfinding
-                StopPathfinding();
+            // check if the last section of the path is intact
+            if (!net.AreNodesConnected(plannedPath[^2], plannedPath[^1], isFuture))
+                StopPathfinding(); // last section of path broken, the goal (along this path) is now unreachable
+
+            // check path is still valid
+            if (!AStarPathfinder.CheckPathStillValid(plannedPath, isFuture))
+                // if invalid try to recalculate path
+                if (!PathfindTo(plannedEndPosition))
+                    // if failed stop pathfinding
+                    StopPathfinding();
+        }
     }
 
     public void Update()
     {
-        if (!IsPathfinding()) return;
-
-        Vector2 targetPosition = GetPathfindingTarget();
-        float stepSize = speed * Time.deltaTime;
-        transform.position = Vector2.MoveTowards(transform.position, targetPosition, stepSize);
-
-        if (transform.position.Equals(targetPosition))
+        if (IsPathfinding())
         {
-            plannedPath.RemoveAt(0);
+            Vector2 targetPosition = GetPathfindingNextPointTowardsGoal();
+            MoveAndHandleJumps(targetPosition);
 
-            // if there are no more edges to follow, stop pathing
-            if (plannedPath.Count <= 1)
-                StopPathfinding();
+            if (IsPathfinding() && Vector2.Distance(transform.position, targetPosition) < currentSpeed * Time.deltaTime)
+            {
+                plannedPath.RemoveAt(0);
+
+                // if there are no more edges to follow, stop pathing
+                if (plannedPath.Count <= 1)
+                    StopPathfinding();
+            }
         }
+
+        if (isJumping)
+            MoveDuringJump();
+
+        if (movedLastFrame)
+            currentSpeed = Mathf.MoveTowards(currentSpeed, maxSpeed, acceleration * Time.deltaTime);
+        else
+            currentSpeed = Mathf.MoveTowards(currentSpeed, minSpeed, deceleration * Time.deltaTime);
+
+        movedLastFrame = false;
+    }
+
+    public float GetCurrentSpeed()
+    {
+        return currentSpeed;
+    }
+
+    public void SetCurrentSpeed(float value)
+    {
+        currentSpeed = value;
+    }
+
+    public bool IsJumping()
+    {
+        return isJumping;
     }
 
     /**
@@ -70,6 +133,7 @@ public class PathFollower : MonoBehaviour
         bool isFuture = TimeManager.Instance.IsFuture();
         (plannedPath, _, plannedEndPosition) =
             AStarPathfinder.CalculatePathBetweenPositions(transform.position, target, isFuture);
+        isPathfindingToWalk = false;
         return plannedPath != null;
     }
 
@@ -78,7 +142,8 @@ public class PathFollower : MonoBehaviour
      */
     public void StopPathfinding()
     {
-        if (plannedPath != null) {
+        if (plannedPath != null)
+        {
             DonePathing?.Invoke();
         }
 
@@ -96,11 +161,14 @@ public class PathFollower : MonoBehaviour
 
     public Vector2 GetPathfindingDirection()
     {
-        Vector2 targetPosition = GetPathfindingTarget();
+        if (!IsPathfinding())
+            return Vector2.zero;
+
+        Vector2 targetPosition = GetPathfindingNextPointTowardsGoal();
         return (targetPosition - (Vector2)transform.position).normalized;
     }
 
-    public Vector2 GetPathfindingTarget()
+    public Vector2 GetPathfindingNextPointTowardsGoal()
     {
         if (plannedPath.Count > 2)
             return PathNetwork.Instance.GetNodePosition(plannedPath[1]);
@@ -112,120 +180,108 @@ public class PathFollower : MonoBehaviour
      * Moves this entity along a direction (or as close as possible) in the path network.
      * This will cancel any attempt to pathfind.
      */
-    public Vector2 WalkTowards(Vector2 inputDirection, float delta)
+    public Vector2 WalkTowards(Vector2 targetDirection)
     {
+        if (isJumping) return Vector2.zero;
+        if (targetDirection == Vector2.zero)
+        {
+            if (isPathfindingToWalk)
+                StopPathfinding();
+
+            return Vector2.zero;
+        }
+
+        if (!isPathfindingToWalk)
+            StopPathfinding();
+
+        if (IsPathfinding())
+            return Vector2.zero;
+
+        Vector2 goalPosition = (Vector2)transform.position + targetDirection.normalized * walkingLookAheadLength;
+
         PathNetwork net = PathNetwork.Instance;
         bool isFuture = TimeManager.Instance.IsFuture();
+        (Vector2 nearestToGoal, _) = net.NearestPointOnPaths(goalPosition, isFuture);
 
-        StopPathfinding();
+        if (Vector2.Distance(goalPosition, nearestToGoal) > walkingLookAheadLength * (1 - perpendicularThreshold))
+            return Vector2.zero;
 
-        Vector2 nearestPoint;
-        Vector2 movementDirection = Vector2.zero;
-        if (!inputDirection.Equals(Vector2.zero))
-        {
-            (int path, Vector2 pathEnd) = ChoosePathToWalkOn(inputDirection, isFuture);
-            transform.position = Vector2.MoveTowards(transform.position, pathEnd, speed * delta);
-            movementDirection = (pathEnd - (Vector2)transform.position).normalized;
+        PathfindTo(goalPosition);
+        isPathfindingToWalk = true;
 
-            nearestPoint = net.NearestPointOnPath(path, transform.position, false);
-        }
-        else
-        {
-            (nearestPoint, _) = net.NearestPointOnPaths(transform.position, isFuture);
-        }
-
-        float lerpAmount = 1 - Mathf.Pow(1 - pathLerpRate, delta);
-        transform.position = Vector2.Lerp(transform.position, nearestPoint, lerpAmount);
-
-        return movementDirection;
+        return Vector2.zero;
     }
 
+
     /**
-     * Chooses the path to walk on with the most similar direction.
+     * Handles moving the player and detecting when a jump begins
      */
-    private (int Path, Vector2 pathEnd) ChoosePathToWalkOn(Vector2 direction, bool isFuture)
+    private void MoveAndHandleJumps(Vector2 targetPosition)
     {
-        List<int> paths = GetTraversablePaths(isFuture);
+        if (isJumping)
+            return;
 
-        int bestPath = paths[0];
-        float bestError = Single.PositiveInfinity;
-        Vector2 bestPathEnd = transform.position;
+        Vector2 nextPosition = Vector2.MoveTowards(transform.position, targetPosition, currentSpeed * Time.deltaTime);
 
-        if (paths.Count == 1)
+        PathNetwork net = PathNetwork.Instance;
+        bool isFuture = TimeManager.Instance.IsFuture();
+        (_, int nearestPath) = net.NearestPointOnPaths(nextPosition, isFuture);
+
+        if (net.DoesPathRequireJump(nearestPath))
         {
-            bestPath = paths[0];
-            (bestError, bestPathEnd) = PathErrorDirectional(paths[0], direction);
-        }
-        else
-        {
-            foreach (int path in paths)
+            if (currentSpeed > minJumpSpeed)
             {
-                (float error, Vector2 pathEnd) =
-                    PathErrorPositional(path, direction);
-
-                if (error < bestError)
-                {
-                    bestPath = path;
-                    bestError = error;
-                    bestPathEnd = pathEnd;
-                }
+                // jump
+                Vector2 direction = targetPosition - (Vector2)transform.position;
+                (jumpStart, jumpEnd) = net.PathPointsGoingDirection(nearestPath, direction);
+                isJumping = true;
+                jumpDistanceTraveled = 0;
+                BarkManager.Instance.OnJumped(gameObject);
+            }
+            else
+            {
+                // fail to jump
+                StopPathfinding();
+                BarkManager.Instance.OnJumpedFailed(gameObject);
+                return;
             }
         }
 
-        // check if we can even walk
-        if (bestError < maxPathError)
-            return (bestPath, bestPathEnd);
-        else
-            return (bestPath, transform.position);
+        transform.position = nextPosition;
+        movedLastFrame = true;
     }
 
     /**
-     * Find how closely this path matches the targetDirection, assuming we can go either way.
+     * Handles moving the player over the arc of a jump
      */
-    private (float AngleError, Vector2 pathEnd) PathErrorDirectional(int path, Vector2 targetDirection)
+    private void MoveDuringJump()
     {
-        PathNetwork net = PathNetwork.Instance;
+        // stop half finised paths created using WASD control from making us backtrack
+        if (isPathfindingToWalk)
+            StopPathfinding();
 
-        (Vector2 start, Vector2 end) = net.PathPointsGoingDirection(path, targetDirection);
-        float angleError = Vector2.Angle(end - start, targetDirection);
-        return (angleError, end);
-    }
+        jumpDistanceTraveled += currentSpeed * Time.deltaTime * 0.75f;
+        Vector2 jumpGroundPosition = Vector2.MoveTowards(jumpStart, jumpEnd, jumpDistanceTraveled);
 
-    /**
-     * Find how closely this path matches the targetDirection, assuming we must walk one way from our current position.
-     */
-    private (float AngleError, Vector2 pathEnd) PathErrorPositional(int path, Vector2 targetDirection)
-    {
-        PathNetwork net = PathNetwork.Instance;
-
-        (Vector2 start, Vector2 end) = net.PathPointsComingFrom(path, transform.position);
-        float angleError = Vector2.Angle(end - start, targetDirection);
-
-        return (angleError, end);
-    }
-
-    /**
-     * Get all paths that can be walked on from a current position and time.
-     */
-    private List<int> GetTraversablePaths(bool isFuture)
-    {
-        PathNetwork net = PathNetwork.Instance;
-        List<int> paths = new List<int>();
-        (_, int nearestPath) = net.NearestPointOnPaths(transform.position, isFuture);
-        paths.Add(nearestPath);
-
-        if (Vector2.Distance(net.GetPathPositionA(nearestPath), transform.position) < intersectionSize)
+        float jumpGap = Vector2.Distance(jumpStart, jumpEnd);
+        if (jumpDistanceTraveled >= jumpGap)
         {
-            // near enough to node B to switch paths
-            paths.AddRange(net.GetPathConnectionsA(nearestPath, isFuture));
+            transform.position = jumpEnd + (jumpEnd - jumpStart).normalized;
+            isJumping = false;
+            return;
         }
 
-        if (Vector2.Distance(net.GetPathPositionB(nearestPath), transform.position) < intersectionSize)
-        {
-            // near enough to node A to switch paths
-            paths.AddRange(net.GetPathConnectionsB(nearestPath, isFuture));
-        }
+        float halfGap = jumpGap * 0.5f;
+        float jumpHeight = Squared(halfGap * gravity) - Squared((jumpDistanceTraveled - halfGap) * gravity);
+        transform.position = jumpGroundPosition + Vector2.up * jumpHeight;
+        movedLastFrame = true;
+    }
 
-        return paths;
+    /**
+     * Does what it says on the tin. x²
+     */
+    private float Squared(float x)
+    {
+        return x * x;
     }
 }

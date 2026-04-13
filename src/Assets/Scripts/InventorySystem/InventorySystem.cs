@@ -1,0 +1,183 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
+
+/**
+ * A singleton that handles core player inventory interactions.
+ * Keeps track of all items in the players inventory
+**/
+public class InventorySystem : MonoBehaviour
+{
+    public int ItemMax = 5;
+    public int Padding = 1;
+    public GameObject TemplateItem;
+    public static InventorySystem Instance { get; private set; }
+    [NonSerialized] public bool HasMouseItem; // The item that appears where the mouse is
+    [NonSerialized] public GameObject CarriedItem; // The item that the character is bringing to the node
+    [NonSerialized] public ItemDropNode TargetDropNode;
+    private List<Item> items;
+
+    // Start is called before the first frame update
+    InventorySystem()
+    {
+        items = new List<Item>();
+    }
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    /*
+    * Checks if an item is already in the inventory (for stacking)
+    * Filters out and removes items that no longer have ui objects
+    */
+    private Item GetExistingItem(string otherItemName) {
+        Item item = items.Find(item => item.name == otherItemName);
+
+        if (item == null) {
+            return null;
+        } else if (item.uiObject != null) {
+            return item;
+        } else {
+            items.Remove(item);
+            return null;
+        }
+    }
+
+    /*
+    * Adds an item to the inventory (keeps track by name of item)
+    * returns true if it was a success (if stacking is prevented or not)
+    */
+    public bool AddItem(GameObject prefab) {
+        if (items.Count >= ItemMax) {
+            Debug.Log($"Inventory reached max size of {ItemMax}!");
+        }
+
+        Item existingItem = GetExistingItem(prefab.name);
+
+        if (existingItem != null) {
+            PickupObject pickupObject = prefab.GetComponent<PickupObject>();
+
+            // Don't update the item count or actually pick up the item if we don't allow stacking
+            if (pickupObject.AllowStacking == false)
+            {
+                return false;
+            }
+
+            // Update the count on the UI object
+            InventoryItem existingInventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
+            existingInventoryItem.UpdateItemCount(existingInventoryItem.ItemCount + 1);
+        } else {
+            Item newItem = new Item(prefab);
+            items.Add(newItem);
+            
+        }
+
+        gameObject.SetActive(true);
+        AudioManager.Instance.oneShotSource.PlayOneShot(prefab.GetComponent<PickupObject>().pickup);
+        return true;
+    }
+
+    /*
+    * Handles removing an item from the system
+    */
+    public void RemoveItem(GameObject prefab) {
+        Item existingItem = GetExistingItem(prefab.name);
+
+        if (existingItem != null)
+        {
+            AudioManager.Instance.oneShotSource.PlayOneShot(prefab.GetComponent<PickupObject>().putdown);
+            InventoryItem inventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
+            inventoryItem.UpdateItemCount(inventoryItem.ItemCount - 1);
+            
+            if (items.Count == 0) {
+                
+                gameObject.SetActive(false);
+            }
+        }
+    }
+
+    /*
+    * Creates a pickupobject (an object that you move around with your mouse from place to place)
+    */
+    public GameObject CreatePickupObject(GameObject prefab) {
+        Transform newObject = Instantiate(prefab.transform, prefab.transform.position, Quaternion.identity);
+
+        if (newObject) {
+            newObject.name = prefab.name;
+            newObject.GetComponent<PickupObject>().PickupObjectPrefab = prefab;
+
+            HasMouseItem = true;
+
+            return newObject.gameObject;
+        }
+
+        return null;
+    }
+
+    /*
+    * Deletes a pickupobject
+    */
+    public void DeletePickupObject(PickupObject pickupObject) {
+        StartCoroutine(DeletePickupObjectInternal(pickupObject));
+    }
+
+    public IEnumerator DeletePickupObjectInternal(PickupObject pickupObject) {
+        InventoryCanvas.Instance.SetSelectedInventoryItemBox(null);
+
+        Destroy(pickupObject.gameObject);
+
+        // Because the player and the item both listen to the click at the same time this is a cursed way of delaying a few frames so the player doesn't move
+        // Yes I know this sucks
+        yield return new WaitForSeconds(0.3f);
+
+        HasMouseItem = false;
+    }
+
+
+    /*
+    * Cancels all actions for picking up / dropping items
+    */
+    public void Cancel() {
+        TargetDropNode = null;
+        CarriedItem = null;
+    }
+
+    public bool IsPlayerMovementAllowed() {
+        return CarriedItem == null && !HasMouseItem;
+    }
+
+    /*
+    * Object that represents an Item in the inventory and its UI elements
+    * Used for properly instantiating items in the scene
+    */
+    private class Item
+    {
+        public string name;
+        public Transform uiObject;
+
+        public Item(GameObject prefab) {
+            InventorySystem inventorySystem = Instance;
+            PickupObject pickupObject = prefab.GetComponent<PickupObject>();
+
+            // Create UI object and set it to proper position
+            Transform newItemUIObject = Instantiate(inventorySystem.TemplateItem.transform, inventorySystem.TemplateItem.transform.position, Quaternion.identity);
+
+            if (string.IsNullOrEmpty(pickupObject.NiceName)) {
+                newItemUIObject.name = pickupObject.name;
+            } else {
+                newItemUIObject.name = pickupObject.NiceName;
+            }
+
+            InventoryCanvas.Instance.AddUIObject(newItemUIObject, prefab);
+
+            this.name = prefab.name;
+            this.uiObject = newItemUIObject;
+        }
+    }
+
+   
+}

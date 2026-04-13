@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -6,10 +6,6 @@ using UnityEngine.UI;
 public class TransitionController : MonoBehaviour
 {
     public static TransitionController Instance { get; private set; }
-
-    // Changes the amount of time fading in and out takes
-    // WARNING: you need to edit this AND the fade.uxml animation time to the time you desire in ms
-    // This is because there is no way to change the fade.uxml animation time at runtime afaik
     public float FadeOutDelay = 2f;
 
     // Changes how long the system waits at the beginning of the game before fading away from the black screen
@@ -17,66 +13,59 @@ public class TransitionController : MonoBehaviour
     public float FadeInDelay = 1f;
 
     private PathNetwork pathNetwork;
+    private DialogManager dialogManager;
+    private FadeManager fadeManager;
     private Image screenFadeImage;
-    private float alpha;
-    private float targetAlpha;
-    private float alphaChangeTime;
 
     private void Awake()
     {
         Instance = this;
 
         screenFadeImage = GameObject.FindGameObjectWithTag("FadeTexture").GetComponent<Image>();
+        fadeManager = GetComponent<FadeManager>();
+
+        fadeManager.FadeOutTime = FadeOutDelay;
+        fadeManager.FadeInTime = FadeInDelay;
     }
 
     void Start()
     {
         screenFadeImage.color = new Color(0, 0, 0, 1.0f);
-        alpha = 1;
-        FadeIn();
+        fadeManager.SetAlpha(1);
+        fadeManager.FadeIn();
     }
 
     void Update()
     {
-        if (!alpha.Equals(targetAlpha))
+        if (!fadeManager.HasReachedTarget())
         {
-            alpha = Mathf.MoveTowards(alpha, targetAlpha, Time.deltaTime / alphaChangeTime);
-            screenFadeImage.color = new Color(0, 0, 0, alpha);
+            screenFadeImage.color = fadeManager.GetRGBAatTime(new Color(0, 0, 0), Time.deltaTime);
         }
     }
 
-    public async void SwitchScenes(string sceneName)
+    public IEnumerator SwitchScenes(string sceneName, string dialogKnot)
     {
-        FadeOut();
+        fadeManager.FadeOut();
+        
+        yield return new WaitForSeconds(FadeOutDelay);
 
-        await Task.Delay((int)(FadeOutDelay * 1000));
-
-        // Load desired scene
-        SceneManager.LoadSceneAsync(sceneName);
+        if (!string.IsNullOrEmpty(dialogKnot)) {
+            dialogManager.StartDialog(dialogKnot, () => SceneManager.LoadScene(sceneName));
+        } else {
+            // Load desired scene
+            SceneManager.LoadScene(sceneName);
+        }
     }
 
     // Creates a node in the path network corresponding to the position of the level portal & the exit node
     public void RegisterLevelPortal(Vector2 levelPortalPosition, Vector2 exitPosition)
     {
         pathNetwork = PathNetwork.Instance;
+        dialogManager = DialogManager.Instance;
 
         (float _, int nearestNode) = pathNetwork.NearestNode(levelPortalPosition);
         int triggerNode = pathNetwork.ForkNode(nearestNode, levelPortalPosition);
 
         pathNetwork.ForkNode(triggerNode, exitPosition);
-    }
-
-    // Does the fade out screen effect
-    public void FadeOut()
-    {
-        targetAlpha = 1;
-        alphaChangeTime = FadeOutDelay;
-    }
-
-    // Does the fade in sceen effect
-    public void FadeIn()
-    {
-        targetAlpha = 0;
-        alphaChangeTime = FadeInDelay;
     }
 }

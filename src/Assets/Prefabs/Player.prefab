@@ -63,10 +63,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90f8a929ed345b87284cae2e24fa8be3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 60
-  intersectionSize: 12
-  maxPathError: 60
-  pathLerpRate: 0.9
+  minSpeed: 50
+  maxSpeed: 120
+  minJumpSpeed: 110
+  acceleration: 50
+  deceleration: 500
+  gravity: 0.14
+  walkingLookAheadLength: 35
+  turnAssistStrength: 0.5
+  turnAssistThreshold: 0.1
+  perpendicularMovementThreshold: 0.1
 --- !u!212 &8328945196773836036
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -129,7 +135,7 @@ Animator:
   m_GameObject: {fileID: 719165057658449790}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e4063211ebce122fdab9a26f95e0713b, type: 2}
+  m_Controller: {fileID: 9100000, guid: c83952f8f277b27719d0e88039d67cb0, type: 2}
   m_CullingMode: 2
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

@@ -14,9 +14,10 @@ void paletteSwap_float(
     )
 {
     float3 raw = sqrt(color.rgb);
+    raw = min(raw, 63.0 / 64.0);
     
-    int x = int(raw.r * 64.0) + (int(raw.b * 64.0) & 7) * 64;
-    int y = 511 - int(raw.g * 64.0) - (int(raw.b * 64.0) >> 3) * 64;
+    int x = min(int(ceil(raw.r * 64.0)) + (int(ceil(raw.b * 64.0)) & 7) * 64, 511);
+    int y = max(511 - int(ceil(raw.g * 64.0)) - (int(ceil(raw.b * 64.0)) / 8) * 64, 0);
     
     if (time < 0.5)
     {

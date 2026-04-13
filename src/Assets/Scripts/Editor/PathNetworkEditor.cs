@@ -74,7 +74,15 @@ public class PathNetworkEditor : Editor
                 }
             }
 
-            DrawText(midpoint + new Vector2(0, ButtonSpacing / 2), net.GetPathName(i));
+            string label = net.GetPathName(i);
+            if (net.DoesPathRequireJump(i))
+            {
+                if (label.Length > 0)
+                    label += " | JUMP";
+                else
+                    label = "JUMP";
+            }
+            DrawText(midpoint + new Vector2(0, ButtonSpacing / 2), label);
 
             // hide UI far away from the mouse
             if (Vector2.Distance(mousePosition, midpoint) > EditRange) continue;

@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: PanelSettings
   m_EditorClassIdentifier: 
   themeUss: {fileID: -4733365628477956816, guid: ba2d9ab20bb0f762ca2537e723ba9ddd, type: 3}
-  m_TargetTexture: {fileID: 0}
-  m_ScaleMode: 1
+  m_TargetTexture: {fileID: 8400000, guid: 4491f4bf0a016b83086ad583225b6ffc, type: 2}
+  m_ScaleMode: 0
   m_ReferenceSpritePixelsPerUnit: 100
   m_Scale: 1
   m_ReferenceDpi: 96
   m_FallbackDpi: 96
-  m_ReferenceResolution: {x: 1200, y: 800}
+  m_ReferenceResolution: {x: 480, y: 270}
   m_ScreenMatchMode: 0
   m_Match: 0
   m_SortingOrder: 0

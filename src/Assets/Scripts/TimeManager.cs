@@ -1,29 +1,46 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance { get; private set; }
     
-    public delegate void OnTimeChanged();
-    [HideInInspector] public OnTimeChanged onTimeChanged;
+    [HideInInspector] public UnityAction onTimeChanged;
 
     [SerializeField] public Material paletteSwapMaterial;
     [SerializeField] private bool isFuture = false;
-    [SerializeField] private float futureRainStrength = 0;
+    [SerializeField] private float futureRainStrength = 1;
     [SerializeField] private float futureLightingTime = 1;
     
     private LinkedList<TimeObject> timeObjects = new LinkedList<TimeObject>();
+    private float lightingTime;
 
     private void Awake()
     {
         Instance = this;
     }
-    
+
+    private void Start()
+    {
+        if (isFuture)
+            lightingTime = futureLightingTime;
+        else
+            lightingTime = 0;
+    }
+
     void Update()
     {
-        paletteSwapMaterial.SetFloat("_LightingTime", GetLightingTime());
+        float distFromDawn = futureLightingTime - 0.5f;
+        float lerpRate = 2.4f - 8f * distFromDawn * distFromDawn;
+        if (isFuture)
+            lightingTime = Mathf.MoveTowards(lightingTime, futureLightingTime, Time.deltaTime * lerpRate);
+        else
+            lightingTime = Mathf.MoveTowards(lightingTime, 0, Time.deltaTime * lerpRate);
+        
+        paletteSwapMaterial.SetFloat("_LightingTime", lightingTime);
     }
 
     /**
@@ -98,9 +115,6 @@ public class TimeManager : MonoBehaviour
      */
     public float GetLightingTime()
     {
-        if (isFuture)
-            return futureLightingTime;
-        else
-            return 0;
+        return lightingTime;
     }
 }
