@@ -30,7 +30,6 @@ public class LogPlacement : MonoBehaviour
         {
             if (node.ActiveItem.name[0..3].ToString() == "Log" && placed == false)
             {
-                Debug.Log("log placed");
                 river.Play();
                 placed = true;
             }
