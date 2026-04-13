@@ -1052,6 +1052,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3589486739817815664, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
+      propertyPath: playOnOpening
+      value: Music/MorningEdge
+      objectReference: {fileID: 0}
+    - target: {fileID: 3589486739817815664, guid: 85b2fd648e6d00bbfb155967499028a9, type: 3}
+      propertyPath: playOnOpenVolume
+      value: 0.005
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

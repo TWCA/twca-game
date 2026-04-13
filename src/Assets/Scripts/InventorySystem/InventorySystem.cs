@@ -73,6 +73,7 @@ public class InventorySystem : MonoBehaviour
         } else {
             Item newItem = new Item(prefab);
             items.Add(newItem);
+            
         }
 
         gameObject.SetActive(true);
@@ -88,9 +89,10 @@ public class InventorySystem : MonoBehaviour
 
         if (existingItem != null)
         {
+            AudioManager.Instance.oneShotSource.PlayOneShot(prefab.GetComponent<PickupObject>().putdown);
             InventoryItem inventoryItem = existingItem.uiObject.GetComponent<InventoryItem>();
             inventoryItem.UpdateItemCount(inventoryItem.ItemCount - 1);
-            AudioManager.Instance.oneShotSource.PlayOneShot(prefab.GetComponent<PickupObject>().putdown);
+            
             if (items.Count == 0) {
                 
                 gameObject.SetActive(false);

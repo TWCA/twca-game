@@ -15,6 +15,9 @@ public class PickupObject : MonoBehaviour
     private InputAction clickAction;
     private PlayerControl player;
 
+    
+
+
     // Start is called before the first frame update
     void Start()
     {
