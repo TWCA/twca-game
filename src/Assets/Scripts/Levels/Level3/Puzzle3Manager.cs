@@ -28,8 +28,6 @@ public class Puzzle3Manager : MonoBehaviour
         if (FillUpPointInitial.ActiveItem != null && TimeManager.Instance.IsFuture()) {
             FillUpPointFuture.ActiveItem = FullBucket;
             FillUpPointFuture.InitializeSprite();
-            // FillUpPointInitial.ActiveItem = null;
-            // FillUpPointInitial.InitializeSprite();
         }
     }
 
@@ -37,6 +35,6 @@ public class Puzzle3Manager : MonoBehaviour
         PathNetwork pathNetwork = PathNetwork.Instance;
 
         pathNetwork.SetPathPastTraversable(pathNetwork.GetNamedPath("bush"), true);
-        BushFire.Stop();
+        Destroy(BushFire);
     }
 }
