@@ -32,7 +32,7 @@ VAR badDay = false
 VAR partyPlanned = false
 VAR dogmentioned = false
 
-
+->group_dialog
 
 // Intro Start
 == intro_scene ==
@@ -179,10 +179,10 @@ Hey Robin, you weren't in class the other day, and I've just been wondering how 
 //Group Dialog Start
 == group_dialog ==
 Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupScene/PartySoon
-{!badDay: We know you've been away for a little while, but we'd like to see you again #Lorenzo #Voice:VA/GroupScene/WedReallyLikeToSeeYouAgain}
+{not badDay: We know you've been away for a little while, but we'd like to see you again #Lorenzo #Voice:VA/GroupScene/WedReallyLikeToSeeYouAgain}
 {badDay: We know it's been a rough time for you, so we'd like to raise your spirits a bit! :D #Lorenzo #VA/GroupScene/RaiseYourSpirits}
 {dogmentioned: {dialog1chat: If you found Sam, bring him to the party! #Francis #Voice:VA/GroupScene/BringHimToTheParty}}
-{dogmentioned: {!dialog1chat: Bring Sam too, once you find him! #Lorenzo #Voice:VA/GroupScene/BringSamToo}}
+{dogmentioned: {not dialog1chat: Bring Sam too, once you find him! #Lorenzo #Voice:VA/GroupScene/BringSamToo}}
 
 * {dogmentioned} I still haven't found him #Robin #Voice:VA/GroupScene/StillHaventFoundHim
     Tell us where you are Robin, we can help #Francis #Voice:VA/GroupScene/TellUsWhereYouAre
@@ -191,7 +191,7 @@ Hey Robin, we were talking about having a party soon #Francis #Voice:VA/GroupSce
     Days on end? #Robin #VA/GroupScene/DaysOnEnd
     It's been a few days now Robin..? #Lorenzo #VA/GroupScene/It'sBeenAFewDaysNowRobin
     -> home_soon
-* {!dogmentioned} I've been trying to find Sam, he's missing :( #Robin #Voice:VA/GroupScene/TryingToFindSam
+* {not dogmentioned} I've been trying to find Sam, he's missing :( #Robin #Voice:VA/GroupScene/TryingToFindSam
     Sorry to hear that! #Lorenzo #Voice:VA/GroupScene/SorryToHearThat
     How long has Sam been missing? #Francis #Voice:VA/GroupScene/HowLongHasSamBeenMissing
     He ran off on me a little while ago #Robin #Voice:VA/GroupScene/RanOffOnMe
