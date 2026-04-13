@@ -172,7 +172,7 @@ Hey Robin, you weren't in class the other day, and I've just been wondering how 
 
 //Select Dialog 3
 == dialog_3 ==
-{dialog1chat or dialog2chat: ->group_dialog}
+{dialog1chat or dialog2chat: ->1}
 ->police_dialog
 
 
