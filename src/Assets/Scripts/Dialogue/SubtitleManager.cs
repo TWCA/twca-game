@@ -82,7 +82,7 @@ public class SubtitleManager : MonoBehaviour
         showingMessage = true;
         currentMessageTime = 0;
         totalMessageTime = time;
-        subtitleName = "(" + name + ")";
+        subtitleName = name;
         subtitleMessage = message;
     }
 

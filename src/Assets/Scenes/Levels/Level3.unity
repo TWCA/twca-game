@@ -7072,6 +7072,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dialog
       objectReference: {fileID: 0}
+    - target: {fileID: 5194895586947131043, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7559871872701201728, guid: e7ec7eae4797a837da6c45fcfec8503e, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -7708,9 +7716,9 @@ MonoBehaviour:
   FillUpPointInitial: {fileID: 880909975}
   FillUpPointFuture: {fileID: 282041945}
   BurningBush: {fileID: 472798668}
-  FullBucket: {fileID: 653100337}
+  FullBucket: {fileID: 212373334936704344, guid: 7e063a3ff37f36062a661227f55435a6, type: 3}
   TimePortal: {fileID: 1056293028}
-  BushFire: {fileID: 0}
+  BushFire: {fileID: 653100340}
 --- !u!1001 &1281600973
 PrefabInstance:
   m_ObjectHideFlags: 0
