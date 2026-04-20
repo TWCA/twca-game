@@ -155,6 +155,8 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                         ItemRemoved?.Invoke();
                     }));
+
+                MarkUsed();
             } else if (inventorySystem.CarriedItem) {
                 SetActiveItem(inventorySystem.CarriedItem);
 
@@ -166,9 +168,9 @@ public class ItemDropNode : MonoBehaviour
                         InitializeSprite();
                         ItemPlaced?.Invoke();
                     }));
-            }
 
-            MarkUsed();
+                MarkUsed();
+            }
 
             player.StopInPlace();
             inventorySystem.Cancel();
