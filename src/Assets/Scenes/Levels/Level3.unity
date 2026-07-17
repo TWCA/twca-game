@@ -7719,6 +7719,10 @@ MonoBehaviour:
   FullBucket: {fileID: 212373334936704344, guid: 7e063a3ff37f36062a661227f55435a6, type: 3}
   TimePortal: {fileID: 1056293028}
   BushFire: {fileID: 653100340}
+  fire: {fileID: 472798664}
+  fireSource: {fileID: 0}
+  burning: 1
+  PutOutClip: {fileID: 8300000, guid: d14b0ad5991cb514c95caeedbf14106e, type: 3}
 --- !u!1001 &1281600973
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10453,15 +10457,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.y
-      value: 0.033644862
+      value: 0.09775968
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.width
-      value: 0.99999994
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6323702144920913464, guid: b912bb47a8c07ecb0a1e9d239f6a7ede, type: 3}
       propertyPath: m_NormalizedViewPortRect.height
-      value: 0.93259346
+      value: 0.8042261
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
